@@ -1,0 +1,8 @@
+                                  FPGA Helpers
+
+A Free Software project which consist on a bunch of scripts to use FPGA
+development tools in a vendor independent way.
+
+The target development platform is GNU/Linux (more precisely, Debian), but is
+probably easy to port to another OS, maybe using emulators (such as Cygwin).
+
