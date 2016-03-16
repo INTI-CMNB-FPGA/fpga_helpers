@@ -74,6 +74,16 @@ proc cmdLineParser {} {
 }
 
 ###################################################################################################
+# Small helpers                                                                                   #
+###################################################################################################
+
+proc readFile {PATH} {set fp [open $PATH r];set data [read $fp];close $fp;return $data}
+proc writeFile {PATH MODE DATA} {set fp [open $PATH $MODE];puts $fp $DATA;close $fp}
+proc getSeparator {CHAR QTY} {
+   set sep "";for {set i 0} {$i < $QTY} {incr i} {append sep $CHAR};return $sep
+}
+
+###################################################################################################
 # Xilinx ISE Tool                                                                                 #
 ###################################################################################################
 
@@ -105,11 +115,13 @@ proc toolIse {ODIR RUN OPT} {
 
    if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
       process run "Synthesize" -force rerun
+      file copy -force [glob -nocomplain *.syr] ise_syn_$OPT.log
    }
    if { $RUN=="imp" || $RUN=="bit"} {
       process run "Translate" -force rerun
       process run "Map" -force rerun
       process run "Place & Route" -force rerun
+      file copy -force [glob -nocomplain *.par] ise_imp_$OPT.log
    }
    if {$RUN=="bit"} {
       process run "Generate Programming File" -force rerun
@@ -130,6 +142,39 @@ proc toolIse {ODIR RUN OPT} {
 
 }
 
+proc reportIse {ODIR OPT} {
+   set systemTime [clock seconds]
+   set wdata ""
+   append wdata "TimeStamp: "
+   append wdata [clock format $systemTime -format {%Y-%m-%d  %H:%M}]\n
+   append wdata "Optimized by $OPT\n\n"
+   append wdata "Notes: N/A\n\n"
+   if { [file exists [glob -nocomplain *.syr]] } {
+      set PATH [glob -nocomplain *.syr]
+      set rdata [readFile $PATH ]
+      append wdata [getSeparator "#" 100]\n
+      append wdata "Synthesis\n"
+      append wdata [getSeparator "#" 100]\n
+      regexp -nocase {(Slice Logic Utilization[\w\s\n-:]*)\n-*\nPartition} $rdata -> result
+      append wdata "$result\n"
+      regexp -nocase {Minimum period:\s([\d.]*)} $rdata -> result
+      set MHZ [expr 1/[expr 0.001 * $result]]
+      append wdata "Maximum Frequency: $MHZ MHz\n"
+   }
+   if { [file exists [glob -nocomplain *.par]] } {
+      set PATH [glob -nocomplain *.par]
+      set rdata [readFile $PATH ]
+      append wdata [getSeparator "#" 100]\n
+      append wdata "Implementation\n"
+      append wdata [getSeparator "#" 100]\n
+      regexp -nocase {(Slice Logic Utilization[\w\s\n-:]*)\n\n\nOverall} $rdata -> result
+      append wdata "$result\n\n"
+      regexp -nocase {(\d*\.\d*)ns} $rdata -> result
+      set MHZ [expr 1/[expr 0.001 * $result]]
+      append wdata "Maximum Frequency: $MHZ MHz\n"
+   }
+   writeFile ise.resume w $wdata
+}
 ###################################################################################################
 # Xilinx Vivado Tool                                                                              #
 ###################################################################################################
@@ -183,17 +228,13 @@ proc toolVivado {ODIR RUN OPT} {
 
    if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
       synth_design
-      write_checkpoint   -force $ODIR/syn
-      set TEXT [report_timing -return_string]
-      puts TEXT
-      set fh [open $ODIR/timing_syn.rpt "w"]
-      puts $fh $TEXT
-      close $fh
-      set TEXT [report_utilization -return_string]
-      puts TEXT
-      set fh [open $ODIR/utilization_syn.rpt "w"]
-      puts $fh $TEXT
-      close $fh
+      write_checkpoint -force $ODIR/syn
+      set UTILIZATION [report_utilization -return_string]
+      set TIMING [report_timing -return_string]
+      puts $UTILIZATION
+      puts $TIMING
+      writeFile vivado_syn_$OPT.log w $UTILIZATION
+      writeFile vivado_syn_$OPT.log a $TIMING
    }
    if { $RUN=="imp" || $RUN=="bit"} {
       # map
@@ -204,28 +245,31 @@ proc toolVivado {ODIR RUN OPT} {
       if {$OPT=="power" || $OPT=="speed"} {phys_opt_design}
       route_design
       write_checkpoint -force $ODIR/imp
-      report_io                -file $ODIR/io_imp.rpt
-      report_power             -file $ODIR/power_imp.rpt
-      set TEXT [report_timing -return_string]
-      puts TEXT
-      set fh [open $ODIR/timing_imp.rpt "w"]
-      puts $fh $TEXT
-      close $fh
-      set TEXT [report_utilization -return_string]
-      puts TEXT
-      set fh [open $ODIR/utilization_imp.rpt "w"]
-      puts $fh $TEXT
-      close $fh
+      report_io    -file $ODIR/io_imp.rpt
+      report_power -file $ODIR/power_imp.rpt
+      set UTILIZATION [report_utilization -return_string]
+      set TIMING [report_timing -return_string]
+      puts $UTILIZATION
+      puts $TIMING
+      writeFile vivado_imp_$OPT.log w $UTILIZATION
+      writeFile vivado_imp_$OPT.log a $TIMING
    }
    if {$RUN=="bit"} {
       write_bitstream $ODIR/vivado.bit
    }
 
-   file rename -force {*}[glob -nocomplain *.jou] $ODIR
-   file rename -force {*}[glob -nocomplain *.log] $ODIR
+   catch {
+      file rename -force {*}[glob -nocomplain vivado.jou] $ODIR
+      file rename -force {*}[glob -nocomplain vivado.log] $ODIR
+      file rename -force {*}[glob -nocomplain *backup.jou] $ODIR
+      file rename -force {*}[glob -nocomplain *backup.log] $ODIR
+   }
 
    catch { file rename -force {*}[glob -nocomplain webtalk*] $ODIR }
-   if {$RUN=="clean"} { file delete -force $ODIR }
+   if {$RUN=="clean"} {
+      file delete -force $ODIR
+      file delete -force {*}[glob -nocomplain *.log]
+   }
 
 }
 
@@ -258,10 +302,12 @@ proc toolQuartus2 {ODIR RUN OPT} {
 
    if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
       execute_module -tool map
+      file copy -force [glob -nocomplain $ODIR/*.map.rpt] quartus2_syn_$OPT.log
    }
    if { $RUN=="imp" || $RUN=="bit"} {
       execute_module -tool fit
       execute_module -tool sta
+      file copy -force [glob -nocomplain $ODIR/*.fit.rpt] quartus2_imp_$OPT.log
    }
    if {$RUN=="bit"} {
       execute_module -tool asm
@@ -276,6 +322,7 @@ proc toolQuartus2 {ODIR RUN OPT} {
       file delete -force quartus2.qpf
       file delete -force quartus2.qsf
       file delete -force quartus2.qws
+      file delete -force {*}[glob -nocomplain *.log]
    }
 
 }
@@ -292,9 +339,10 @@ file mkdir $ODIR
 switch $options(tool) {
    "ise"      {
       toolIse $ODIR $options(run) $options(opt)
+      reportIse $ODIR $options(opt)
    }
    "vivado"   {
-      toolVivado   $ODIR $options(run) $options(opt)
+      toolVivado $ODIR $options(run) $options(opt)
    }
    "quartus2" {
       package require ::quartus::project
