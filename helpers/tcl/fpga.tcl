@@ -227,35 +227,30 @@ proc toolVivado {ODIR RUN OPT} {
    source vivado_cfg.tcl
 
    if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
-      synth_design
-      write_checkpoint -force $ODIR/syn
+      launch_runs synth_1
+      wait_on_run synth_1
+      open_run synth_1
       set UTILIZATION [report_utilization -return_string]
       set TIMING [report_timing -return_string]
-      puts $UTILIZATION
-      puts $TIMING
+      #puts $UTILIZATION
+      #puts $TIMING
       writeFile vivado_syn_$OPT.log w $UTILIZATION
       writeFile vivado_syn_$OPT.log a $TIMING
    }
    if { $RUN=="imp" || $RUN=="bit"} {
-      # map
-      opt_design -retarget -propconst -sweep -bram_power_opt -remap -resynth_seq_area
-      if {$OPT=="power"} {power_opt_design}
-      # par
-      place_design
-      if {$OPT=="power" || $OPT=="speed"} {phys_opt_design}
-      route_design
-      write_checkpoint -force $ODIR/imp
+      launch_runs impl_1
+      wait_on_run impl_1
+      open_run impl_1
       report_io    -file $ODIR/io_imp.rpt
       report_power -file $ODIR/power_imp.rpt
       set UTILIZATION [report_utilization -return_string]
       set TIMING [report_timing -return_string]
-      puts $UTILIZATION
-      puts $TIMING
       writeFile vivado_imp_$OPT.log w $UTILIZATION
       writeFile vivado_imp_$OPT.log a $TIMING
    }
    if {$RUN=="bit"} {
-      write_bitstream $ODIR/vivado.bit
+      launch_run impl_1 -to_step write_bitstream
+      wait_on_run impl_1
    }
 
    catch {
@@ -268,7 +263,7 @@ proc toolVivado {ODIR RUN OPT} {
    catch { file rename -force {*}[glob -nocomplain webtalk*] $ODIR }
    if {$RUN=="clean"} {
       file delete -force $ODIR
-      file delete -force {*}[glob -nocomplain *.log]
+      catch {file delete -force {*}[glob -nocomplain *.log]}
    }
 
 }

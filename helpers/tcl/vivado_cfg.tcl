@@ -4,9 +4,11 @@ set_property "part" "xc7a100tcsg324-3" $obj
 #/dev
 
 #prj
-read_vhdl -library LIB_NAME ../core/core_file.vhdl
-read_vhdl -library LIB_NAME ../core/package_file.vhdl
-read_vhdl ../core/top_file.vhdl
+add_files ../core/core_file.vhdl
+add_files ../core/package_file.vhdl
+add_files ../core/top_file.vhdl
+set_property library LIB_NAME [get_files ../core/core_file.vhdl]
+set_property library LIB_NAME [get_files ../core/package_file.vhdl]
 set_property top TOP_NAME [current_fileset]
 #/prj
 
