@@ -16,37 +16,31 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+###############################################################################
 
-ISE_BITS           = 64
-ISE_ROOT_PATH      = /opt/Xilinx/ise
-VIVADO_ROOT_PATH   = /opt/Xilinx/vivado
-QUARTUS2_ROOT_PATH = /opt/Altera/quartus2
-
-###################################################################################################
-
-ifneq ("$(wildcard vivado_cfg.tcl)","")
+ifneq ("$(wildcard vivado.tcl)","")
    TOOL = vivado
-else ifneq ("$(wildcard ise_cfg.tcl)","")
+else ifneq ("$(wildcard ise.tcl)","")
    TOOL = ise
-else ifneq ("$(wildcard quartus2_cfg.tcl)","")
+else ifneq ("$(wildcard quartus2.tcl)","")
    TOOL = quartus2
 else
-   $(error You have to have at least one <vendorTool>_cfg.tcl file)
+   $(error You have to have at least one <vendorTool>.tcl file)
 endif
 
-TCL_FILE = fpga.tcl
+TCL_FILE = $(TOOL).tcl
 
-ISE_TCL          = $(ISE_ROOT_PATH)/ISE/bin/lin$(ISE_BITS)/xtclsh $(TCL_FILE)
-ISE_TCL_CON      = $(ISE_ROOT_PATH)/ISE/bin/lin$(ISE_BITS)/xtclsh
-ISE_GUI          = $(ISE_ROOT_PATH)/ISE/bin/lin$(ISE_BITS)/ise ise.xise
+ISE_TCL          = xtclsh $(TCL_FILE)
+ISE_TCL_CON      = xtclsh
+ISE_GUI          = ise ise.xise
 
-VIVADO_TCL       = $(VIVADO_ROOT_PATH)/bin/vivado -mode batch -notrace -source $(TCL_FILE) -tclargs
-VIVADO_TCL_CON   = $(VIVADO_ROOT_PATH)/bin/vivado -mode tcl
-VIVADO_GUI       = $(VIVADO_ROOT_PATH)/bin/vivado temp-vivado/vivado.xpr
+VIVADO_TCL       = vivado -mode batch -notrace -source $(TCL_FILE) -tclargs
+VIVADO_TCL_CON   = vivado -mode tcl
+VIVADO_GUI       = vivado temp-vivado/vivado.xpr
 
-QUARTUS2_TCL     = $(QUARTUS2_ROOT_PATH)/quartus/bin/quartus_sh --script $(TCL_FILE)
-QUARTUS2_TCL_CON = $(QUARTUS2_ROOT_PATH)/quartus/bin/quartus_sh -s
-QUARTUS2_GUI     = $(QUARTUS2_ROOT_PATH)/quartus/bin/quartus quartus2.qpf
+QUARTUS2_TCL     = quartus_sh --script $(TCL_FILE)
+QUARTUS2_TCL_CON = quartus_sh -s
+QUARTUS2_GUI     = quartus quartus2.qpf
 
 ifeq ($(TOOL),ise)
    TCL_CMD  = $(ISE_TCL)
@@ -64,7 +58,7 @@ else
    $(error TOOL is unsupported [ise, vivado, quartus2])
 endif
 
-###################################################################################################
+###############################################################################
 
 all help:
 	@echo "Help:"
@@ -78,7 +72,7 @@ all help:
 	@echo "  * bit-area, bit-power, bit-speed"
 	@echo "* Others:"
 	@echo "  * clean:   to delete generated files"
-	@echo "  * TCL_CON: to lunch the Tcl TCL_CON of the vendor Tool"
+	@echo "  * console: to lunch the Tcl Console of the vendor Tool"
 	@echo "  * gui:     to lunch the Gui of the vendor Tool"
 	@echo "* Tools:"
 	@echo "  * To specify use TOOL=<vendorTool> when do make"
@@ -124,4 +118,3 @@ console:
 
 gui:
 	$(GUI_CMD)
-
