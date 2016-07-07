@@ -38,17 +38,38 @@ fi
 
 ###############################################################################
 
+OPTION=$1
+
 HELP=0
 CONFIG=0
 SETTING=0
 
-if [ $# -ne 1 ] || [ $1 == "--help" ]; then
+if [ $# -ne 1 ]; then
+   SETTING=1
+   echo "Select what TOOL Suite must be set:"
+   echo "0. All the available"
+   echo "1. ISE (Xilinx)"
+   echo "2. Vivado (Xilinx)"
+   echo "3. Quartus2 (Altera)"
+   echo "4. Libero-SoC (Microsemi)"
+   # Add here new tool code
+   read -n 1 -s OPTION
+   case "$OPTION" in
+      0) OPTION="--all";;
+      1) OPTION="--ise";;
+      2) OPTION="--vivado";;
+      3) OPTION="--quartus2";;
+      4) OPTION="--libero-soc";;
+      # Add here new tool code
+      *) OPTION="--none";;
+   esac
+elif [ $OPTION == "--help" ]; then
    HELP=1
    echo "FPGA Prepare Help:"
    echo "* All:"
    echo "  --config-all"
    echo "  --all"
-elif [[ $1 =~ .*config.* ]]; then
+elif [[ $OPTION =~ .*config.* ]]; then
    CONFIG=1
 else
    SETTING=1
@@ -64,7 +85,7 @@ if [ $HELP -gt 0 ]; then
    echo "  --ise"
 fi
 if [ $CONFIG -gt 0 ]; then
-   if [ $1 == "--config-all" ] || [ $1 == "--config-ise" ]; then
+   if [ $OPTION == "--config-all" ] || [ $OPTION == "--config-ise" ]; then
       CONFIG=2
       echo "* Configure Xilinx ISE:"
       read -e -p "ISE ROOT DIR:                 " -i $ISE_ROOT_DIR ISE_ROOT_DIR
@@ -74,7 +95,7 @@ if [ $CONFIG -gt 0 ]; then
    fi
 fi
 if [ $SETTING -gt 0 ]; then
-   if [ $1 == "--all" ] || [ $1 == "--ise" ]; then
+   if [ $OPTION == "--all" ] || [ $OPTION == "--ise" ]; then
       SETTING=2
       echo -n "* Setting Xilinx ISE... "
       if [ $ISE_64_BITS == 1 ]; then ISE_BITS=64; else ISE_BITS=; fi
@@ -94,14 +115,14 @@ if [ $HELP -gt 0 ]; then
    echo "  --vivado"
 fi
 if [ $CONFIG -gt 0 ]; then
-   if [ $1 == "--config-all" ] || [ $1 == "--config-vivado" ]; then
+   if [ $OPTION == "--config-all" ] || [ $OPTION == "--config-vivado" ]; then
       CONFIG=2
       echo "* Configure Xilinx Vivado:"
       read -e -p "VIVADO ROOT DIR:              " -i $VIVADO_ROOT_DIR VIVADO_ROOT_DIR
    fi
 fi
 if [ $SETTING -gt 0 ]; then
-   if [ $1 == "--all" ] || [ $1 == "--vivado" ]; then
+   if [ $OPTION == "--all" ] || [ $OPTION == "--vivado" ]; then
       SETTING=2
       echo -n "* Setting Xilinx Vivado... "
       VIVADO_BIN_DIR=${VIVADO_ROOT_DIR}/bin
@@ -120,14 +141,14 @@ if [ $HELP -gt 0 ]; then
    echo "  --quartus2"
 fi
 if [ $CONFIG -gt 0 ]; then
-   if [ $1 == "--config-all" ] || [ $1 == "--config-quartus2" ]; then
+   if [ $OPTION == "--config-all" ] || [ $OPTION == "--config-quartus2" ]; then
       CONFIG=2
       echo "* Configure Altera Quartus2:"
       read -e -p "QUARTUS2 ROOT DIR:            " -i $QUARTUS2_ROOT_DIR QUARTUS2_ROOT_DIR
    fi
 fi
 if [ $SETTING -gt 0 ]; then
-   if [ $1 == "--all" ] || [ $1 == "--quartus2" ]; then
+   if [ $OPTION == "--all" ] || [ $OPTION == "--quartus2" ]; then
       SETTING=2
       echo -n "* Setting Altera Quartus2... "
       QUARTUS2_BIN_DIR=${QUARTUS2_ROOT_DIR}/quartus/bin
@@ -146,7 +167,7 @@ if [ $HELP -gt 0 ]; then
    echo "  --libero-soc"
 fi
 if [ $CONFIG -gt 0 ]; then
-   if [ $1 == "--config-all" ] || [ $1 == "--config-libero-soc" ]; then
+   if [ $OPTION == "--config-all" ] || [ $OPTION == "--config-libero-soc" ]; then
       CONFIG=2
       echo "* Configure Microsemi Libero-Soc:"
       read -e -p "LIBERO SOC ROOT DIR:          " -i $LIBEROSOC_ROOT_DIR  LIBEROSOC_ROOT_DIR
@@ -159,7 +180,7 @@ if [ $CONFIG -gt 0 ]; then
    fi
 fi
 if [ $SETTING -gt 0 ]; then
-   if [ $1 == "--all" ] || [ $1 == "--libero-soc" ]; then
+   if [ $OPTION == "--all" ] || [ $OPTION == "--libero-soc" ]; then
       SETTING=2
       echo -n "* Setting Microsemi Libero-SoC... "
       LIBEROSOC_BIN_DIR=${LIBEROSOC_ROOT_DIR}/Libero/bin
@@ -205,7 +226,6 @@ if [ $CONFIG -eq 2 ]; then
 fi
 
 if [ $SETTING -eq 2 ]; then
-   clear
-   echo "You are entering in a new SHELL with settings applied"
+   echo "You are entering in a new SHELL with settings applied."
    $SHELL
 fi
