@@ -66,8 +66,13 @@ options = parser.parse_args()
 
 print (__file__ + '(INFO): ' + version)
 
-fpga_prog_text = "# No board specified.";
+fpga_prog_text = "# No <board> specified.";
 if options.board is not None:
+   if options.tool == 'all':
+      sys.exit(
+         __file__ +
+         '(ERROR): value <all> for option <tool> is not allowed when <board> is specified.'
+      )
    if options.board.endswith(".yaml"):
       path = options.board
    else:
@@ -75,7 +80,12 @@ if options.board is not None:
    if os.path.exists(path):
       board = yaml.load(file(path, 'r'))
    else:
-      sys.exit(__file__ + '(ERROR): board <' + options.board + '> not exists.')
+      sys.exit(__file__ + '(ERROR): <board> ' + options.board + ' not exists.')
+   if not options.tool in board['tool']['synt']:
+      sys.exit(
+         __file__ + '(ERROR): <board> ' + options.board +
+         ' is not supported by the <tool> ' + options.tool + '.'
+      )
    # fpga_prog alternatives
    fpga_prog_text = "";
    for device in sorted(board):
