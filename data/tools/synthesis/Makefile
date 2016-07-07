@@ -1,7 +1,7 @@
 #!/usr/bin/make
 #
 # Makefile of the Vendor independat Tcl for FPGA Tools
-# Copyright (C) 2016 INTI, Rodrigo A. Melo <rmelo@inti.gob.ar>
+# Copyright (C) 2016 INTI, Rodrigo A. Melo
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -118,3 +118,6 @@ console:
 
 gui:
 	$(GUI_CMD)
+
+###############################################################################
+
