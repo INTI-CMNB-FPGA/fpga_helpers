@@ -56,6 +56,27 @@ proc cmdLineParser {TOOL} {
    return [array get options]
 }
 
+proc fpga_device {FPGA OPT TOOL} {
+   if {$OPT == "" || ($OPT=="-tool" && $TOOL=="quartus2")} {
+      set_global_assignment -name DEVICE $FPGA
+   }
+}
+
+proc fpga_file {FILE {OPT ""} {LIBRARY ""}} {
+   if {$OPT=="-lib"} {
+      set_global_assignment -name VHDL_FILE $FILE -library $LIBRARY
+   } elseif {$OPT == ""} {
+      set_global_assignment -name VHDL_FILE $FILE
+   } else {
+         puts "Second argument (if present) could be only -lib."
+         exit 1
+   }
+}
+
+proc fpga_top {TOP} { set_global_assignment -name TOP_LEVEL_ENTITY $TOP}
+
+proc fpga_get_tool {} { return "quartus2" }
+
 ###################################################################################################
 # Main                                                                                            #
 ###################################################################################################

@@ -56,6 +56,26 @@ proc cmdLineParser {TOOL} {
 
 proc writeFile {PATH MODE DATA} {set fp [open $PATH $MODE];puts $fp $DATA;close $fp}
 
+proc fpga_device {FPGA OPT TOOL} {
+   if {$OPT == "" || ($OPT=="-tool" && $TOOL=="vivado")} {
+      set_property "part" $FPGA [current_project]
+   }
+}
+
+proc fpga_file {FILE {OPT ""} {LIBRARY ""}} {
+   add_files $FILE
+   if {$OPT=="-lib"} {
+      set_property library $LIBRARY [get_files $FILE]
+   } elseif {$OPT != ""} {
+         puts "Second argument (if present) could be only -lib."
+         exit 1
+   }
+}
+
+proc fpga_top {TOP} { set_property top $TOP [current_fileset] }
+
+proc fpga_get_tool {} { return "vivado" }
+
 ###################################################################################################
 # Main                                                                                            #
 ###################################################################################################

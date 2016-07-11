@@ -52,7 +52,70 @@ proc cmdLineParser {TOOL} {
    }
 
    return [array get options]
+ }
+
+proc fpga_device {FPGA OPT TOOL} {
+   if {$OPT == "" || ($OPT=="-tool" && $TOOL=="ise")} {
+      regexp -nocase {(.*)(-.*)-(.*)} $FPGA -> device speed package
+      set family "Unknown"
+      if {[regexp -nocase {xc7a\d+l} $device]} {
+         set family "artix7l"
+      } elseif {[regexp -nocase {xc7a} $device]} {
+         set family "artix7"
+      } elseif {[regexp -nocase {xc7k\d+l} $device]} {
+         set family "kintex7l"
+      } elseif {[regexp -nocase {xc7k} $device]} {
+         set family "kintex7"
+      } elseif {[regexp -nocase {xc3sd\d+a} $device]} {
+         set family "spartan3adsp"
+      } elseif {[regexp -nocase {xc3s\d+a} $device]} {
+         set family "spartan3a"
+      } elseif {[regexp -nocase {xc3s\d+e} $device]} {
+         set family "spartan3e"
+      } elseif {[regexp -nocase {xc3s} $device]} {
+         set family "spartan3"
+      } elseif {[regexp -nocase {xc6s\d+l} $device]} {
+         set family "spartan6l"
+      } elseif {[regexp -nocase {xc6s} $device]} {
+         set family "spartan6"
+      } elseif {[regexp -nocase {xc4v} $device]} {
+         set family "virtex4"
+      } elseif {[regexp -nocase {xc5v} $device]} {
+         set family "virtex5"
+      } elseif {[regexp -nocase {xc6v\d+l} $device]} {
+         set family "virtex6l"
+      } elseif {[regexp -nocase {xc6v} $device]} {
+         set family "virtex6"
+      } elseif {[regexp -nocase {xc7v\d+l} $device]} {
+         set family "virtex7l"
+      } elseif {[regexp -nocase {xc7v} $device]} {
+         set family "virtex7"
+      } elseif {[regexp -nocase {xc7z} $device]} {
+         set family "zynq"
+      } else {
+         puts "Family $family not supported."
+         exit 1
+      }
+      project set family  $family
+      project set device  $device
+      project set package $package
+      project set speed   $speed
+   }
 }
+
+proc fpga_file {FILE {OPT ""} {LIBRARY ""}} {
+   if {$OPT=="-lib"} {
+      lib_vhdl new $LIBRARY
+   } elseif {$OPT != ""} {
+         puts "Second argument (if present) could be only -lib."
+         exit 1
+   }
+   xfile add $FILE -lib_vhdl $LIBRARY
+}
+
+proc fpga_top {TOP} { project set top $TOP }
+
+proc fpga_get_tool {} { return "ise" }
 
 ###################################################################################################
 # Main                                                                                            #
