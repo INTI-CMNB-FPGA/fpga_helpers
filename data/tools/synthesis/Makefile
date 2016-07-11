@@ -1,6 +1,6 @@
 #!/usr/bin/make
 #
-# Makefile of the Vendor independat Tcl for FPGA Tools
+# Makefile for Synthesis with Tcl files (FPGA Helpers)
 # Copyright (C) 2016 INTI, Rodrigo A. Melo
 #
 # This program is free software: you can redistribute it and/or modify
@@ -28,32 +28,47 @@ else
    $(error You have to have at least one <vendorTool>.tcl file)
 endif
 
-TCL_FILE = $(TOOL).tcl
+TCL_FILE           = $(TOOL).tcl
 
-ISE_TCL          = xtclsh $(TCL_FILE)
-ISE_TCL_CON      = xtclsh
-ISE_GUI          = ise ise.xise
+ISE_TCL            = xtclsh $(TCL_FILE)
+ISE_TCL_CON        = xtclsh
+ISE_GUI            = ise ise.xise
+ISE_CLEAN          = _ngo xst xlnx_auto_0_xdb _xmsgs *.bgn *.bld *.cmd_log  \
+                     *.csv *.html *.lso *.map *.mrp *.ncd *.ngc *.ngd *.ngm \
+                     *.ngr *.pad *.par *.pcf *.prj *.ptwx *.stx *.syr *.twr \
+                     *.twx *.unroutes *.ut *.txt *.xml *.xpi *.xrpt *.xst
+ISE_CLEAN_ALL      = $(ISE_CLEAN) *.log *.gise *.xise
 
-VIVADO_TCL       = vivado -mode batch -notrace -source $(TCL_FILE) -tclargs
-VIVADO_TCL_CON   = vivado -mode tcl
-VIVADO_GUI       = vivado temp-vivado/vivado.xpr
+VIVADO_TCL         = vivado -mode batch -notrace -source $(TCL_FILE) -tclargs
+VIVADO_TCL_CON     = vivado -mode tcl
+VIVADO_GUI         = vivado temp-vivado/vivado.xpr
+VIVADO_CLEAN       =
+VIVADO_CLEAN_ALL   = $(VIVADO_CLEAN)
 
-QUARTUS2_TCL     = quartus_sh --script $(TCL_FILE)
-QUARTUS2_TCL_CON = quartus_sh -s
-QUARTUS2_GUI     = quartus quartus2.qpf
+QUARTUS2_TCL       = quartus_sh --script $(TCL_FILE)
+QUARTUS2_TCL_CON   = quartus_sh -s
+QUARTUS2_GUI       = quartus quartus2.qpf
+QUARTUS2_CLEAN     =
+QUARTUS2_CLEAN_ALL = $(QUARTUS2_CLEAN)
 
 ifeq ($(TOOL),ise)
-   TCL_CMD  = $(ISE_TCL)
-   TCL_CON  = $(ISE_TCL_CON)
-   GUI_CMD  = $(ISE_GUI)
+   TCL_CMD   = $(ISE_TCL)
+   TCL_CON   = $(ISE_TCL_CON)
+   GUI_CMD   = $(ISE_GUI)
+   CLEAN     = $(ISE_CLEAN)
+   CLEAN_ALL = $(ISE_CLEAN_ALL)
 else ifeq ($(TOOL),vivado)
-   TCL_CMD  = $(VIVADO_TCL)
-   TCL_CON  = $(VIVADO_TCL_CON)
-   GUI_CMD  = $(VIVADO_GUI)
+   TCL_CMD   = $(VIVADO_TCL)
+   TCL_CON   = $(VIVADO_TCL_CON)
+   GUI_CMD   = $(VIVADO_GUI)
+   CLEAN     = $(VIVADO_CLEAN)
+   CLEAN_ALL = $(VIVADO_CLEAN_ALL)
 else ifeq ($(TOOL),quartus2)
-   TCL_CMD  = $(QUARTUS2_TCL)
-   TCL_CON  = $(QUARTUS2_TCL_CON)
-   GUI_CMD  = $(QUARTUS2_GUI)
+   TCL_CMD   = $(QUARTUS2_TCL)
+   TCL_CON   = $(QUARTUS2_TCL_CON)
+   GUI_CMD   = $(QUARTUS2_GUI)
+   CLEAN     = $(QUARTUS2_CLEAN)
+   CLEAN_ALL = $(QUARTUS2_CLEAN_ALL)
 else
    $(error TOOL is unsupported [ise, vivado, quartus2])
 endif
@@ -79,39 +94,42 @@ all help:
 	@echo "  * The supported vendorTool values are: ise, vivado, quartus2"
 
 syn:
-	$(TCL_CMD) -tool $(TOOL) -run syn
+	$(TCL_CMD) -run syn
 syn-area:
-	$(TCL_CMD) -tool $(TOOL) -run syn -opt area
+	$(TCL_CMD) -run syn -opt area
 syn-speed:
-	$(TCL_CMD) -tool $(TOOL) -run syn -opt speed
+	$(TCL_CMD) -run syn -opt speed
 syn-power:
-	$(TCL_CMD) -tool $(TOOL) -run syn -opt power
+	$(TCL_CMD) -run syn -opt power
 
 imp:
-	$(TCL_CMD) -tool $(TOOL) -run imp
+	$(TCL_CMD) -run imp
 imp-area:
-	$(TCL_CMD) -tool $(TOOL) -run imp -opt area
+	$(TCL_CMD) -run imp -opt area
 imp-speed:
-	$(TCL_CMD) -tool $(TOOL) -run imp -opt speed
+	$(TCL_CMD) -run imp -opt speed
 imp-power:
-	$(TCL_CMD) -tool $(TOOL) -run imp -opt power
+	$(TCL_CMD) -run imp -opt power
 
 bit:
-	$(TCL_CMD) -tool $(TOOL) -run bit
+	$(TCL_CMD) -run bit
 bit-area:
-	$(TCL_CMD) -tool $(TOOL) -run bit -opt area
+	$(TCL_CMD) -run bit -opt area
 bit-speed:
-	$(TCL_CMD) -tool $(TOOL) -run bit -opt speed
+	$(TCL_CMD) -run bit -opt speed
 bit-power:
-	$(TCL_CMD) -tool $(TOOL) -run bit -opt power
+	$(TCL_CMD) -run bit -opt power
 
 clean:
-	$(TCL_CMD) -tool $(TOOL) -run clean
+	@rm -fr $(CLEAN)
 
 clean-all:
-	$(ISE_TCL) -tool ise -run clean
-	$(VIVADO_TCL) -tool vivado -run clean
-	$(QUARTUS2_TCL) -tool quartus2 -run clean
+	@rm -fr $(CLEAN_ALL)
+
+total-clean:
+	@rm -fr $(ISE_CLEAN_ALL)
+	@rm -fr $(VIVADO_CLEAN_ALL)
+	@rm -fr $(QUARTUS2_CLEAN_ALL)
 
 console:
 	$(TCL_CON)

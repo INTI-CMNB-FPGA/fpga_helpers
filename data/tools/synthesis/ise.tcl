@@ -37,12 +37,12 @@ proc cmdLineParser {TOOL} {
 
    set ERROR ""
 
-   if {$opts(run)!="syn" && $opts(run)!="imp" && $opts(run)!="bit"} {
-      append ERROR "<$opts(run)> is not a supported RUN option.\n"
+   if {$options(run)!="syn" && $options(run)!="imp" && $options(run)!="bit"} {
+      append ERROR "<$options(run)> is not a supported RUN option.\n"
    }
 
-   if {$opts(opt)!="user" && $opts(opt)!="area" && $opts(opt)!="power" && $opts(opt)!="speed"} {
-      append ERROR "<$opts(opt)> is not a supported OPTimization.\n"
+   if {$options(opt)!="user" && $options(opt)!="area" && $options(opt)!="power" && $options(opt)!="speed"} {
+      append ERROR "<$options(opt)> is not a supported OPTimization.\n"
    }
 
    if {$ERROR != ""} {
@@ -59,16 +59,13 @@ proc cmdLineParser {TOOL} {
 ###################################################################################################
 
 array set options [cmdLineParser "Xilinx ISE"]
-set  RUN   $opts(run)
-set  OPT   $opts(opt)
-set  ODIR  temp
-file mkdir $ODIR
+set  RUN   $options(run)
+set  OPT   $options(opt)
 
 if { [ file exists ise.xise ] } {
    file delete ise.xise
 }
 project new ise.xise
-project set "Work Directory" $ODIR/xst
 
 switch $OPT {
    "area"  {
