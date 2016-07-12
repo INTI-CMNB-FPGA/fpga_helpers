@@ -88,9 +88,11 @@ all help:
 	@echo "  * imp-area, imp-power, imp-speed"
 	@echo "  * bit-area, bit-power, bit-speed"
 	@echo "* Others:"
-	@echo "  * clean:   to delete generated files"
-	@echo "  * console: to lunch the Tcl Console of the vendor Tool"
-	@echo "  * gui:     to lunch the Gui of the vendor Tool"
+	@echo "  * clean:       to delete generated files (excluding project files)"
+	@echo "  * clean-all:   to delete all the generated files"
+	@echo "  * clean-multi: to delete generated files for all the vendors"
+	@echo "  * console:     to lunch the Tcl Console of the vendor Tool"
+	@echo "  * gui:         to lunch the Gui of the vendor Tool"
 	@echo "* Tools:"
 	@echo "  * To specify use TOOL=<vendorTool> when do make"
 	@echo "  * The supported vendorTool values are: ise, vivado, quartus2"
@@ -128,7 +130,7 @@ clean:
 clean-all:
 	@rm -fr $(CLEAN_ALL)
 
-total-clean:
+clean-multi:
 	@rm -fr $(ISE_CLEAN_ALL)
 	@rm -fr $(VIVADO_CLEAN_ALL)
 	@rm -fr $(QUARTUS2_CLEAN_ALL)

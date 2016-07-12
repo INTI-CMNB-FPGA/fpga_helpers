@@ -85,25 +85,35 @@ array set options [cmdLineParser "Altera Quartus2"]
 set  RUN   $options(run)
 set  OPT   $options(opt)
 
-project_new quartus2 -overwrite
-
-switch $OPT {
-   "area"  {
-      set_global_assignment -name OPTIMIZATION_MODE "AGGRESSIVE AREA"
-      set_global_assignment -name OPTIMIZATION_TECHNIQUE AREA
-   }
-   "power" {
-      set_global_assignment -name OPTIMIZATION_MODE "AGGRESSIVE POWER"
-      set_global_assignment -name OPTIMIZE_POWER_DURING_SYNTHESIS "EXTRA EFFORT"
-      set_global_assignment -name OPTIMIZE_POWER_DURING_FITTING "EXTRA EFFORT"
-   }
-   "speed" {
-      set_global_assignment -name OPTIMIZATION_MODE "AGGRESSIVE PERFORMANCE"
-      set_global_assignment -name OPTIMIZATION_TECHNIQUE SPEED
-   }
+if { [ file exists quartus2.qpf ] } {
+   file delete quartus2.qpf
 }
 
-source options.tcl
+set project_file [glob -nocomplain *.qpf]
+
+if { $project_file != "" } {
+   puts "Using Quartus2 project ($project_file)"
+   project_open -force $project_file
+} else {
+   puts "Creating a new project (quartus2.qpf)"
+   project_new quartus2 -overwrite
+   switch $OPT {
+      "area"  {
+         set_global_assignment -name OPTIMIZATION_MODE "AGGRESSIVE AREA"
+         set_global_assignment -name OPTIMIZATION_TECHNIQUE AREA
+      }
+      "power" {
+         set_global_assignment -name OPTIMIZATION_MODE "AGGRESSIVE POWER"
+         set_global_assignment -name OPTIMIZE_POWER_DURING_SYNTHESIS "EXTRA EFFORT"
+         set_global_assignment -name OPTIMIZE_POWER_DURING_FITTING "EXTRA EFFORT"
+      }
+      "speed" {
+         set_global_assignment -name OPTIMIZATION_MODE "AGGRESSIVE PERFORMANCE"
+         set_global_assignment -name OPTIMIZATION_TECHNIQUE SPEED
+      }
+   }
+   source options.tcl
+}
 
 if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
    execute_module -tool map

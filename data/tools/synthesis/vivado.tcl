@@ -84,50 +84,60 @@ array set options [cmdLineParser "Xilinx Vivado"]
 set  RUN   $options(run)
 set  OPT   $options(opt)
 
-create_project -force vivado
-
-switch $OPT {
-   "area"  {
-      set obj [get_runs synth_1]
-      set_property strategy "Flow_AreaOptimized_high"                       $obj
-      set_property "steps.synth_design.args.directive" "AreaOptimized_high" $obj
-      set_property "steps.synth_design.args.control_set_opt_threshold" "1"  $obj
-
-      set obj [get_runs impl_1]
-      set_property strategy "Area_Explore"                                  $obj
-      set_property "steps.opt_design.args.directive" "ExploreArea"          $obj
-   }
-   "power" {
-      #enable power_opt_design and phys_opt_design
-      set obj [get_runs synth_1]
-      set_property strategy "Vivado Synthesis Defaults"                     $obj
-
-      set obj [get_runs impl_1]
-      set_property strategy "Power_DefaultOpt"                              $obj
-      set_property "steps.power_opt_design.is_enabled" "1"                  $obj
-      set_property "steps.phys_opt_design.is_enabled" "1"                   $obj
-   }
-   "speed" {
-      #enable phys_opt_design
-      set obj [get_runs synth_1]
-      set_property strategy "Flow_PerfOptimized_high"                       $obj
-      set_property "steps.synth_design.args.fanout_limit" "400"             $obj
-      set_property "steps.synth_design.args.keep_equivalent_registers" "1"  $obj
-      set_property "steps.synth_design.args.resource_sharing" "off"         $obj
-      set_property "steps.synth_design.args.no_lc" "1"                      $obj
-      set_property "steps.synth_design.args.shreg_min_size" "5"             $obj
-
-      set obj [get_runs impl_1]
-      set_property strategy "Performance_Explore"                           $obj
-      set_property "steps.opt_design.args.directive" "Explore"              $obj
-      set_property "steps.place_design.args.directive" "Explore"            $obj
-      set_property "steps.phys_opt_design.is_enabled" "1"                   $obj
-      set_property "steps.phys_opt_design.args.directive" "Explore"         $obj
-      set_property "steps.route_design.args.directive" "Explore"            $obj
-   }
+if { [ file exists vivado.xpr ] } {
+   file delete vivado.xpr
 }
 
-source options.tcl
+set project_file [glob -nocomplain *.xpr]
+
+if { $project_file != "" && $project_file != "ise.xise" } {
+   puts "Using Vivado project ($project_file)"
+   open_project $project_file
+} else {
+   puts "Creating a new project (vivado.xpr)"
+   create_project -force vivado
+   switch $OPT {
+      "area"  {
+         set obj [get_runs synth_1]
+         set_property strategy "Flow_AreaOptimized_high"                       $obj
+         set_property "steps.synth_design.args.directive" "AreaOptimized_high" $obj
+         set_property "steps.synth_design.args.control_set_opt_threshold" "1"  $obj
+
+         set obj [get_runs impl_1]
+         set_property strategy "Area_Explore"                                  $obj
+         set_property "steps.opt_design.args.directive" "ExploreArea"          $obj
+      }
+      "power" {
+         #enable power_opt_design and phys_opt_design
+         set obj [get_runs synth_1]
+         set_property strategy "Vivado Synthesis Defaults"                     $obj
+
+         set obj [get_runs impl_1]
+         set_property strategy "Power_DefaultOpt"                              $obj
+         set_property "steps.power_opt_design.is_enabled" "1"                  $obj
+         set_property "steps.phys_opt_design.is_enabled" "1"                   $obj
+      }
+      "speed" {
+         #enable phys_opt_design
+         set obj [get_runs synth_1]
+         set_property strategy "Flow_PerfOptimized_high"                       $obj
+         set_property "steps.synth_design.args.fanout_limit" "400"             $obj
+         set_property "steps.synth_design.args.keep_equivalent_registers" "1"  $obj
+         set_property "steps.synth_design.args.resource_sharing" "off"         $obj
+         set_property "steps.synth_design.args.no_lc" "1"                      $obj
+         set_property "steps.synth_design.args.shreg_min_size" "5"             $obj
+
+         set obj [get_runs impl_1]
+         set_property strategy "Performance_Explore"                           $obj
+         set_property "steps.opt_design.args.directive" "Explore"              $obj
+         set_property "steps.place_design.args.directive" "Explore"            $obj
+         set_property "steps.phys_opt_design.is_enabled" "1"                   $obj
+         set_property "steps.phys_opt_design.args.directive" "Explore"         $obj
+         set_property "steps.route_design.args.directive" "Explore"            $obj
+      }
+   }
+   source options.tcl
+}
 
 if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
    launch_runs synth_1

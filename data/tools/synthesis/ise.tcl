@@ -130,24 +130,31 @@ set  OPT   $options(opt)
 if { [ file exists ise.xise ] } {
    file delete ise.xise
 }
-project new ise.xise
 
-switch $OPT {
-   "area"  {
-      project set "Optimization Goal" "Area"
+set project_file [glob -nocomplain *.xise]
+
+if { $project_file != "" && $project_file != "ise.xise" } {
+   puts "Using ISE project ($project_file)"
+   project open $project_file
+} else {
+   puts "Creating a new project (ise.xise)"
+   project new ise.xise
+   switch $OPT {
+      "area"  {
+         project set "Optimization Goal" "Area"
+      }
+      "power" {
+         project set "Optimization Goal" "Area"
+         project set "Power Reduction"   "true" -process "Synthesize - XST"
+         project set "Power Reduction"   "high" -process "Map"
+         project set "Power Reduction"   "true" -process "Place & Route"
+      }
+      "speed" {
+         project set "Optimization Goal" "Speed"
+      }
    }
-   "power" {
-      project set "Optimization Goal" "Area"
-      project set "Power Reduction"   "true" -process "Synthesize - XST"
-      project set "Power Reduction"   "high" -process "Map"
-      project set "Power Reduction"   "true" -process "Place & Route"
-   }
-   "speed" {
-      project set "Optimization Goal" "Speed"
-   }
+   source options.tcl
 }
-
-source options.tcl
 
 if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
    process run "Synthesize"    -force rerun
