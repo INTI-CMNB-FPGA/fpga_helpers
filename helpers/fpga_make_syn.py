@@ -31,7 +31,7 @@ from fpga_lib import *
 
 ## Parsing the command line ###################################################
 
-version = 'FPGA Synt (FPGA Helpers) v' + getVersion(share_dir)
+version = 'FPGA Make Syn (FPGA Helpers) v' + getVersion(share_dir)
 
 boards = []
 getBoards(boards, share_dir)
@@ -66,7 +66,7 @@ options = parser.parse_args()
 
 print (__file__ + '(INFO): ' + version)
 
-fpga_prog_text = "# No <board> specified.";
+fpga_prog_text = "# No <board> specified.\n";
 if options.board is not None:
    if options.tool == 'all':
       sys.exit(
@@ -107,7 +107,9 @@ if options.tool != 'all':
 else:
    for filename in glob.glob(share_dir + '/data/tools/synthesis/*.tcl'):
        shutil.copy(filename, '.')
+       file(os.path.basename(filename),'a').write("\n# Created with " + version)
 shutil.copy(share_dir + '/data/tools/synthesis/Makefile', '.')
 file('Makefile','a').write(fpga_prog_text)
+file('Makefile','a').write("\n# Created with " + version)
 
 print (__file__ + '(INFO): files were created.')
