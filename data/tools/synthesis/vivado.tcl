@@ -74,7 +74,7 @@ proc fpga_file {FILE {OPT ""} {LIBRARY ""}} {
 
 proc fpga_top {TOP} { set_property top $TOP [current_fileset] }
 
-proc fpga_get_tool {} { return "vivado" }
+set FPGA_TOOL "vivado"
 
 ###################################################################################################
 # Main                                                                                            #

@@ -106,16 +106,18 @@ proc fpga_device {FPGA OPT TOOL} {
 proc fpga_file {FILE {OPT ""} {LIBRARY ""}} {
    if {$OPT=="-lib"} {
       lib_vhdl new $LIBRARY
-   } elseif {$OPT != ""} {
+      xfile add $FILE -lib_vhdl $LIBRARY
+   } elseif {$OPT == ""} {
+      xfile add $FILE
+   } else {
          puts "Second argument (if present) could be only -lib."
          exit 1
    }
-   xfile add $FILE -lib_vhdl $LIBRARY
 }
 
 proc fpga_top {TOP} { project set top $TOP }
 
-proc fpga_get_tool {} { return "ise" }
+set FPGA_TOOL "ise"
 
 ###################################################################################################
 # Main                                                                                            #

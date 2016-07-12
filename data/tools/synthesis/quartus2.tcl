@@ -75,7 +75,7 @@ proc fpga_file {FILE {OPT ""} {LIBRARY ""}} {
 
 proc fpga_top {TOP} { set_global_assignment -name TOP_LEVEL_ENTITY $TOP}
 
-proc fpga_get_tool {} { return "quartus2" }
+set FPGA_TOOL "quartus2"
 
 ###################################################################################################
 # Main                                                                                            #
