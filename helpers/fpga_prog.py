@@ -55,8 +55,8 @@ parser.add_argument(
    '-t', '--tool',
    metavar='NAME',
    default=None,
-   choices=['ise'],
-   help='NAME of the vendor tool to be used [ise]'
+   choices=['ise','quartus2'],
+   help='NAME of the vendor tool to be used [ise (default)|quartus2]'
 )
 
 devices = parser.add_argument_group('device arguments')
@@ -173,4 +173,9 @@ if options.tool == 'ise':
       os.environ['LD_PRELOAD'] = str(lib)
       print (__file__ + '(INFO): <' + lib + '> exists.')
    command = 'impact -batch ' + batch
-   os.system(command)
+if options.tool == 'quartus2':
+   command  = "jtagconfig; "
+   command += "quartus_pgm -c USB-blaster --mode jtag -o "
+   command += "'p;" + options.bit + "@" + str(options.position) + "'"
+   print command
+os.system(command)

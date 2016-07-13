@@ -7,6 +7,7 @@ v0.1.1:
   * fpga_make_syn.py: copy Tcl files and Makefile to the current directory.
   * fpga_prog.py: transfer a bitstream.
     * Supports ISE impact (transfer to fpga, spi, bpi and one xcf).
+    * Supports Quartus2 (transfer to fpga).
 
 v0.1.0:
 * Includes a Tcl script and Makefile to work with FPGA Tools in a Vendor Independent way.
