@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os, yaml
+import os
 
 def getVersion(install_dir):
     return file(install_dir + '/VERSION', 'r').read().strip()
@@ -29,3 +29,16 @@ def getBoards(boards, install_dir):
               boards.append(os.path.splitext(file)[0])
     else:
        boards.append('there are no files installed in the system.')
+
+def getTextProg(options, template):
+    name = os.path.basename(options.bit)
+    name = os.path.splitext(name)[0]
+    text = file(template, 'r').read()
+    text = text.replace('[BITSTREAM]' , str(options.bit))
+    text = text.replace('[MCSFILE]'   , str(options.output_dir + '/' + name + '.mcs'))
+    text = text.replace('[MEMNAME]'   , str(options.memname))
+    text = text.replace('[NAME]'      , str(name))
+    text = text.replace('[PATH]'      , str(options.output_dir))
+    text = text.replace('[POSITION]'  , str(options.position))
+    text = text.replace('[WIDTH]'     , str(options.width))
+    return text

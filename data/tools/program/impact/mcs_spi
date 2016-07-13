@@ -1,0 +1,7 @@
+setMode -pff
+addConfigDevice -name "[NAME]" -path "[PATH]"
+setSubmode -pffspi
+addDesign -version 0 -name "0"
+addDeviceChain -index 0
+addDevice -p 1 -file "[BITSTREAM]"
+generate -generic
