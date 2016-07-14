@@ -4,6 +4,7 @@ if [ $# -eq 1 ] && [ $1 == "clean" ]; then
    rm -fr Makefile Makefile.in install-sh missing
    rm -fr aclocal.m4 autom4te.cache config.* configure fpga-helpers-*
    rm -fr src/Makefile src/Makefile.in
+   git checkout ChangeLog
 else
    echo "Running autoreconf (autotools)..."
    autoreconf -i -f

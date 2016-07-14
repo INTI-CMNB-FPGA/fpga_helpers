@@ -1,0 +1,29 @@
+#!/usr/bin/make
+
+VERSION=$(shell grep -oP '\d\.\d\.\d-?d?e?v?' ../configure.ac)
+PACKAGE=fpga-helpers-$(VERSION)
+
+# Initial debian directory created in uncompressed directory $(PACKAGE) with:
+# $ dh_make --copyright gpl3  --single --createorig
+
+all: deb
+
+new:
+	dch -v $(VERSION)-1 --distribution stable --controlmaint
+
+edit:
+	dch -e
+
+deb:
+	@echo "Making dist..."
+	cd ..; ./bootstrap; ./configure; make; make dist
+	@echo "Uncompressing dist..."
+	tar -zxvf ../$(PACKAGE).tar.gz
+	mv ../$(PACKAGE).tar.gz fpga-helpers_$(VERSION).orig.tar.gz
+	@echo "Coping debian dir..."
+	cp -R debian $(PACKAGE)
+	@echo "Making the deb file..."
+	cd $(PACKAGE); dpkg-buildpackage -us -uc
+
+clean:
+	rm -fr fpga-helpers*

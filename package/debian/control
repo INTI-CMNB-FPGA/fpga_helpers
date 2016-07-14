@@ -1,0 +1,16 @@
+Source: fpga-helpers
+Section: devel
+Priority: optional
+Maintainer: Rodrigo Alejandro Melo <rodrigomelo9@gmail.com>
+Build-Depends: debhelper (>= 9), autotools-dev
+Standards-Version: 3.9.5
+#Homepage: <insert the upstream URL, if relevant>
+#Vcs-Git: git://anonscm.debian.org/collab-maint/fpga-helpers.git
+#Vcs-Browser: http://anonscm.debian.org/?p=collab-maint/fpga-helpers.git;a=summary
+
+Package: fpga-helpers
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-yaml
+Description: Scripts to develop with FPGAs in a vendor independent way
+ A bunch of scripts (wrappers and helpers) to use FPGA development tools
+ in a vendor independent way.
