@@ -1,5 +1,4 @@
-#AUTOMAKE_OPTIONS = foreign
-SUBDIRS           = helpers
+SUBDIRS           = src
 doc_DATA          = README NEWS
 dist_pkgdata_DATA = VERSION
 EXTRA_DIST        = data doc test

@@ -21,7 +21,7 @@ import argparse, yaml, os, sys
 
 bin_dir = os.path.dirname(os.path.abspath(__file__))
 if os.path.exists(bin_dir + '/..' + '/data'):
-   lib_dir   = bin_dir + '/../helpers'
+   lib_dir   = bin_dir + '/../src'
    share_dir = bin_dir + '/..'
 else:
    lib_dir   = bin_dir + '../lib/fpga-helpers'
