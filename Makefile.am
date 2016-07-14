@@ -29,7 +29,3 @@ dist-hook:
 		echo A git clone is required to generate a ChangeLog >&2; \
 	fi
 
-clean-local:
-	make -C helpers clean
-	rm -fr Makefile Makefile.in install-sh missing
-	rm -fr aclocal.m4 autom4te.cache config.* configure fpga-helpers-*
