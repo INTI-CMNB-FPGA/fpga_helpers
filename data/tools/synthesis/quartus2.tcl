@@ -63,10 +63,18 @@ proc fpga_device {FPGA OPT TOOL} {
 }
 
 proc fpga_file {FILE {OPT ""} {LIBRARY ""}} {
+   regexp -nocase {\.(\w*)$} $FILE -> ext
+   if {$ext == "v"} {
+      set TYPE VERILOG_FILE
+   } elseif {$ext == "sv"} {
+      set TYPE SYSTEMVERILOG_FILE
+   } else {
+      set TYPE VHDL_FILE
+   }
    if {$OPT=="-lib"} {
-      set_global_assignment -name VHDL_FILE $FILE -library $LIBRARY
+      set_global_assignment -name $TYPE $FILE -library $LIBRARY
    } elseif {$OPT == ""} {
-      set_global_assignment -name VHDL_FILE $FILE
+      set_global_assignment -name $TYPE $FILE
    } else {
          puts "Second argument (if present) could be only -lib."
          exit 1
