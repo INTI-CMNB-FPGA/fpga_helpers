@@ -59,24 +59,23 @@ ifeq ($(TOOL),ise)
    GUI_CMD   = $(ISE_GUI)
    CLEAN     = $(ISE_CLEAN)
    CLEAN_ALL = $(ISE_CLEAN_ALL)
-   BITFILE   = ise.bit
 else ifeq ($(TOOL),vivado)
    TCL_CMD   = $(VIVADO_TCL)
    TCL_CON   = $(VIVADO_TCL_CON)
    GUI_CMD   = $(VIVADO_GUI)
    CLEAN     = $(VIVADO_CLEAN)
    CLEAN_ALL = $(VIVADO_CLEAN_ALL)
-   BITFILE   = vivado.bit
 else ifeq ($(TOOL),quartus2)
    TCL_CMD   = $(QUARTUS2_TCL)
    TCL_CON   = $(QUARTUS2_TCL_CON)
    GUI_CMD   = $(QUARTUS2_GUI)
    CLEAN     = $(QUARTUS2_CLEAN)
    CLEAN_ALL = $(QUARTUS2_CLEAN_ALL)
-   BITFILE   = quartus2.sof
 else
    $(error TOOL is unsupported [ise, vivado, quartus2])
 endif
+
+BITFILE = $(wildcard *.bit *.sof *.pof)
 
 ###############################################################################
 

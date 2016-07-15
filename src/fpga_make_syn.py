@@ -87,14 +87,14 @@ if options.board is not None:
       fpga_prog_text = "";
       for device in sorted(board):
           if device == 'fpga':
-             fpga_prog_text += 'prog-fpga: $(BITFILE)\n\tfpga_prog --board=' + \
-                               options.board + ' --device=fpga $<\n'
+             fpga_prog_text += 'prog-fpga:\n\tfpga_prog --board=' + \
+                               options.board + ' --device=fpga $(firstword $(BITFILE))\n'
           if device == 'spi':
-             fpga_prog_text += 'prog-spi: $(BITFILE)\n\tfpga_prog --board=' + \
-                               options.board + ' --device=spi $<\n'
+             fpga_prog_text += 'prog-spi:\n\tfpga_prog --board=' + \
+                               options.board + ' --device=spi  $(firstword $(BITFILE))\n'
           if device == 'bpi':
-             fpga_prog_text += 'prog-bpi: $(BITFILE)\n\tfpga_prog --board=' + \
-                               options.board + ' --device=bpi $<\n'
+             fpga_prog_text += 'prog-bpi:\n\tfpga_prog --board=' + \
+                               options.board + ' --device=bpi  $(firstword $(BITFILE))\n'
 
 ## Generating files ###########################################################
 
