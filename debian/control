@@ -10,7 +10,7 @@ Standards-Version: 3.9.5
 
 Package: fpga-helpers
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, python-yaml
+Depends: python-yaml
 Description: Scripts to develop with FPGAs in a vendor independent way
  A bunch of scripts (wrappers and helpers) to use FPGA development tools
  in a vendor independent way.

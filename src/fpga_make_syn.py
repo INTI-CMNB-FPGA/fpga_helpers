@@ -20,12 +20,12 @@
 import argparse, yaml, os, sys, shutil, glob
 
 bin_dir = os.path.dirname(os.path.abspath(__file__))
-if os.path.exists(bin_dir + '/..' + '/data'):
-   lib_dir   = bin_dir + '/../src'
+if os.path.exists(bin_dir + '/../data'):
    share_dir = bin_dir + '/..'
+   lib_dir   = bin_dir
 else:
-   lib_dir   = bin_dir + '../lib/fpga-helpers'
-   share_dir = bin_dir + '../share/fpga-helpers'
+   share_dir = bin_dir + '/../share/fpga-helpers'
+   lib_dir   = share_dir
 
 sys.path.insert(0, lib_dir)
 from fpga_lib import *
