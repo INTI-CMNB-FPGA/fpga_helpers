@@ -50,15 +50,17 @@ parser.add_argument(
 
 parser.add_argument(
    'tool',
-   metavar='TOOL',
+   metavar='TOOLNAME',
+   default='ise',
+   nargs='?',
    choices=['ise','vivado','quartus2','all'],
-   help='NAME of the vendor tool to be used [ise|vivado|quartus2|all]'
+   help='Name of the vendor tool to be used [ise|vivado|quartus2|all]'
 )
 
 parser.add_argument(
    '-b', '--board',
-   metavar='NAME|FILE',
-   help='NAME of a supported board or FILE (.yaml) of a new/custom board '
+   metavar='BOARDNAME|BOARDFILE',
+   help='Name of a supported board or file (.yaml) of a new/custom board '
 )
 
 options = parser.parse_args()
@@ -69,11 +71,6 @@ print (__file__ + '(INFO): ' + version)
 
 fpga_prog_text = "# No <board> specified.\n";
 if options.board is not None:
-   if options.tool == 'all':
-      sys.exit(
-         __file__ +
-         '(ERROR): value <all> for option <tool> is not allowed when <board> is specified.'
-      )
    if options.board.endswith(".yaml"):
       path = options.board
    else:
@@ -82,23 +79,22 @@ if options.board is not None:
       board = yaml.load(file(path, 'r'))
    else:
       sys.exit(__file__ + '(ERROR): <board> ' + options.board + ' not exists.')
-   if not options.tool in board['tool']['synt']:
-      sys.exit(
-         __file__ + '(ERROR): <board> ' + options.board +
-         ' is not supported by the <tool> ' + options.tool + '.'
-      )
+   if 'prog' in board['tool']:
+      print (__file__ + '(INFO): <tool> was taken from the board file.')
+      options.tool = board['tool']['prog'][0]
    # fpga_prog alternatives
-   fpga_prog_text = "";
-   for device in sorted(board):
-       if device == 'fpga':
-          fpga_prog_text += 'prog-fpga: $(BITFILE)\n\tfpga_prog --board=' + \
-                            options.board + ' --device=fpga $<\n'
-       if device == 'spi':
-          fpga_prog_text += 'prog-spi: $(BITFILE)\n\tfpga_prog --board=' + \
-                            options.board + ' --device=spi $<\n'
-       if device == 'bpi':
-          fpga_prog_text += 'prog-bpi: $(BITFILE)\n\tfpga_prog --board=' + \
-                            options.board + ' --device=bpi $<\n'
+   if options.tool != 'all':
+      fpga_prog_text = "";
+      for device in sorted(board):
+          if device == 'fpga':
+             fpga_prog_text += 'prog-fpga: $(BITFILE)\n\tfpga_prog --board=' + \
+                               options.board + ' --device=fpga $<\n'
+          if device == 'spi':
+             fpga_prog_text += 'prog-spi: $(BITFILE)\n\tfpga_prog --board=' + \
+                               options.board + ' --device=spi $<\n'
+          if device == 'bpi':
+             fpga_prog_text += 'prog-bpi: $(BITFILE)\n\tfpga_prog --board=' + \
+                               options.board + ' --device=bpi $<\n'
 
 ## Generating files ###########################################################
 

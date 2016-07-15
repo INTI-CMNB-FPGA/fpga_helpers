@@ -18,10 +18,10 @@
 #
 ###############################################################################
 
-ifneq ("$(wildcard vivado.tcl)","")
-   TOOL = vivado
-else ifneq ("$(wildcard ise.tcl)","")
+ifneq ("$(wildcard ise.tcl)","")
    TOOL = ise
+else ifneq ("$(wildcard vivado.tcl)","")
+   TOOL = vivado
 else ifneq ("$(wildcard quartus2.tcl)","")
    TOOL = quartus2
 else

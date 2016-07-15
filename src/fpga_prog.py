@@ -49,24 +49,24 @@ parser.add_argument(
 )
 parser.add_argument(
    'bit',
-   metavar='FILE.bit',
+   metavar='BITSTREAM',
    help='BitStream to be transferred'
 )
 parser.add_argument(
    '-t', '--tool',
-   metavar='NAME',
-   default=None,
+   metavar='TOOLNAME',
+   default='ise',
    choices=['ise','quartus2'],
-   help='NAME of the vendor tool to be used [ise (default)|quartus2]'
+   help='Name of the vendor tool to be used [ise |quartus2]'
 )
 
 devices = parser.add_argument_group('device arguments')
 devices.add_argument(
    '-d', '--device',
-   metavar='TYPE',
+   metavar='DEVICE',
    default='fpga',
    choices=['fpga', 'spi', 'bpi', 'xcf', 'detect', 'unlock'],
-   help='TYPE of the target device [fpga(default)|spi|bpi|xcf|detect|unlock]'
+   help='Type of the target device [fpga(default)|spi|bpi|xcf|detect|unlock]'
 )
 devices.add_argument(
    '-p', '--position',
@@ -78,9 +78,9 @@ devices.add_argument(
 )
 devices.add_argument(
    '-m', '--memname',
-   metavar='NAME',
+   metavar='MEMNAME',
    default='UNDEFINED',
-   help='NAME of the target memory (when applicable) [UNDEFINED]'
+   help='Name of the target memory (when applicable) [UNDEFINED]'
 )
 devices.add_argument(
    '-w', '--width',
@@ -93,9 +93,9 @@ devices.add_argument(
 )
 devices.add_argument(
    '-b', '--board',
-   metavar='NAME|FILE',
-   help='NAME of a supported board or FILE (.yaml) of a new/custom board ' +
-        '(note: if you use the board option, -p, -m and -w could be ' +
+   metavar='BOARDNAME|BOARDFILE',
+   help='Name of a supported board or file (.yaml) of a new/custom board ' +
+        '(note: if you use the board option, -p, -m, -w and -t will be ' +
         'overwritten) []'
 )
 
@@ -115,17 +115,12 @@ if options.board is not None:
       board = yaml.load(file(path, 'r'))
    else:
       sys.exit(__file__ + '(ERROR): board <' + options.board + '> not exists.')
-   if not options.tool in board['tool']['prog']:
-      sys.exit(
-         __file__ + '(ERROR): <board> ' + options.board +
-         ' is not supported by the <tool> ' + options.tool + '.'
-      )
    if options.device not in board:
       sys.exit(__file__ + '(ERROR): the device <' + options.device + '> is not ' +
                           'supported in the board <' + options.board + '>.')
-   if options.tool is None and 'prog' in board['tool']:
+   if 'prog' in board['tool']:
       print (__file__ + '(INFO): <tool> was taken from the board file.')
-      options.tool = board['tool']['prog']
+      options.tool = board['tool']['prog'][0]
    if 'position' in board[options.device][0]:
       print (__file__ + '(INFO): <position> was taken from the board file.')
       options.position = board[options.device][0]['position']
@@ -135,9 +130,6 @@ if options.board is not None:
    if 'width' in board[options.device][0]:
       print (__file__ + '(INFO): <width> was taken from the board file.')
       options.width = board[options.device][0]['width']
-
-if options.tool is None:
-   options.tool = 'ise'
 
 if not os.path.exists(options.output_dir):
    os.makedirs(options.output_dir)
