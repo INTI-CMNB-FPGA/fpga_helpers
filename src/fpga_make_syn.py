@@ -101,6 +101,7 @@ if options.board is not None:
 if options.tool != 'all':
    shutil.copy(share_dir + '/data/tools/synthesis/options.tcl', '.')
    shutil.copy(share_dir + '/data/tools/synthesis/' + options.tool + '.tcl', '.')
+   file(options.tool + '.tcl','a').write("\n# Created with " + version)
 else:
    for filename in glob.glob(share_dir + '/data/tools/synthesis/*.tcl'):
        shutil.copy(filename, '.')
