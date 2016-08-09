@@ -62,17 +62,19 @@ proc fpga_device {FPGA OPT TOOL} {
    }
 }
 
-proc fpga_file {FILE {OPT ""} {LIBRARY ""}} {
+proc fpga_file {FILE {OPTION ""} {VALUE ""}} {
+   if {$OPTION!="-lib" && $OPTION!="-top"} {
+      puts "Valid options for fpga_file command are -lib and -top."
+      exit 1
+   }
    add_files $FILE
-   if {$OPT=="-lib"} {
-      set_property library $LIBRARY [get_files $FILE]
-   } elseif {$OPT != ""} {
-         puts "Second argument (if present) could be only -lib."
-         exit 1
+   if {$OPTION=="-lib"} {
+      set_property library $VALUE [get_files $FILE]
+   }
+   if {$OPTION=="-top"} {
+      set_property top $VALUE [current_fileset]
    }
 }
-
-proc fpga_top {TOP} { set_property top $TOP [current_fileset] }
 
 set FPGA_TOOL "vivado"
 
@@ -136,30 +138,51 @@ if { $project_file != "" && $project_file != "ise.xise" } {
          set_property "steps.route_design.args.directive" "Explore"            $obj
       }
    }
-   source options.tcl
+   if {[catch {source options.tcl}]} {
+      puts "ERROR: something is wrong in options.tcl"
+      exit 1
+   }
 }
 
 if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
-   launch_runs synth_1
-   wait_on_run synth_1
-   open_run synth_1
-   set UTILIZATION [report_utilization -return_string]
-   set TIMING [report_timing -return_string]
-   writeFile vivado_syn_$OPT.log w $UTILIZATION
-   writeFile vivado_syn_$OPT.log a $TIMING
+   if {[catch {
+      reset_run synth_1
+      launch_runs synth_1
+      wait_on_run synth_1
+      open_run synth_1
+      set UTILIZATION [report_utilization -return_string]
+      set TIMING [report_timing -return_string]
+      writeFile vivado_syn_$OPT.log w $UTILIZATION
+      writeFile vivado_syn_$OPT.log a $TIMING
+   }]} {
+      puts "ERROR: there was a problem running synthesis"
+      exit 1
+   }
 }
+
 if { $RUN=="imp" || $RUN=="bit"} {
-   launch_runs impl_1
-   wait_on_run impl_1
-   open_run impl_1
-   report_io    -file io_imp.rpt
-   report_power -file power_imp.rpt
-   set UTILIZATION [report_utilization -return_string]
-   set TIMING [report_timing -return_string]
-   writeFile vivado_imp_$OPT.log w $UTILIZATION
-   writeFile vivado_imp_$OPT.log a $TIMING
+   if {[catch {
+      launch_runs impl_1
+      wait_on_run impl_1
+      open_run impl_1
+      report_io    -file io_imp.rpt
+      report_power -file power_imp.rpt
+      set UTILIZATION [report_utilization -return_string]
+      set TIMING [report_timing -return_string]
+      writeFile vivado_imp_$OPT.log w $UTILIZATION
+      writeFile vivado_imp_$OPT.log a $TIMING
+   }]} {
+      puts "ERROR: there was a problem running implementation"
+      exit 1
+   }
 }
+
 if {$RUN=="bit"} {
-   launch_run impl_1 -to_step write_bitstream
-   wait_on_run impl_1
+   if {[catch {
+      launch_run impl_1 -to_step write_bitstream
+      wait_on_run impl_1
+   }]} {
+      puts "ERROR: there was a problem generating the bitstream"
+      exit 1
+   }
 }

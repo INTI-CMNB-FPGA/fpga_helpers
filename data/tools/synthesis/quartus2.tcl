@@ -62,7 +62,11 @@ proc fpga_device {FPGA OPT TOOL} {
    }
 }
 
-proc fpga_file {FILE {OPT ""} {LIBRARY ""}} {
+proc fpga_file {FILE {OPTION ""} {VALUE ""}} {
+   if {$OPTION!="-lib" && $OPTION!="-top"} {
+      puts "Valid options for fpga_file command are -lib and -top."
+      exit 1
+   }
    regexp -nocase {\.(\w*)$} $FILE -> ext
    if {$ext == "v"} {
       set TYPE VERILOG_FILE
@@ -71,17 +75,15 @@ proc fpga_file {FILE {OPT ""} {LIBRARY ""}} {
    } else {
       set TYPE VHDL_FILE
    }
-   if {$OPT=="-lib"} {
-      set_global_assignment -name $TYPE $FILE -library $LIBRARY
-   } elseif {$OPT == ""} {
-      set_global_assignment -name $TYPE $FILE
+   if {$OPTION=="-lib"} {
+      set_global_assignment -name $TYPE $FILE -library $VALUE
    } else {
-         puts "Second argument (if present) could be only -lib."
-         exit 1
+      set_global_assignment -name $TYPE $FILE
+   }
+   if {$OPTION=="-top"} {
+      set_global_assignment -name TOP_LEVEL_ENTITY $VALUE
    }
 }
-
-proc fpga_top {TOP} { set_global_assignment -name TOP_LEVEL_ENTITY $TOP}
 
 set FPGA_TOOL "quartus2"
 
@@ -93,9 +95,8 @@ array set options [cmdLineParser "Altera Quartus2"]
 set  RUN   $options(run)
 set  OPT   $options(opt)
 
-if { [ file exists quartus2.qpf ] } {
-   file delete quartus2.qpf
-}
+if { [ file exists quartus2.qpf ] } {file delete quartus2.qpf}
+if { [ file exists quartus2.qsf ] } {file delete quartus2.qsf}
 
 set project_file [glob -nocomplain *.qpf]
 
@@ -120,20 +121,48 @@ if { $project_file != "" } {
          set_global_assignment -name OPTIMIZATION_TECHNIQUE SPEED
       }
    }
-   source options.tcl
+   if {[catch {source options.tcl}]} {
+      puts "ERROR: something is wrong in options.tcl"
+      exit 1
+   }
+}
+
+foreach_in_collection asgn_id [get_all_assignments -type global -name PROJECT_OUTPUT_DIRECTORY] {
+   set ODIR [get_assignment_info $asgn_id -value]
 }
 
 if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
-   execute_module -tool map
-   file copy -force [glob -nocomplain *.map.rpt] quartus2_syn_$OPT.log
+   if {[catch {
+      execute_module -tool map
+   }]} {
+      puts "ERROR: there was a problem running synthesis"
+      exit 1
+   }
+   if { [ file exists [glob -nocomplain $ODIR/*.map.rpt] ] } {
+      file copy -force [glob -nocomplain $ODIR/*.map.rpt] quartus2_syn_$OPT.log
+   }
 }
+
 if { $RUN=="imp" || $RUN=="bit"} {
-   execute_module -tool fit
-   execute_module -tool sta
-   file copy -force [glob -nocomplain *.fit.rpt] quartus2_imp_$OPT.log
+   if {[catch {
+      execute_module -tool fit
+      execute_module -tool sta
+   }]} {
+      puts "ERROR: there was a problem running implementation"
+      exit 1
+   }
+   if { [ file exists [glob -nocomplain $ODIR/*.fit.rpt] ] } {
+      file copy -force [glob -nocomplain $ODIR/*.fit.rpt] quartus2_imp_$OPT.log
+   }
 }
+
 if {$RUN=="bit"} {
-   execute_module -tool asm
+   if {[catch {
+      execute_module -tool asm
+   }]} {
+      puts "ERROR: there was a problem generating the bitstream"
+      exit 1
+   }
 }
 
 project_close

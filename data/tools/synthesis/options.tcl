@@ -1,6 +1,6 @@
 #Function: fpga_device   <FPGA> [-tool <TOOL>]     Return: none
 #Function: fpga_file     <FILE> [-lib <LIBRARY>]   Return: none
-#Function: fpga_top      <TOP>                     Return: none
+#Function: fpga_file     <FILE> [-top <TOPNAME>]   Return: none
 #Constant: $FPGA_TOOL                              Name of the running tool
 
 #dev
@@ -12,8 +12,7 @@ fpga_device "5CGXFC7C7F23C8"    -tool "quartus2"
 #prj
 fpga_file "core_file.vhdl"    -lib "LIB_NAME"
 fpga_file "package_file.vhdl" -lib "LIB_NAME"
-fpga_file "top_file.vhdl"
-fpga_top  "TOP_NAME"
+fpga_file "top_file.vhdl"     -top "TOP_NAME"
 #/prj
 
 #opt

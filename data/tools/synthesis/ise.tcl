@@ -103,19 +103,21 @@ proc fpga_device {FPGA OPT TOOL} {
    }
 }
 
-proc fpga_file {FILE {OPT ""} {LIBRARY ""}} {
-   if {$OPT=="-lib"} {
-      lib_vhdl new $LIBRARY
-      xfile add $FILE -lib_vhdl $LIBRARY
-   } elseif {$OPT == ""} {
-      xfile add $FILE
+proc fpga_file {FILE {OPTION ""} {VALUE ""}} {
+   if {$OPTION!="-lib" && $OPTION!="-top"} {
+      puts "Valid options for fpga_file command are -lib and -top."
+      exit 1
+   }
+   if {$OPTION=="-lib"} {
+      lib_vhdl new $VALUE
+      xfile add $FILE -lib_vhdl $VALUE
    } else {
-         puts "Second argument (if present) could be only -lib."
-         exit 1
+      xfile add $FILE
+   }
+   if {$OPTION=="-top"} {
+      project set top $VALUE
    }
 }
-
-proc fpga_top {TOP} { project set top $TOP }
 
 set FPGA_TOOL "ise"
 
@@ -153,19 +155,43 @@ if { $project_file != "" && $project_file != "ise.xise" } {
          project set "Optimization Goal" "Speed"
       }
    }
-   source options.tcl
+   if {[catch {source options.tcl}]} {
+      puts "ERROR: something is wrong in options.tcl"
+      exit 1
+   }
 }
 
 if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
-   process run "Synthesize"    -force rerun
-   file copy -force [glob -nocomplain *.syr] ise_syn_$OPT.log
+   if {[catch {
+      process run "Synthesize"    -force rerun
+   }]} {
+      puts "ERROR: there was a problem running synthesis"
+      exit 1
+   }
+   if { [ file exists [glob -nocomplain *.syr] ] } {
+      file copy -force [glob -nocomplain *.syr] ise_syn_$OPT.log
+   }
 }
+
 if { $RUN=="imp" || $RUN=="bit"} {
-   process run "Translate"     -force rerun
-   process run "Map"           -force rerun
-   process run "Place & Route" -force rerun
-   file copy -force [glob -nocomplain *.par] ise_imp_$OPT.log
+   if {[catch {
+      process run "Translate"     -force rerun
+      process run "Map"           -force rerun
+      process run "Place & Route" -force rerun
+   }]} {
+      puts "ERROR: there was a problem running implementation"
+      exit 1
+   }
+   if { [ file exists [glob -nocomplain *.par] ] } {
+      file copy -force [glob -nocomplain *.par] ise_imp_$OPT.log
+   }
 }
+
 if {$RUN=="bit"} {
-   process run "Generate Programming File" -force rerun
+   if {[catch {
+      process run "Generate Programming File" -force rerun
+   }]} {
+      puts "ERROR: there was a problem generating the bitstream"
+      exit 1
+   }
 }

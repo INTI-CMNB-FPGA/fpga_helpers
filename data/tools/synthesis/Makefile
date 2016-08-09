@@ -33,25 +33,26 @@ TCL_FILE           = $(TOOL).tcl
 ISE_TCL            = xtclsh $(TCL_FILE)
 ISE_TCL_CON        = xtclsh
 ISE_GUI            = ise ise.xise
-ISE_CLEAN          = _ngo xst xlnx_auto_0_xdb _xmsgs *.bgn *.bld *.cmd_log  \
-                     *.csv *.html *.lso *.map *.mrp *.ncd *.ngc *.ngd *.ngm \
-                     *.ngr *.pad *.par *.pcf *.prj *.ptwx *.stx *.syr *.twr \
-                     *.twx *.unroutes *.ut *.txt *.xml *.xpi *.xrpt *.xst   \
-                     *.log *.gise
+ISE_CLEAN          = iseconfig _ngo xst xlnx_auto_0_xdb _xmsgs *.bgn *.bld  \
+                     *.cmd_log *.csv *.gise *.html *.log *.lso *.map *.mrp  \
+                     *.ncd *.ngc *.ngd *.ngm *.ngr *.pad *.par *.pcf *.prj  \
+                     *.ptwx *.stx *.syr *.twr *.twx *.unroutes *.ut *.txt   \
+                     *.xml *.xpi *.xrpt *.xst
 ISE_CLEAN_ALL      = $(ISE_CLEAN) *.xise
 
 VIVADO_TCL         = vivado -mode batch -notrace -source $(TCL_FILE) -tclargs
 VIVADO_TCL_CON     = vivado -mode tcl
-VIVADO_GUI         = vivado temp-vivado/vivado.xpr
-VIVADO_CLEAN       = *.cache *.hw *.ip_user_files *.jou *.log *.rpt *.runs
+VIVADO_GUI         = vivado vivado.xpr
+VIVADO_CLEAN       = .Xil *.cache *.hw *.ip_user_files *.jou *.log *.rpt    \
+                     *.runs *.sim *.srcs vivado_*.zip
 VIVADO_CLEAN_ALL   = $(VIVADO_CLEAN) *.xpr
 
 QUARTUS2_TCL       = quartus_sh --script $(TCL_FILE)
 QUARTUS2_TCL_CON   = quartus_sh -s
 QUARTUS2_GUI       = quartus quartus2.qpf
-QUARTUS2_CLEAN     = db incremental_db *.done *.jdi *.log *.pin *.qpf *.rpt \
-                     *.sld *.sof *.summary *.txt
-QUARTUS2_CLEAN_ALL = $(QUARTUS2_CLEAN) *.qsf
+QUARTUS2_CLEAN     = db incremental_db output_files *.done *.jdi *.log *.pin\
+                     *.qws *.rpt *.sld *.sof *.sop *.summary *.txt
+QUARTUS2_CLEAN_ALL = $(QUARTUS2_CLEAN) *.qpf *.qsf
 
 ifeq ($(TOOL),ise)
    TCL_CMD   = $(ISE_TCL)
