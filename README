@@ -11,8 +11,8 @@ PHILOSOPHY
 
 HELPERS OVERVIEW
 * fpga_prepare:  used to set the system to execute the tools of the vendors.
-* fpga_make_sim: generates a Makefile for simulation.
-* fpga_make_syn: generates a Makefile and two TCL files, which are used to
+* fpga_simu:     generates a Makefile for simulation.
+* fpga_synt:     generates a Makefile and two TCL files, which are used to
                  configure and execute a synthesis project.
 * fpga_prog:     used to transfer a bitstream to a FPGA or memory.
 * fpga_report:   -- ToDo --

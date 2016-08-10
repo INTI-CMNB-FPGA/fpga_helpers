@@ -32,7 +32,7 @@ from fpga_lib import *
 
 ## Parsing the command line ###################################################
 
-version = 'FPGA Make Syn (FPGA Helpers) v' + getVersion(share_dir)
+version = 'FPGA Synt (FPGA Helpers) v' + getVersion(share_dir)
 
 boards = []
 getBoards(boards, share_dir)
