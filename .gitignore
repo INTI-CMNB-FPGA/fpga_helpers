@@ -8,3 +8,5 @@ package/fpga-helpers*
 *.out
 *.toc
 *.pdf
+*.pyc
+*.vrb
