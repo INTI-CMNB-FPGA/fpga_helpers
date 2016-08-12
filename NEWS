@@ -1,7 +1,7 @@
 v0.1.1:
 * Tcl script splitted (one per each vendor) and improved.
-* Added fpga_prepare.sh, fpga_synt.py and fpga_prog.py.
-  * fpga_prepare.sh: prepare the system to run vendor tools.
+* Added fpga_setup.sh, fpga_synt.py and fpga_prog.py.
+  * fpga_setup.sh: set the system to run vendor tools.
     * Allows configuration of paths and licenses.
     * Supports ISE, Vivado, Quartus2 and Libero-SoC.
   * fpga_synt.py: copy Tcl files and Makefile to the current directory.

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# FPGA Prepare, part of FPGA Helpers
+# FPGA Setup, part of FPGA Helpers
 # Copyright (C) 2016 INTI, Rodrigo A. Melo <rmelo@inti.gob.ar>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ if [ $# -ne 1 ]; then
    esac
 elif [ $OPTION == "--help" ]; then
    HELP=1
-   echo "FPGA Prepare Help:"
+   echo "FPGA Setup Help:"
    echo "* All:"
    echo "  --config-all"
    echo "  --all"

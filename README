@@ -1,4 +1,5 @@
-                                  FPGA Helpers
+FPGA Helpers
+============
 
 A Free Software project which consist on a bunch of scripts to use FPGA
 development tools in a vendor independent way.
@@ -6,11 +7,9 @@ development tools in a vendor independent way.
 The target development platform is Debian GNU/Linux, but it is probably easy
 to run in others OS.
 
-PHILOSOPHY
--- ToDo --
-
-HELPERS OVERVIEW
-* fpga_prepare:  used to set the system to execute the tools of the vendors.
+Helpers Overview
+----------------
+* fpga_setup:    used to set the system to execute the tools of the vendors.
 * fpga_simu:     generates a Makefile for simulation.
 * fpga_synt:     generates a Makefile and two TCL files, which are used to
                  configure and execute a synthesis project.
@@ -19,4 +18,12 @@ HELPERS OVERVIEW
 * fpga_board:    -- ToDo --
 * fpga_compare:  -- ToDo --
 * fpga_list:     -- ToDo --
-* fpga_install:  -- ToDo -- [sbin]
+
+FPGA Setup
+----------
+
+FPGA Synt
+---------
+
+FPGA Prog
+---------

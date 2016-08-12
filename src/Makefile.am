@@ -1,9 +1,9 @@
-bin_SCRIPTS       = fpga_prepare fpga_synt fpga_prog
+bin_SCRIPTS       = fpga_setup fpga_synt fpga_prog
 CLEANFILES        = $(bin_SCRIPTS)
-EXTRA_DIST        = fpga_prepare.sh fpga_synt.py fpga_prog.py
+EXTRA_DIST        = fpga_setup.sh fpga_synt.py fpga_prog.py
 dist_pkgdata_DATA = fpga_lib.py
 
-fpga_prepare: fpga_prepare.sh
+fpga_setup: fpga_setup.sh
 	cp $< $@
 
 fpga_synt: fpga_synt.py
