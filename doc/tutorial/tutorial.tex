@@ -107,6 +107,8 @@
 
 %% FPGA Setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section{FPGA Setup}
+
 \begin{frame}[fragile]{FPGA Setup (I)}
   \begin{columns}
     \column{0.75\textwidth}
@@ -166,6 +168,8 @@ c. configurations related with vendors tools
 
 %% FPGA Synt %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section{FPGA Synt}
+
 \begin{frame}[fragile]{FPGA Synt (I)}
   \begin{columns}
     \column{0.75\textwidth}
@@ -186,7 +190,7 @@ c. configurations related with vendors tools
   \scriptsize
   \begin{verbatim}
 $ fpga_synt --help
-usage: fpga_synt.py [-h] [-v] [-b BOARDNAME|BOARDFILE] [TOOLNAME]
+usage: fpga_synt [-h] [-v] [-b BOARDNAME|BOARDFILE] [TOOLNAME]
 
 Generates files to make a Synthesis.
 
@@ -206,9 +210,163 @@ terasic_de0nano, xilinx_sp601
   \end{verbatim}
 \end{frame}
 
+\begin{frame}[fragile]{FPGA Synt (II) - Examples}
+  \begin{verbatim}
+$ fpga_synt ise
+fpga_synt(INFO): FPGA Synt (FPGA Helpers) v0.1.1
+fpga_synt(INFO): files were created.
+$ ls
+ise.tcl  Makefile  options.tcl
+  \end{verbatim}
+  \begin{verbatim}
+$ fpga_synt all
+fpga_synt(INFO): FPGA Synt (FPGA Helpers) v0.1.1
+fpga_synt(INFO): files were created.
+$ ls
+ise.tcl Makefile options.tcl quartus2.tcl vivado.tcl
+  \end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{FPGA Synt (III) - Makefile}
+  \tiny
+  \begin{verbatim}
+$ make help 
+Help:
+* Main targets:
+  * syn: synthesis
+  * imp: implementation
+  * bit: bitstream
+* Optimized variations:
+  * syn-area, syn-power, syn-speed
+  * imp-area, imp-power, imp-speed
+  * bit-area, bit-power, bit-speed
+* Others:
+  * clean:       to delete generated files (excluding project files)
+  * clean-all:   to delete all the generated files
+  * clean-multi: to delete generated files for all the vendors
+  * console:     to lunch the Tcl Console of the vendor Tool
+  * gui:         to lunch the Gui of the vendor Tool
+* Tools:
+  * To specify use TOOL=<vendorTool> when do make
+  * The supported vendorTool values are: ise, vivado, quartus2
+  \end{verbatim}
+  \begin{alertblock}{}
+    \small
+    The \makefile\ use vendors tools, so you could run \fpgasetup\ when open
+    a new \console.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{FPGA Synt (IV) - options.tcl}
+  \tiny
+  \begin{verbatim}
+#Function: fpga_device   <FPGA> [-tool <TOOL>]     Return: none
+#Function: fpga_file     <FILE> [-lib <LIBRARY>]   Return: none
+#Function: fpga_file     <FILE> [-top <TOPNAME>]   Return: none
+#Constant: $FPGA_TOOL                              Name of the running tool
+
+fpga_device "xc7a100t-3-csg324" -tool "ise"
+fpga_device "xc7a100t-3-csg324" -tool "vivado"
+fpga_device "5CGXFC7C7F23C8"    -tool "quartus2"
+
+fpga_file "core_file.vhdl"      -lib "LIB_NAME"
+fpga_file "package_file.vhdl"   -lib "LIB_NAME"
+fpga_file "top_file.vhdl"       -top "TOP_NAME"
+
+#if {$FPGA_TOOL == "ise"} {
+#   project set "FSM Encoding Algorithm" "Sequential" -process "Synthesize - XST"
+#} elseif {$FPGA_TOOL == "vivado"} {
+#   set_property "steps.synth_design.args.fsm_extraction" "sequential" [get_runs synth_1]
+#} elseif {$FPGA_TOOL == "quartus2"} {
+#   set_global_assignment -name STATE_MACHINE_PROCESSING SEQUENTIAL
+#}
+  \end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{FPGA Synt (V) - vendors TCL files}
+  %\tiny
+  \begin{itemize}
+    \item The commands \textit{fpga\_device} and \textit{fpga\_file}, as well
+          as the value \textit{\$FPGA\_TOOL} are implemented in each vendor TCL
+          file.
+    \item If a project file exists, it is used and options.tcl is omitted.
+          The name of the project file must be different of the tool name
+          (it is used by the vendors TCL files).
+    \item Vendors TCL files generates log files called
+          TOOLNAME-OPERATION-OPTIMIZATION.log, where OPERATION could be syn or
+          imp and OPTIMIZATION could be user, area, power and speed.
+          Examples are \textit{ise-syn-area.log} and \textit{quartus2-imp-speed.log}.
+  \end{itemize}
+\end{frame}
+
 %% FPGA Prog %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section{FPGA Prog}
+
+\begin{frame}[fragile]{FPGA Prog (I)}
+  \begin{columns}
+    \column{0.75\textwidth}
+      \begin{block}{}
+        \small
+        Program to transfer a bitstream to the desired (supported) device.
+      \end{block}{}
+    \column{0.25\textwidth}
+      \small Supported tools:
+      \begin{itemize}
+        \tiny
+        \item Xilinx ISE (\textcolor{teal}{FPGA}, \textcolor{teal}{SPI}, \textcolor{teal}{BPI}, \textcolor{teal}{One XCF})
+        \item Altera Quartus2 (\textcolor{teal}{FPGA})
+      \end{itemize}
+  \end{columns}
+  \tiny
+  \begin{verbatim}
+$ fpga_prog --help
+usage: fpga_prog [-h] [-v] [-t TOOLNAME] [-d DEVICE] [-p POSITION]
+                    [-m MEMNAME] [-w WIDTH] [-b BOARDNAME|BOARDFILE]
+                    BITSTREAM
+
+Transfers a BitStream to a device.
+
+positional arguments:
+  BITSTREAM             BitStream to be transferred
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  -t TOOLNAME, --tool TOOLNAME
+                        Name of the vendor tool to be used [ise |quartus2]
+  \end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{FPGA Prog (II)}
+  \tiny
+  \begin{verbatim}
+device arguments:
+  -d DEVICE, --device DEVICE
+                        Type of the target device
+                        [fpga(default)|spi|bpi|xcf|detect|unlock]
+  -p POSITION, --position POSITION
+                        positive number which represents the POSITION of the
+                        device in the JTAG chain [1]
+  -m MEMNAME, --memname MEMNAME
+                        Name of the target memory (when applicable)
+                        [UNDEFINED]
+  -w WIDTH, --width WIDTH
+                        positive number which representes the WIDTH of bits of
+                        the target memory (when applicable) [1]
+  -b BOARDNAME|BOARDFILE, --board BOARDNAME|BOARDFILE
+                        Name of a supported board or file (.yaml) of a
+                        new/custom board (note: if you use the board option,
+                        -p, -m, -w and -t will be overwritten) []
+
+Supported boards: avnet_s6micro, digilent_atlys, gaisler_xc6s,
+terasic_de0nano, xilinx_sp601
+  \end{verbatim}
+\end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{License}
 
 \begin{frame}{Tutorial License}
   \begin{figure}[!t]
