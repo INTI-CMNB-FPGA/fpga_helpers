@@ -19,7 +19,7 @@
 import os
 
 def getVersion(install_dir):
-    return file(install_dir + '/VERSION', 'r').read().strip()
+    return open(install_dir + '/VERSION', 'r').read().strip()
 
 def getBoards(boards, install_dir):
     path = install_dir + '/data/boards'
@@ -33,7 +33,7 @@ def getBoards(boards, install_dir):
 def getTextProg(options, template):
     name = os.path.basename(options.bit)
     name = os.path.splitext(name)[0]
-    text = file(template, 'r').read()
+    text = open(template, 'r').read()
     text = text.replace('[BITSTREAM]' , str(options.bit))
     text = text.replace('[MCSFILE]'   , str(options.output_dir + '/' + name + '.mcs'))
     text = text.replace('[MEMNAME]'   , str(options.memname))

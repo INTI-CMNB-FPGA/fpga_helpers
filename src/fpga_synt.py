@@ -76,7 +76,7 @@ if options.board is not None:
    else:
       path = share_dir + '/data/boards/' + options.board + '.yaml'
    if os.path.exists(path):
-      board = yaml.load(file(path, 'r'))
+      board = yaml.load(open(path, 'r'))
    else:
       sys.exit(__file__ + '(ERROR): <board> ' + options.board + ' not exists.')
    if 'prog' in board['tool']:
@@ -101,13 +101,13 @@ if options.board is not None:
 if options.tool != 'all':
    shutil.copy(share_dir + '/data/tools/synthesis/options.tcl', '.')
    shutil.copy(share_dir + '/data/tools/synthesis/' + options.tool + '.tcl', '.')
-   file(options.tool + '.tcl','a').write("\n# Created with " + version)
+   open(options.tool + '.tcl','a').write("\n# Created with " + version)
 else:
    for filename in glob.glob(share_dir + '/data/tools/synthesis/*.tcl'):
        shutil.copy(filename, '.')
-       file(os.path.basename(filename),'a').write("\n# Created with " + version)
+       open(os.path.basename(filename),'a').write("\n# Created with " + version)
 shutil.copy(share_dir + '/data/tools/synthesis/Makefile', '.')
-file('Makefile','a').write(fpga_prog_text)
-file('Makefile','a').write("\n# Created with " + version)
+open('Makefile','a').write(fpga_prog_text)
+open('Makefile','a').write("\n# Created with " + version)
 
 print (__file__ + '(INFO): files were created.')
