@@ -18,5 +18,7 @@ AC_PROG_MAKE_SET
 AC_CONFIG_FILES([
   Makefile
   src/Makefile
+  doc/Makefile
+  doc/tutorial/Makefile
 ])
 AC_OUTPUT

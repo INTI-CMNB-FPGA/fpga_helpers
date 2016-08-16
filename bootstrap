@@ -1,11 +1,17 @@
 #!/bin/bash
 if [ $# -eq 1 ] && [ $1 == "clean" ]; then
    echo "Cleanning"...
-   make distclean
-   make -f Makefile.debian clean
+   if [ -f Makefile ]; then
+      make distclean
+   fi
+   if [ -f Makefile.debian ];then
+      make -f Makefile.debian clean
+   fi
    rm -fr Makefile Makefile.in install-sh missing
    rm -fr aclocal.m4 autom4te.cache config.* configure fpga-helpers-*
    rm -fr src/Makefile src/Makefile.in
+   rm -fr doc/Makefile doc/Makefile.in
+   rm -fr doc/tutorial/Makefile doc/tutorial/Makefile.in
 else
    echo "Running autoreconf (autotools)..."
    autoreconf -i -f

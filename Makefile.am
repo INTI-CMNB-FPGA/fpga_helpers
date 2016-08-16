@@ -1,7 +1,7 @@
-SUBDIRS           = src
+SUBDIRS           = src doc
 doc_DATA          = README NEWS
 dist_pkgdata_DATA = VERSION
-EXTRA_DIST        = data doc test
+EXTRA_DIST        = data test
 
 boardsdir         = $(pkgdatadir)/data/boards
 boards_DATA       = data/boards/*
