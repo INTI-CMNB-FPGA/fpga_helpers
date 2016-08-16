@@ -49,6 +49,8 @@ parser.add_argument(
 )
 parser.add_argument(
    'bit',
+   default="",
+   nargs='?',
    metavar='BITSTREAM',
    help='BitStream to be transferred'
 )
@@ -105,6 +107,9 @@ options.output_dir = '/tmp/fpga_prog'
 ## Processing the options #####################################################
 
 print (__file__ + '(INFO): ' + version)
+
+if not os.path.exists(options.bit):
+   sys.exit(__file__ + '(ERROR): bitstream not found.')
 
 if options.board is not None:
    if options.board.endswith(".yaml"):

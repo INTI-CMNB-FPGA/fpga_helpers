@@ -76,7 +76,7 @@ else
    $(error TOOL is unsupported [ise, vivado, quartus2])
 endif
 
-BITFILE = $(wildcard *.bit *.sof *.pof)
+BITFILE = $(shell find -type f -name '*.bit' -o -name '*.sof' -o -name '*.pof')
 
 ###############################################################################
 

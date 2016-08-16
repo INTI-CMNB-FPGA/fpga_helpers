@@ -69,8 +69,12 @@ options = parser.parse_args()
 
 print (__file__ + '(INFO): ' + version)
 
-fpga_prog_text = "# No <board> specified.\n";
-if options.board is not None:
+fpga_prog_text = "ifneq ($(shell which fpga_prog),)\n\n";
+
+if options.board is None:
+   fpga_prog_text += 'prog-fpga:\n\tfpga_prog --tool=$(TOOL)' + \
+                     ' --device=fpga $(firstword $(BITFILE))\n'
+else:
    if options.board.endswith(".yaml"):
       path = options.board
    else:
@@ -84,17 +88,17 @@ if options.board is not None:
       options.tool = board['tool']['prog'][0]
    # fpga_prog alternatives
    if options.tool != 'all':
-      fpga_prog_text = "";
       for device in sorted(board):
           if device == 'fpga':
-             fpga_prog_text += 'prog-fpga:\n\tfpga_prog --board=' + \
+             fpga_prog_text += 'prog-fpga:\n\tfpga_prog --tool=$(TOOL) --board=' + \
                                options.board + ' --device=fpga $(firstword $(BITFILE))\n'
           if device == 'spi':
-             fpga_prog_text += 'prog-spi:\n\tfpga_prog --board=' + \
+             fpga_prog_text += 'prog-spi:\n\tfpga_prog --tool=$(TOOL) --board=' + \
                                options.board + ' --device=spi  $(firstword $(BITFILE))\n'
           if device == 'bpi':
-             fpga_prog_text += 'prog-bpi:\n\tfpga_prog --board=' + \
+             fpga_prog_text += 'prog-bpi:\n\tfpga_prog --tool=$(TOOL) --board=' + \
                                options.board + ' --device=bpi  $(firstword $(BITFILE))\n'
+fpga_prog_text += "\nendif\n";
 
 ## Generating files ###########################################################
 
