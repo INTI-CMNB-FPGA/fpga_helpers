@@ -38,6 +38,7 @@ boards = []
 getBoards(boards, share_dir)
 
 parser = argparse.ArgumentParser(
+   prog='fpga_synt',
    description='Generates files to make a Synthesis.',
    epilog='Supported boards: ' + ', '.join(boards)
 )

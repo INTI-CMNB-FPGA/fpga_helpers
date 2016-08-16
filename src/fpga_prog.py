@@ -38,6 +38,7 @@ boards = []
 getBoards(boards, share_dir)
 
 parser = argparse.ArgumentParser(
+   prog='fpga_prog',
    description='Transfers a BitStream to a device.',
    epilog="Supported boards: " + ', '.join(boards)
 )
