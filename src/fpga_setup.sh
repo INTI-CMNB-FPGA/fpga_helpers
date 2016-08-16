@@ -39,7 +39,7 @@ fi
 
 ###############################################################################
 
-if [ $# -eq 0 ]; then # running interactively
+if [ $# -eq 0 ] || [ $1 == "--quit" ]; then # running interactively
    echo "c. configurations related with vendors tools"
    echo "0. set to use all the available vendors tools"
    echo "1. set to use ISE (Xilinx)"
@@ -47,28 +47,32 @@ if [ $# -eq 0 ]; then # running interactively
    echo "3. set to use Quartus2 (Altera)"
    echo "4. set to use Libero-SoC (Microsemi)"
    # Add here new tool code
-   read -n 1 -s OPTION
-   case "$OPTION" in
-      c)
-         CONFIG=1;;
-      0)
-         ISE=1
-         VIVADO=1
-         QUARTUS2=1
-         LIBEROSOC=1;;
-      1)
-         ISE=1;;
-      2)
-         VIVADO=1;;
-      3)
-         QUARTUS2=1;;
-      4)
-         LIBEROSOC=1;;
-      # Add here new tool code
-      *)
-         echo "ERROR: '$OPTION' is not a valid option."
-         HELP=1
-   esac
+   echo "q. quit"
+   if [ $# -eq 0 ]; then
+      read -n 1 -s OPTION
+      case "$OPTION" in
+         c)
+            CONFIG=1;;
+         0)
+            ISE=1
+            VIVADO=1
+            QUARTUS2=1
+            LIBEROSOC=1;;
+         1)
+            ISE=1;;
+         2)
+            VIVADO=1;;
+         3)
+            QUARTUS2=1;;
+         4)
+            LIBEROSOC=1;;
+         # Add here new tool code
+         q) ;;
+         *)
+            echo "ERROR: '$OPTION' is not a valid option."
+            HELP=1
+      esac
+   fi
 elif [ $# -eq 1 ]; then # running with a option
    OPTION=$1
    if [ $OPTION == "--help" ]; then
