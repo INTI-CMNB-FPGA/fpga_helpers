@@ -69,7 +69,7 @@ if [ $# -eq 0 ] || [ $1 == "--quit" ]; then # running interactively
          # Add here new tool code
          q) ;;
          *)
-            echo "ERROR: '$OPTION' is not a valid option."
+            echo "fpga_setup (ERROR): '$OPTION' is not a valid option."
             HELP=1
       esac
    fi
@@ -94,11 +94,11 @@ elif [ $# -eq 1 ]; then # running with a option
       LIBEROSOC=1
    # Add here new tool code
    else
-      echo "ERROR: '$OPTION' is not a valid option."
+      echo "fpga_setup (ERROR): '$OPTION' is not a valid option."
       HELP=1
    fi
 else # running with more than a option
-   echo "ERROR: too many parameters."
+   echo "fpga_setup (ERROR): too many parameters."
    HELP=1
 fi
 
@@ -116,7 +116,7 @@ if [[ $HELP ]]; then
 fi
 
 if [[ $CONFIG ]]; then
-   echo "NOTE: you can use 'tab' to autocomplete options for paths and files"
+   echo "fpga_setup (INFO): you can use 'tab' to autocomplete options for paths and files"
 fi
 
 ###############################################################################
@@ -225,6 +225,6 @@ if [[ $CONFIG ]]; then
 fi
 
 if [[ $SET ]]; then
-   echo "You are entering in a new SHELL with settings applied."
+   echo "fpga_setup (INFO): You are entering in a new SHELL with settings applied."
    $SHELL
 fi

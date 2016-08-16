@@ -67,7 +67,7 @@ options = parser.parse_args()
 
 ## Processing the options #####################################################
 
-print (__file__ + '(INFO): ' + version)
+print ('fpga_synt (INFO): ' + version)
 
 fpga_prog_text = "ifneq ($(shell which fpga_prog),)\n\n";
 
@@ -82,9 +82,9 @@ else:
    if os.path.exists(path):
       board = yaml.load(open(path, 'r'))
    else:
-      sys.exit(__file__ + '(ERROR): <board> ' + options.board + ' not exists.')
+      sys.exit('fpga_synt (ERROR): <board> ' + options.board + ' not exists.')
    if 'prog' in board['tool']:
-      print (__file__ + '(INFO): <tool> was taken from the board file.')
+      print ('fpga_synt (INFO): <tool> was taken from the board file.')
       options.tool = board['tool']['prog'][0]
    # fpga_prog alternatives
    if options.tool != 'all':
@@ -114,4 +114,4 @@ shutil.copy(share_dir + '/data/tools/synthesis/Makefile', '.')
 open('Makefile','a').write(fpga_prog_text)
 open('Makefile','a').write("\n# Created with " + version)
 
-print (__file__ + '(INFO): files were created.')
+print ('fpga_synt (INFO): files were created.')

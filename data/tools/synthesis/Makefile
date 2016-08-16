@@ -90,6 +90,8 @@ all help:
 	@echo "  * syn-area, syn-power, syn-speed"
 	@echo "  * imp-area, imp-power, imp-speed"
 	@echo "  * bit-area, bit-power, bit-speed"
+	@echo "* When fpga_prog installed"
+	@echo "  * prog-fpga and others according to the specified board"
 	@echo "* Others:"
 	@echo "  * clean:       to delete generated files (excluding project files)"
 	@echo "  * clean-all:   to delete all the generated files"
