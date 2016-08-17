@@ -52,7 +52,6 @@ parser.add_argument(
 parser.add_argument(
    'tool',
    metavar='TOOLNAME',
-   default='ise',
    nargs='?',
    choices=['ise','vivado','quartus2','all'],
    help='Name of the vendor tool to be used [ise|vivado|quartus2|all]'
@@ -70,8 +69,25 @@ options = parser.parse_args()
 
 print ('fpga_synt (INFO): ' + version)
 
-fpga_prog_text = "ifneq ($(shell which fpga_prog),)\n\n";
+if options.tool is None:
+   print ("fpga_synt (INFO): you did not select tool to use. Choose one:")
+   print ("1. All")
+   print ("2. ISE (Xilinx)")
+   print ("3. Vivado (Xilinx)")
+   print ("4. Quartus2 (Altera)")
+   option = sys.stdin.read(1)
+   if option == "1":
+      options.tool = "all"
+   elif option == "2":
+      options.tool = "ise"
+   elif option == "3":
+      options.tool = "vivado"
+   elif option == "4":
+      options.tool = "quartus2"
+   else:
+      sys.exit('fpga_prog (ERROR): invalid option.')
 
+fpga_prog_text = "ifneq ($(shell which fpga_prog),)\n\n";
 if options.board is None:
    fpga_prog_text += 'prog-fpga:\n\tfpga_prog --tool=$(TOOL)' + \
                      ' --device=fpga --position=1 $(firstword $(BITFILE))\n'
@@ -84,9 +100,6 @@ else:
       board = yaml.load(open(path, 'r'))
    else:
       sys.exit('fpga_synt (ERROR): <board> ' + options.board + ' not exists.')
-   if 'prog' in board['tool']:
-      print ('fpga_synt (INFO): <tool> was taken from the board file.')
-      options.tool = board['tool']['prog'][0]
    # fpga_prog alternatives
    if options.tool != 'all':
       for device in sorted(board):

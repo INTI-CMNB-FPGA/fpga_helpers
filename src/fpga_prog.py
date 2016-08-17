@@ -58,7 +58,6 @@ parser.add_argument(
 parser.add_argument(
    '-t', '--tool',
    metavar='TOOLNAME',
-   default='ise',
    choices=['ise','quartus2'],
    help='Name of the vendor tool to be used [ise |quartus2]'
 )
@@ -109,7 +108,19 @@ options.output_dir = '/tmp/fpga_prog'
 
 print ('fpga_prog (INFO): ' + version)
 
-if not os.path.exists(options.bit):
+if options.tool is None:
+   print ("fpga_prog (INFO): you did not select tool to use. Choose one:")
+   print ("1. ISE (Xilinx)")
+   print ("2. Quartus2 (Altera)")
+   option = sys.stdin.read(1)
+   if option == "1":
+      options.tool = "ise"
+   elif option == "2":
+      options.tool = "quartus2"
+   else:
+      sys.exit('fpga_prog (ERROR): invalid option.')
+
+if not os.path.exists(options.bit) and options.device != "detect" and options.device != "unlock":
    sys.exit('fpga_prog (ERROR): bitstream not found.')
 
 if options.board is not None:
@@ -124,9 +135,6 @@ if options.board is not None:
    if options.device not in board:
       sys.exit('fpga_prog (ERROR): the device <' + options.device + '> is not ' +
                           'supported in the board <' + options.board + '>.')
-   if 'prog' in board['tool']:
-      print ('fpga_prog (INFO): <tool> was taken from the board file.')
-      options.tool = board['tool']['prog'][0]
    if 'position' in board[options.device][0]:
       print ('fpga_prog (INFO): <position> was taken from the board file.')
       options.position = board[options.device][0]['position']

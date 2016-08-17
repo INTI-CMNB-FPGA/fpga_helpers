@@ -9,6 +9,3 @@ spi:
     position: 1
     width:    4
     size:     8K
-tool:
-  synt: [ise]
-  prog: [ise]

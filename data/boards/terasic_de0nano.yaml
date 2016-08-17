@@ -9,6 +9,3 @@ spi:
     position: 1
     width:    4
     size:     64M
-tool:
-  synt: [quartus2]
-  prog: [quartus2]
