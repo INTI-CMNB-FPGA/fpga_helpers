@@ -74,7 +74,7 @@ fpga_prog_text = "ifneq ($(shell which fpga_prog),)\n\n";
 
 if options.board is None:
    fpga_prog_text += 'prog-fpga:\n\tfpga_prog --tool=$(TOOL)' + \
-                     ' --device=fpga $(firstword $(BITFILE))\n'
+                     ' --device=fpga --position=1 $(firstword $(BITFILE))\n'
 else:
    if options.board.endswith(".yaml"):
       path = options.board
