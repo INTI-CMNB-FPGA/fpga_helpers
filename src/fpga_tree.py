@@ -23,7 +23,7 @@
 # * Inside of which PACKAGE is each COMPONENT.
 # * In which FILE is defined each COMPONENT and PACKAGE.
 
-import argparse, os, sys, glob
+import argparse, os, sys, re
 
 bin_dir = os.path.dirname(os.path.abspath(__file__))
 if os.path.exists(bin_dir + '/../data'):
@@ -52,6 +52,11 @@ parser.add_argument(
 )
 
 parser.add_argument(
+   '--verbose',
+   action='count'
+)
+
+parser.add_argument(
    'top',
    metavar='TOPFILE',
    nargs='?',
@@ -68,6 +73,9 @@ parser.add_argument(
 
 options = parser.parse_args()
 
+if (options.verbose):
+   print ("\nOptions: " + str(options))
+
 ##
 
 dir = ""
@@ -83,15 +91,33 @@ for root, dirs, files in os.walk(dir):
            file.endswith('.v')       :
            files_all.append(root+'/'+file)
 
-print (files_all)
+if (options.verbose):
+   print ("\nFiles: " + str(files_all))
 
 qty = len(files_all)
 if (qty < 1):
    sys.exit('fpga_tree (ERROR): no files were found.')
 
-print("Files found: " + str(qty))
+if (options.verbose):
+   print("\nFiles found: " + str(qty))
 
 ## Coolect info from founded files
+
+cnt = 1
+#text = 1
+for file in files_all:
+    with open(file) as f:
+         text = f.readlines()
+    for line in text:
+        # Searching LIBRARYs and PACKAGEs on lines such as:
+        # use LIBRARY.PACKAGE.xyz;
+        match = re.match("use\s+(.+)\.(.+)\..+;", line, re.IGNORECASE)
+        if match:
+           if (match.group(1).lower() != "ieee" and \
+               match.group(1).lower() != "std"  and \
+               match.group(1).lower() != "unisim")  :
+              print(match.group(1))
+              print(match.group(2))
 #$cnt = 1;
 #foreach $file (@files) {
 #   open FILE, $file;
