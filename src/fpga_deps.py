@@ -104,42 +104,35 @@ if (options.verbose):
 ## Coolect info from founded files
 
 knownlibs = ["ieee", "std", "unisim"]
-
 cnt = 1
 pkg2lib = {}
 some2file = {}
 com2pkg = {}
+
 for file in files_all:
-    insidepkg = 0 # I get COMPONENT definition only inside of a PACKAGE
-    with open(file) as f:
-         text = f.readlines()
-    for line in text:
-        # Searching LIBRARYs and PACKAGEs on lines such as:
-        # use LIBRARY.PACKAGE.xyz;
-        match = re.match("\s*use\s+(.+)\.(.+)\..+;", line, re.IGNORECASE)
-        if match:
-           lib = match.group(1).lower()
-           if lib not in knownlibs:
-              pkg2lib[match.group(2)] = match.group(1)
-        # Searching COMPONENTs inside PACKAGEs
-        match = re.match("\s*package\s+(.+)\s+is", line, re.IGNORECASE)
-        if match:
-           insidepkg = 1
-           pkg = match.group(1).lower()
-           some2file[pkg] = file
-        match = re.match("\s*component\s+(.+)\s+is", line, re.IGNORECASE)
-        if match and insidepkg:
-           com = match.group(1).lower()
-           com2pkg[com] = pkg
-        match = re.match("\s*end\spackage", line, re.IGNORECASE)
-        if match:
-           insidepkg = 0
-       # Searching names of ENTITYs and FILEs which include them
-        match = re.match("\s*entity\s+(.+)\s+is", line, re.IGNORECASE)
-        if match:
-           ent = match.group(1).lower()
-           some2file[ent] = file
-    f.close()
+    data = open(file, 'r').read();
+    # Searching LIBRARYs and PACKAGEs on lines such as:
+    # use LIBRARY.PACKAGE.xyz;
+    match = re.findall('use\s+(.+)\.(.+)\..+;', data, re.IGNORECASE);
+    for lib,pkg in match:
+        if lib.lower() not in knownlibs:
+           pkg2lib[pkg] = lib
+    # Searching names of PACKAGEs and FILEs which include them:
+    # package PACKAGE is
+    match = re.findall('package\s+(.+)\s+is', data, re.IGNORECASE);
+    for pkg in match:
+        some2file[pkg] = file
+        # Searching COMPONENTs inside PACKAGEs:
+        # component COMPONENT is
+        match = re.findall('component\s+(.+)\s+is', data, re.IGNORECASE)
+        for com in match:
+            com2pkg[com] = pkg
+    # Searching names of ENTITYs and FILEs which include them:
+    # entity ENTITY is
+    match = re.findall('entity\s+(.+)\s+is', data, re.IGNORECASE);
+    for ent in match:
+        some2file[ent] = file
+    #
     cnt+=1
     if cnt%100==0 and options.verbose:
        print ("\n" + str(cnt) + " of " + str(qty) + " files were processed")
