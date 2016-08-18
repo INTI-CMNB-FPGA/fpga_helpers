@@ -2,9 +2,9 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 
 library LIB1;
-use LIB1.pkg1.all;
+use LIB1.pkg1_lib1.all;
 library LIB2;
-use LIB2.pkg1.all;
+use LIB2.pkg1_lib2.all;
 
 entity core is
    generic (
@@ -16,7 +16,7 @@ entity core is
    );
 end entity core;
 
-architecture Structural of core is
+architecture RTL of core is
    signal data : std_logic;
 begin
 

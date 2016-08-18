@@ -103,64 +103,55 @@ if (options.verbose):
 
 ## Coolect info from founded files
 
+knownlibs = ["ieee", "std", "unisim"]
+
 cnt = 1
-#text = 1
+pkg2lib = {}
+some2file = {}
+com2pkg = {}
 for file in files_all:
+    insidepkg = 0 # I get COMPONENT definition only inside of a PACKAGE
     with open(file) as f:
          text = f.readlines()
     for line in text:
         # Searching LIBRARYs and PACKAGEs on lines such as:
         # use LIBRARY.PACKAGE.xyz;
-        match = re.match("use\s+(.+)\.(.+)\..+;", line, re.IGNORECASE)
+        match = re.match("\s*use\s+(.+)\.(.+)\..+;", line, re.IGNORECASE)
         if match:
-           if (match.group(1).lower() != "ieee" and \
-               match.group(1).lower() != "std"  and \
-               match.group(1).lower() != "unisim")  :
-              print(match.group(1))
-              print(match.group(2))
-#$cnt = 1;
-#foreach $file (@files) {
-#   open FILE, $file;
-#   while (<FILE>) {
-#      # Searching LIBRARYs and PACKAGEs on lines such as
-#      # use LIBRARY.PACKAGE.xyz;
-#      if ($_=~/use\s+(.+)\.(.+)\..+;/i) {
-#         $lib = lc($1);
-#         if ($lib ne 'ieee' && $lib ne 'std' && $lib ne 'unisim') {
-#            $pkg2lib{lc($2)} = lc($1);
-#         }
-#      }
-#      # Searching COMPONENTs inside PACKAGEs
-#      if ($_=~/package\s+(.+)\s+is/i) {
-#         $pkg = lc($1);
-#         $some2file{$pkg} = $file;
-#         while (<FILE>) {
-#            $line = $_;
-#            if ($line=~/end package/i) {
-#               break;
-#            }
-#            if ($_=~/component\s+(.+)\s+is/i) {
-#               $com2pkg{lc($1)} = $pkg;
-#            }
-#         }
-#      }
-#      # Searching names of ENTITYs and FILEs which include them
-#      if ($_=~/entity\s+(.+)\s+is/i) {
-#         $some2file{lc($1)} = $file;
-#      }
-#   }
-#   close FILE;
-#   $cnt++;
-#   print("$cnt of $qty were processed.") if ($cnt%100==0 and $verbosity);
-#}
-#print("All files were processed.") if ($verbosity);
-#if ($verbosity) {
-#   print("# Package -> Library\n".(Dump \%pkg2lib));
-#   print("# Component -> Package\n".(Dump \%com2pkg));
-#   print("# Something -> File\n".(Dump \%some2file));
-#}
+           lib = match.group(1).lower()
+           if lib not in knownlibs:
+              pkg2lib[match.group(2)] = match.group(1)
+        # Searching COMPONENTs inside PACKAGEs
+        match = re.match("\s*package\s+(.+)\s+is", line, re.IGNORECASE)
+        if match:
+           insidepkg = 1
+           pkg = match.group(1).lower()
+           some2file[pkg] = file
+        match = re.match("\s*component\s+(.+)\s+is", line, re.IGNORECASE)
+        if match and insidepkg:
+           com = match.group(1).lower()
+           com2pkg[com] = pkg
+        match = re.match("\s*end\spackage", line, re.IGNORECASE)
+        if match:
+           insidepkg = 0
+       # Searching names of ENTITYs and FILEs which include them
+        match = re.match("\s*entity\s+(.+)\s+is", line, re.IGNORECASE)
+        if match:
+           ent = match.group(1).lower()
+           some2file[ent] = file
+    f.close()
+    cnt+=1
+    if cnt%100==0 and options.verbose:
+       print ("\n" + str(cnt) + " of " + str(qty) + " files were processed")
 
-#%file2some = reverse(%some2file);
+file2some = dict((v,k) for k,v in some2file.items())
+
+if (options.verbose):
+   print ("\nAll files were processed")
+   print ("\npkg2lib:   " + str(pkg2lib))
+   print ("\nsome2file: " + str(some2file))
+   print ("\ncom2pkg: "   + str(com2pkg))
+   print ("\nfile2some: " + str(file2some))
 
 ## Using the TOP FILE to find all the involved FILES
 #unshift(@todo,$top);
