@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# FPGA Tree collects the files of a HDL project
+# FPGA Deps collects the files of a HDL project
 # Copyright (C) 2015-2016 INTI, Rodrigo A. Melo
 #
 # This program is free software: you can redistribute it and/or modify
@@ -38,10 +38,10 @@ from fpga_lib import *
 
 ## Parsing the command line ###################################################
 
-version = 'FPGA Tree (FPGA Helpers) v' + getVersion(share_dir)
+version = 'FPGA Deps (FPGA Helpers) v' + getVersion(share_dir)
 
 parser = argparse.ArgumentParser(
-   prog='fpga_tree',
+   prog='fpga_deps',
    description='Collects the files of a HDL project.'
 )
 
@@ -96,7 +96,7 @@ if (options.verbose):
 
 qty = len(files_all)
 if (qty < 1):
-   sys.exit('fpga_tree (ERROR): no files were found.')
+   sys.exit('fpga_deps (ERROR): no files were found.')
 
 if (options.verbose):
    print("\nFiles found: " + str(qty))
