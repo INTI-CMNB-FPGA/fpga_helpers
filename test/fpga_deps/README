@@ -1,0 +1,18 @@
+Directory to test fpga_deps
+
+Files structure:
+
+lib1                    (LIBRARY: lib1)
+  lib1_pkg1.vhdl        (PACKAGE: pkg1)
+    lib1_pkg1_com1.vhdl (ENTITY:  com1)
+    lib1_pkg1_com2.vhdl (ENTITY:  com2)
+  lib1_pkg2.vhdl        (PACKAGE: pkg2)
+    lib1_pkg2_com1.vhdl (ENTITY:  com1)
+    lib1_pkg2_com3.vhdl (ENTITY:  com3)
+lib2                    (LIBRARY: lib2)
+  lib2_pkg1.vhdl        (PACKAGE: pkg1)
+    lib2_pkg1_com1.vhdl (ENTITY:  com1)
+    lib2_pkg1_com4.vhdl (ENTITY:  com4)
+  lib2_pkg3.vhdl        (PACKAGE: pkg3)
+    lib2_pkg3_com5.vhdl (ENTITY:  com5)
+top:                    (ENTITY:  top)

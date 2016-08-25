@@ -18,12 +18,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# The collected info is:
-# * Inside of which LIBRARY is each PACKAGE.
-# * Inside of which PACKAGE is each COMPONENT.
-# * In which FILE is defined each COMPONENT and PACKAGE.
+# Assumptions:
+# * Files are well formed.
+# * VHDL:
+#   * A file could have one or more packages and/or one or more entities.
+#   * The architectures must be in the file where their entity is.
+#   * Configurations are no supported.
+# * Verilog:
+#   * A file could have one or more modules.
 
-import argparse, os, sys, re
+import argparse, os, sys, re, mimetypes
 
 bin_dir = os.path.dirname(os.path.abspath(__file__))
 if os.path.exists(bin_dir + '/../data'):
@@ -76,20 +80,21 @@ options = parser.parse_args()
 if (options.verbose):
    print ("\nOptions: " + str(options))
 
-##
-
-dir = ""
+dir = "."
 for i in range(0, options.deep):
     dir += "../"
+
+## Collecting files ###########################################################
 
 files_all = []
 for root, dirs, files in os.walk(dir):
     for file in files:
+        filepath = root+'/'+file
         if file.endswith('.vhdl') or \
            file.endswith('.vhd')  or \
            file.endswith('.sv')   or \
            file.endswith('.v')       :
-           files_all.append(root+'/'+file)
+           files_all.append(filepath)
 
 if (options.verbose):
    print ("\nFiles: " + str(files_all))
@@ -101,13 +106,26 @@ if (qty < 1):
 if (options.verbose):
    print("\nFiles found: " + str(qty))
 
-## Coolect info from founded files
+## Collecting data from founded files #########################################
+
+# Data to collect:
+# * Inside of which LIBRARY is each PACKAGE.
+# * Inside of which PACKAGE is each COMPONENT.
+# * In which FILE is defined each COMPONENT and PACKAGE.
+# * In which FILE is defined each MODULE.
+# Warnings:
+# * A file could contain more than a PACKAGE, COMPONENT or MODULE.
+# * There may be repeated names!
+#   * More than one LIBRARY can contain PACKAGEs with the same name (the same
+#     PACKAGE name can be on more than one library).
 
 knownlibs = ["ieee", "std", "unisim"]
 cnt = 1
-pkg2lib = {}
-some2file = {}
-com2pkg = {}
+
+lib_pkg  = []
+file_pkg = []
+file_ent = []
+pkg_com  = []
 
 for file in files_all:
     data = open(file, 'r').read();
@@ -116,35 +134,41 @@ for file in files_all:
     match = re.findall('use\s+(.+)\.(.+)\..+;', data, re.IGNORECASE);
     for lib,pkg in match:
         if lib.lower() not in knownlibs:
-           pkg2lib[pkg] = lib
+           lib_pkg.append([lib, pkg])
     # Searching names of PACKAGEs and FILEs which include them:
     # package PACKAGE is
     match = re.findall('package\s+(.+)\s+is', data, re.IGNORECASE);
     for pkg in match:
-        some2file[pkg] = file
+        file_pkg.append([file,pkg])
         # Searching COMPONENTs inside PACKAGEs:
         # component COMPONENT is
         match = re.findall('component\s+(.+)\s+is', data, re.IGNORECASE)
         for com in match:
-            com2pkg[com] = pkg
+            pkg_com.append([pkg,com])
     # Searching names of ENTITYs and FILEs which include them:
     # entity ENTITY is
     match = re.findall('entity\s+(.+)\s+is', data, re.IGNORECASE);
     for ent in match:
-        some2file[ent] = file
+        file_ent.append([file,ent])
     #
     cnt+=1
-    if cnt%100==0 and options.verbose:
-       print ("\n" + str(cnt) + " of " + str(qty) + " files were processed")
+    if cnt%5==0 and options.verbose:
+       print ("%4d of %4d files were processed" % (cnt,qty))
 
-file2some = dict((v,k) for k,v in some2file.items())
+lib_pkg_clean = []
+for values in lib_pkg:
+    if values not in lib_pkg_clean:
+       lib_pkg_clean.append(values)
+lib_pkg = lib_pkg_clean
 
 if (options.verbose):
-   print ("\nAll files were processed")
-   print ("\npkg2lib:   " + str(pkg2lib))
-   print ("\nsome2file: " + str(some2file))
-   print ("\ncom2pkg: "   + str(com2pkg))
-   print ("\nfile2some: " + str(file2some))
+   print ("%4d of %4d files were processed" % (qty,qty))
+   print ("\nlib_pkg:  " + str(lib_pkg))
+   print ("\nfile_pkg: " + str(file_pkg))
+   print ("\npkg_com:  " + str(pkg_com))
+   print ("\nfile_ent: " + str(file_ent))
+
+###############################################################################
 
 ## Using the TOP FILE to find all the involved FILES
 #unshift(@todo,$top);
