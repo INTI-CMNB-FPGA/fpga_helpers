@@ -16,3 +16,22 @@ use LIB2.PKG1.all;
 
 entity top is
 end entity top;
+
+architecture RTL of top is
+begin
+
+   dut1: com1
+   generic map ()
+   port map ()
+
+   dut2: com2
+   port map ()
+
+   dut3: entity lib1.com3
+   generic map ()
+   port map ()
+
+   dut4: entity lib2.com4 (RTL)
+   port map ()
+
+end architecture RTL;

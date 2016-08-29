@@ -80,9 +80,12 @@ options = parser.parse_args()
 if (options.verbose):
    print ("\nOptions: " + str(options))
 
-dir = "."
-for i in range(0, options.deep):
-    dir += "../"
+if options.deep:
+   dir = ""
+   for i in range(0, options.deep):
+       dir += "../"
+else:
+   dir = "."
 
 ## Collecting files ###########################################################
 
@@ -95,11 +98,12 @@ for root, dirs, files in os.walk(dir):
            file.endswith('.sv')   or \
            file.endswith('.v')       :
            files_all.append(filepath)
+files = files_all
 
 if (options.verbose):
-   print ("\nFiles: " + str(files_all))
+   print ("\nFiles: " + str(files))
 
-qty = len(files_all)
+qty = len(files)
 if (qty < 1):
    sys.exit('fpga_deps (ERROR): no files were found.')
 
@@ -124,20 +128,23 @@ cnt = 1
 
 lib_pkg  = []
 file_pkg = []
-file_ent = []
+file_com = []
 pkg_com  = []
 
-for file in files_all:
-    data = open(file, 'r').read();
+todo     = []
+done     = []
+
+for file in files:
+    data = open(file, 'r').read()
     # Searching LIBRARYs and PACKAGEs on lines such as:
     # use LIBRARY.PACKAGE.xyz;
-    match = re.findall('use\s+(.+)\.(.+)\..+;', data, re.IGNORECASE);
+    match = re.findall('use\s+(.+)\.(.+)\..+;', data, re.IGNORECASE)
     for lib,pkg in match:
         if lib.lower() not in knownlibs:
            lib_pkg.append([lib, pkg])
     # Searching names of PACKAGEs and FILEs which include them:
     # package PACKAGE is
-    match = re.findall('package\s+(.+)\s+is', data, re.IGNORECASE);
+    match = re.findall('package\s+(.+)\s+is', data, re.IGNORECASE)
     for pkg in match:
         file_pkg.append([file,pkg])
         # Searching COMPONENTs inside PACKAGEs:
@@ -147,9 +154,9 @@ for file in files_all:
             pkg_com.append([pkg,com])
     # Searching names of ENTITYs and FILEs which include them:
     # entity ENTITY is
-    match = re.findall('entity\s+(.+)\s+is', data, re.IGNORECASE);
+    match = re.findall('entity\s+(.+)\s+is', data, re.IGNORECASE)
     for ent in match:
-        file_ent.append([file,ent])
+        file_com.append([file,ent])
     #
     cnt+=1
     if cnt%5==0 and options.verbose:
@@ -162,54 +169,66 @@ for values in lib_pkg:
 lib_pkg = lib_pkg_clean
 
 if (options.verbose):
-   print ("%4d of %4d files were processed" % (qty,qty))
-   print ("\nlib_pkg:  " + str(lib_pkg))
-   print ("\nfile_pkg: " + str(file_pkg))
-   print ("\npkg_com:  " + str(pkg_com))
-   print ("\nfile_ent: " + str(file_ent))
+   print ("%4d of %4d files were processed\n" % (qty,qty))
+   print ("lib_pkg:  " + str(lib_pkg)  + "\n")
+   print ("file_pkg: " + str(file_pkg) + "\n")
+   print ("pkg_com:  " + str(pkg_com)  + "\n")
+   print ("file_com: " + str(file_com) + "\n")
+
+###############################################################################
+
+def file_of_pkg(looking_for):
+    #TODO: ask for help when PKG appears on more than a FILE
+    for file,pkg in file_pkg:
+        if looking_for.lower()==pkg.lower():
+           return file
+
+def file_of_com(looking_for):
+    #TODO: ask for help when COM appears on more than a FILE
+    for file,com in file_com:
+        if looking_for.lower()==com.lower():
+           return file
+
+def check_if_processed(looking_for):
+    if looking_for in todo or looking_for in done:
+       return True
+    else:
+       return False
 
 ###############################################################################
 
 ## Using the TOP FILE to find all the involved FILES
-#unshift(@todo,$top);
+todo.append(options.top)
 
-#while ($#todo>=0) {
-#   $file = shift(@todo); # Remove file of list to analyze
-#   print("Analyzing $file ...") if ($verbosity);
-#   open FILE, $file;
-#   while (<FILE>) {
-#      undef $aux;
-#      next if ($_=~/^\s*--/); # Jump if comment
-#      # Searching used PACKAGEs
-#      if ($_=~/use\s+(.+)\.(.+)\..+;/i) {
-#         $lib = lc($1);
-#         next if ($lib eq 'ieee' || $lib eq 'std' || $lib eq 'unisim'); # Jump if known
-#         $pkg = lc($2);
-#         print("* lib.pkg: $lib.$pkg") if ($verbosity);
-#         $aux = $some2file{$pkg}; # Save probably file to analyze
-#      }
-#      # Searching used ENTITYs
-#      # next if ($_=~/[;@]/);
-#      # next if ($_=~/\s*downto\s*|\s+to\s+|signal|constant|variable/);
-#      # The instantiation line could be:
-#      # LABEL : ENTITY
-#      # or
-#      # LABEL : entity library.ENTITY [(architecture)]
-#      if ($_=~/:.*\.(\w*)|:\s*(\w*)/) {
-#         $comp = lc($1).lc($2); # Mark probably entity/component
-#      }
-#      # Next line must have generic or port map
-#      if ($_=~/generic map|port map/) {
-#         print("* comp.inst: $comp") if ($verbosity);
-#         $aux = $some2file{$comp}; # Save probably file to analyze
-#      }
-#      # Is the file pending to analyze?
-#      next if ((grep $_ eq $aux, @todo) || (grep $_ eq $aux, @done));
-#      push(@todo,$aux) if ($aux ne ''); # Mark to analize
-#   }
-#   close FILE;
-#   unshift(@done,$file); # File already processed 
-#   #
+while len(todo) > 0:
+   file = todo.pop(0)
+   done.append(file)
+   if options.verbose:
+      print ("Analyzing %s" %(file))
+   data = open(file, 'r').read();
+   #TODO: delete comments
+   # Searching used PACKAGEs
+   match = re.findall('use\s+(.+)\.(.+)\..+;', data, re.IGNORECASE)
+   for lib,pkg in match:
+       if lib.lower() not in knownlibs:
+          file_next = file_of_pkg(pkg)
+          if not check_if_processed(file_next):
+             if options.verbose:
+                print ("* pkg '" + pkg + "' in file '" + file_next + "'")
+             todo.append(file_next)
+   # Searching used ENTITYs
+   # The instantiation line could be:
+   # LABEL : ENTITY  or LABEL : entity library.ENTITY [(architecture)]
+   # Next line must have generic or port map
+   match = re.findall(':[\s\w]*\.(\w*)|:\s+(\w*)[\n\r\s\w]*map', data, re.IGNORECASE)
+   for coms in match:
+       for com in coms:
+           if com:
+             file_next = file_of_com(com)
+             if not check_if_processed(file_next):
+                if options.verbose:
+                   print ("* com '" + com + "' in file '" + file_next + "'")
+                todo.append(file_next)
 #   undef $work;
 #   $work = $pkg2lib{$file2some{$file}};
 #   $work = $pkg2lib{$com2pkg{$file2some{$file}}} if (!$work);
@@ -217,8 +236,14 @@ if (options.verbose):
 #   unshift(@prj_files,"vhdl $work $file") if ($tool eq 'ise');
 #   unshift(@prj_files,"set_global_assignment -name VHDL_FILE $file -library $work")
 #      if ($tool eq 'quartus2');
-#}
-#print("Finished.") if ($verbosity);
+if options.verbose:
+   print ("Done")
+
+done.reverse()
+
+print
+print
+print done
 
 #foreach $prj_file (@prj_files) {
 #   $text .= "$prj_file\n";
