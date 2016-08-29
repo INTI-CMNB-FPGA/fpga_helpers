@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# FPGA Deps collects the files of a HDL project
+# FPGA Deps collects the files of an HDL project
 # Copyright (C) 2015-2016 INTI, Rodrigo A. Melo
 #
 # This program is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ version = 'FPGA Deps (FPGA Helpers) v' + getVersion(share_dir)
 
 parser = argparse.ArgumentParser(
    prog='fpga_deps',
-   description='Collects the files of a HDL project.'
+   description='Collects the files of an HDL project.'
 )
 
 parser.add_argument(
@@ -89,28 +89,34 @@ else:
 
 ## Collecting files ###########################################################
 
-files_all = []
+files_aux  = []
+files_info = {}
+
+if (options.verbose):
+   print ("\nCollecting files..."),
+
 for root, dirs, files in os.walk(dir):
     for file in files:
         filepath = root+'/'+file
-        if file.endswith('.vhdl') or \
-           file.endswith('.vhd')  or \
-           file.endswith('.sv')   or \
-           file.endswith('.v')       :
-           files_all.append(filepath)
-files = files_all
-
-if (options.verbose):
-   print ("\nFiles: " + str(files))
+        if file.endswith('.vhdl') or file.endswith('.vhd'):
+           files_aux.append(filepath)
+           files_info[filepath] = {"lan":"vhdl","lib":"work"}
+        if file.endswith('.v') or file.endswith('.sv'):
+           files_aux.append(filepath)
+           files_info[filepath] = {"lan":"verilog","lib":"work"}
+files = files_aux
 
 qty = len(files)
 if (qty < 1):
    sys.exit('fpga_deps (ERROR): no files were found.')
 
 if (options.verbose):
-   print("\nFiles found: " + str(qty))
+   print ("%d files found" % (qty))
+   for key in files_info.keys():
+       print ("* [%s] %s" % (files_info[key]['lan'],key))
+   print
 
-## Collecting data from founded files #########################################
+## Collecting data from files #################################################
 
 # Data to collect:
 # * Inside of which LIBRARY is each PACKAGE.
@@ -133,6 +139,9 @@ pkg_com  = []
 
 todo     = []
 done     = []
+
+if (options.verbose):
+   print ("Collecting data from files...")
 
 for file in files:
     data = open(file, 'r').read()
@@ -169,11 +178,20 @@ for values in lib_pkg:
 lib_pkg = lib_pkg_clean
 
 if (options.verbose):
-   print ("%4d of %4d files were processed\n" % (qty,qty))
-   print ("lib_pkg:  " + str(lib_pkg)  + "\n")
-   print ("file_pkg: " + str(file_pkg) + "\n")
-   print ("pkg_com:  " + str(pkg_com)  + "\n")
-   print ("file_com: " + str(file_com) + "\n")
+   print ("%4d of %4d files were processed" % (qty,qty))
+   print ("lib_pkg:")
+   for lib,pkg in lib_pkg:
+      print ("* Package '%s' in library '%s'" % (pkg,lib))
+   print ("file_pkg:")
+   for file,pkg in file_pkg:
+      print ("* Package '%s' in file '%s'" % (pkg,file))
+   print ("pkg_com:")
+   for pkg,com in pkg_com:
+      print ("* Component '%s' in package '%s'" % (com,pkg))
+   print ("file_com:")
+   for file,com in file_com:
+      print ("* Component '%s' in file '%s'" % (com,file))
+   print
 
 ###############################################################################
 
@@ -196,6 +214,9 @@ def check_if_processed(looking_for):
        return False
 
 ###############################################################################
+
+if options.verbose:
+   print ("Finding project files...")
 
 ## Using the TOP FILE to find all the involved FILES
 todo.append(options.top)
@@ -238,11 +259,9 @@ while len(todo) > 0:
 #      if ($tool eq 'quartus2');
 if options.verbose:
    print ("Done")
+   print
 
 done.reverse()
-
-print
-print
 print done
 
 #foreach $prj_file (@prj_files) {
