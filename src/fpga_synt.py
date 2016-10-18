@@ -85,7 +85,7 @@ if options.tool is None:
    elif option == "4":
       options.tool = "quartus2"
    else:
-      sys.exit('fpga_prog (ERROR): invalid option.')
+      sys.exit('fpga_synt (ERROR): invalid option.')
 
 fpga_prog_text = "ifneq ($(shell which fpga_prog),)\n\n";
 if options.board is None:
@@ -119,13 +119,13 @@ fpga_prog_text += "\nendif\n";
 if options.tool != 'all':
    shutil.copy(share_dir + '/data/tools/synthesis/options.tcl', '.')
    shutil.copy(share_dir + '/data/tools/synthesis/' + options.tool + '.tcl', '.')
-   open(options.tool + '.tcl','a').write("\n# Created with " + version)
+   open(options.tool + '.tcl','a').write("\n# Generated with " + version)
 else:
    for filename in glob.glob(share_dir + '/data/tools/synthesis/*.tcl'):
        shutil.copy(filename, '.')
-       open(os.path.basename(filename),'a').write("\n# Created with " + version)
+       open(os.path.basename(filename),'a').write("\n# Generated with " + version)
 shutil.copy(share_dir + '/data/tools/synthesis/Makefile', '.')
 open('Makefile','a').write(fpga_prog_text)
-open('Makefile','a').write("\n# Created with " + version)
+open('Makefile','a').write("\n# Generated with " + version)
 
-print ('fpga_synt (INFO): files were created.')
+print ('fpga_synt (INFO): files were generated.')

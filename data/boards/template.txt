@@ -1,0 +1,51 @@
+---
+name: [Name according to the User Guide] resources
+authors: |
+  * [AUTHOR] <[MAIL]>
+license: |
+  Copyright (c) 2015 Author and INTI
+  Distributed under the BSD 3-Clause License
+resources: |
+  * List of resources (fpga, headers, devices, ...).
+notes: |
+  * List of notes (power, programming, special considerations).
+pads:
+  basics:
+    clk1_i       : b01
+    clk2_i       : b02
+    clk3p_i      : b03
+    clk3n_i      : b04
+    led1_o       : b05
+    led2_o       : b06
+    led3_o       : b07
+    led4_o       : b08
+    sw1_i        : b09
+    sw2_i        : b10
+    sw3_i        : b11
+    sw4_i        : b12
+    pbr_i        : b13
+    pb1_i        : b13
+    pb2_i        : b14
+  gpios:
+    gpio1_1      : gp01
+    gpio1_2      : gp02
+    gpio1_3      : gp03
+    gpio1_4      : gp04
+    gpio1_5      : gp05
+    gpio1_6      : gp06
+    gpio1_7      : gp07
+    gpio1_8      : gp08
+    gpio1_9      : gnd
+    gpio1_10     : +3.3v
+    gpio2_1      : gp09
+    gpio2_2      : gp10
+    gpio2_3      : gp11
+    gpio2_4      : gp12
+    gpio2_5      : gp13
+    gpio2_6      : gp14
+    gpio2_7      : gp15
+    gpio2_8      : gp16
+    gpio2_9      : gnd
+    gpio2_10     : +3.3v
+  others:
+    ...

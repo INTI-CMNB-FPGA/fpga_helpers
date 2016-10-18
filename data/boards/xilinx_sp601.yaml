@@ -14,3 +14,140 @@ bpi:
     position: 1
     width:    8
     size:     16K
+pads:
+  basics:
+    clk1_i     : v10
+    clk2p_i    : k15
+    clk2n_i    : k16
+    clk3p_i    : h17
+    clk3n_i    : h18
+    pbr_i      : n4
+    pb1_i      : p4
+    pb2_i      : f6
+    pb3_i      : e4
+    pb4_i      : f5
+    led1_o     : e13
+    led2_o     : c14
+    led3_o     : c4
+    led4_o     : a4
+    sw1_i      : d14
+    sw2_i      : e12
+    sw3_i      : f12
+    sw4_i      : v13
+    uart1_tx_o : l12
+    uart1_rx_i : k14
+  gpios:
+    gpio1_1    : n17
+    gpio1_2    : f15
+    gpio1_3    : m18
+    gpio1_4    : b4
+    gpio1_5    : a3
+    gpio1_6    : f13
+    gpio1_7    : l15
+    gpio1_8    : p12
+  fmc_low:    
+    fmcl_c10   : d12
+    fmcl_c11   : c12
+    fmcl_c14   : d8
+    fmcl_c15   : c8
+    fmcl_c18   : b2
+    fmcl_c19   : a2
+    fmcl_c22   : r10
+    fmcl_c23   : t10
+    fmcl_c26   : r11
+    fmcl_c27   : t11
+    fmcl_c30   : p11
+    fmcl_c31   : n10
+    fmcl_d1    : b3
+    fmcl_d8    : d11
+    fmcl_d9    : c11
+    fmcl_d11   : b14
+    fmcl_d12   : a14
+    fmcl_d14   : g11
+    fmcl_d15   : f10
+    fmcl_d17   : b11
+    fmcl_d18   : a11
+    fmcl_d20   : r8
+    fmcl_d21   : t8
+    fmcl_d23   : n5
+    fmcl_d24   : p6
+    fmcl_d26   : u7
+    fmcl_d27   : v7
+    fmcl_g2    : t9
+    fmcl_g3    : v9
+    fmcl_g6    : d9
+    fmcl_g7    : c9
+    fmcl_g9    : c13
+    fmcl_g10   : a13
+    fmcl_g12   : f11
+    fmcl_g13   : e11
+    fmcl_g15   : d6
+    fmcl_g16   : c6
+    fmcl_g18   : c7
+    fmcl_g19   : a7
+    fmcl_g21   : n7
+    fmcl_g22   : p8
+    fmcl_g24   : r7
+    fmcl_g25   : t7
+    fmcl_g27   : m11
+    fmcl_g28   : n11
+    fmcl_g30   : m8
+    fmcl_g31   : n8
+    fmcl_g33   : t6
+    fmcl_g34   : v6
+    fmcl_g36   : m10
+    fmcl_g37   : n9
+    fmcl_h2    : u13
+    fmcl_h4    : c10
+    fmcl_h5    : a10
+    fmcl_h7    : c15
+    fmcl_h8    : a15
+    fmcl_h10   : b16
+    fmcl_h11   : a16
+    fmcl_h13   : e7
+    fmcl_h14   : e8
+    fmcl_h16   : b12
+    fmcl_h17   : a12
+    fmcl_h19   : g9
+    fmcl_h20   : f9
+    fmcl_h22   : n6
+    fmcl_h23   : p7
+    fmcl_h25   : t4
+    fmcl_h26   : v4
+    fmcl_h28   : u8
+    fmcl_h29   : v8
+    fmcl_h31   : u11
+    fmcl_h32   : v11
+    fmcl_h34   : t12
+    fmcl_h35   : v12
+    fmcl_h37   : u15
+    fmcl_h38   : v15
+doc: |
+ Authors: 
+ * Rodrigo A. Melo <rmelo@inti.gob.ar>
+ --
+ Board resources:
+ * Spartan-6 LX16.
+ * Clocks: CLK1 (27MHz) single ended. CLK2 (200 MHz) and CLK3 (SMA connectors)
+   differentials.
+ * 4 Push buttons: PB1 is GPIO_BUTTON_0 and so.
+ * 1 reset.
+ * 4 Leds: LED1 is GPIO_LED_0 and so.
+ * 4 dip switches: sw1 in GPIO_SWITCH_0.
+ * 1 GPIO (8 useful bits) on J13.
+ * 1 SPI FLASH: W25Q64VSFIG
+ * 1 BPI FLASH: 
+ --
+ Notes:
+ * Power: 5V (+ in the centre)
+ * It uses JTAG to be configured, through USB J10 (J12 has JTAG signals,
+   but the FPGA is not in the chain). It is an embedded USB Xilinx Cable.
+ * The FPGA is always in the chain and it can be programmed in any mode.
+ * With a jumper in J4, the JTAG of the FMC connector is excluded (1-2)
+   or included (2-3) in the JTAG chain.
+ * With SW2 you can choose which memory to use:
+   * SPI with M0=ON and M1=OFF.
+   * BPI with M0=OFF and M1=OFF.
+ --
+ ToDo:
+ * Some pads definitions.

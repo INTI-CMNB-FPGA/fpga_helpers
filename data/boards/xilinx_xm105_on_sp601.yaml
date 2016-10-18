@@ -1,0 +1,126 @@
+---
+name: Xilinx XM105 Debug Card on FMC LPC conector of SP601
+pads:
+  basics:
+    clk4p_i  : FMCL_H4
+    clk4n_i  : FMCL_H5
+    clk5p_i  : FMCL_G2
+    clk5n_i  : FMCL_G3
+    led5_o   : FMCL_G37
+    led6_o   : FMCL_G36
+    led7_o   : FMCL_H38
+    led8_o   : FMCL_H37
+  gpios:
+    gpio2_1  : FMCL_G6
+    gpio2_2  : FMCL_C14
+    gpio2_3  : FMCL_G7
+    gpio2_4  : FMCL_C15
+    gpio2_5  : FMCL_D8
+    gpio2_6  : FMCL_H16
+    gpio2_7  : FMCL_D9
+    gpio2_8  : FMCL_H17
+    gpio2_9  : FMCL_H7
+    gpio2_10 : FMCL_G15
+    gpio2_11 : FMCL_H8
+    gpio2_12 : FMCL_G16
+    gpio2_13 : FMCL_G9
+    gpio2_14 : FMCL_D17
+    gpio2_15 : FMCL_G10
+    gpio2_16 : FMCL_D18
+    gpio2_17 : FMCL_H10
+    gpio2_18 : FMCL_C18
+    gpio2_19 : FMCL_H11
+    gpio2_20 : FMCL_C19
+    gpio2_21 : FMCL_D11
+    gpio2_22 : FMCL_H19
+    gpio2_23 : FMCL_D12
+    gpio2_24 : FMCL_H20
+    gpio2_25 : FMCL_C10
+    gpio2_26 : FMCL_G18
+    gpio2_27 : FMCL_C11
+    gpio2_28 : FMCL_G19
+    gpio2_29 : FMCL_H13
+    gpio2_30 : FMCL_D20
+    gpio2_31 : FMCL_H14
+    gpio2_32 : FMCL_D21
+    gpio2_33 : FMCL_G12
+    gpio2_34 : FMCL_C22
+    gpio2_35 : FMCL_G13
+    gpio2_36 : FMCL_C23
+    gpio2_37 : FMCL_D14
+    gpio2_38 : FMCL_H22
+    gpio2_39 : FMCL_D15
+    gpio2_40 : FMCL_H23
+    gpio3_1  : FMCL_G21
+    gpio3_2  : FMCL_H28
+    gpio3_3  : FMCL_G22
+    gpio3_4  : FMCL_H29
+    gpio3_5  : FMCL_H25
+    gpio3_6  : FMCL_G27
+    gpio3_7  : FMCL_H26
+    gpio3_8  : FMCL_G28
+    gpio3_9  : FMCL_G24
+    gpio3_10 : FMCL_D26
+    gpio3_11 : FMCL_G25
+    gpio3_12 : FMCL_D27
+    gpio3_13 : FMCL_D23
+    gpio3_14 : FMCL_C26
+    gpio3_15 : FMCL_D24
+    gpio3_16 : FMCL_C27
+    gpio4_5  : FMCL_H31
+    gpio4_6  : FMCL_H34
+    gpio4_7  : FMCL_H32
+    gpio4_8  : FMCL_H35
+    gpio4_9  : FMCL_G30
+    gpio4_10 : FMCL_G33
+    gpio4_11 : FMCL_G31
+    gpio4_12 : FMCL_G34
+doc: |
+ Authors:
+ * Rodrigo A. Melo <rmelo@inti.gob.ar>
+ --
+ Board resources:
+ * FMC on J17 (connect to SP601).
+ * 4 leds (5 to 8): LED5 is DS1 and so.
+ * 2 clocks (4 to 5) differentials: CLK4 (Si570 U2 pin 4 and 5) and
+   CLK5 (SMA J9 and J10).
+ * GPIOS:
+   * GPIO1 on SP601.
+   * GPIO2 on J1
+   * GPIO3 on J20.
+   * GPIO4 on J16.
+ * Differentials pairs (P & N):
+   00 ->  gpio2_1 &  gpio2_3
+   01 ->  gpio2_5 &  gpio2_7
+   02 ->  gpio2_9 & gpio2_11
+   03 -> gpio2_13 & gpio2_15
+   04 -> gpio2_17 & gpio2_19
+   05 -> gpio2_21 & gpio2_23
+   06 -> gpio2_25 & gpio2_27
+   07 -> gpio2_29 & gpio2_31
+   08 -> gpio2_33 & gpio2_35
+   09 -> gpio2_37 & gpio2_39
+   10 -> gpio2_2  & gpio2_4
+   11 -> gpio2_6  & gpio2_8
+   12 -> gpio2_10 & gpio2_12
+   13 -> gpio2_14 & gpio2_16
+   14 -> gpio2_18 & gpio2_20
+   15 -> gpio2_22 & gpio2_24
+   16 -> gpio2_26 & gpio2_28
+   17 -> gpio2_30 & gpio2_32
+   18 -> gpio2_34 & gpio2_36
+   19 -> gpio2_38 & gpio2_40
+   20 -> gpio3_1  & gpio3_3
+   21 -> gpio3_5  & gpio3_7
+   22 -> gpio3_9  & gpio3_11
+   23 -> gpio3_13 & gpio3_15
+   24 -> gpio3_2  & gpio3_4
+   25 -> gpio3_6  & gpio3_8
+   26 -> gpio3_10 & gpio3_12
+   27 -> gpio3_14 & gpio3_16
+   28 -> gpio4_5  & gpio4_7
+   29 -> gpio4_9  & gpio4_11
+   30 -> gpio4_6  & gpio4_8
+   31 -> gpio4_10 & gpio4_12
+   32 -> led7_o   & led8_o
+   33 -> led5_o   & led6_o

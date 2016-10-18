@@ -9,3 +9,82 @@ spi:
     position: 1
     width:    4
     size:     128M
+pads:
+  basics:
+    clk1_i        : L15
+    pbr_i         : T15
+    pb1_i         : N4
+    pb2_i         : P4
+    pb3_i         : F5
+    pb4_i         : F6
+    pb5_i         : P3
+    led1_o        : U18
+    led2_o        : M14
+    led3_o        : N14
+    led4_o        : L14
+    led5_o        : M13
+    led6_o        : D4
+    led7_o        : P16
+    led8_o        : N12
+    sw1_i         : A10
+    sw2_i         : D14
+    sw3_i         : C14
+    sw4_i         : P15
+    sw5_i         : P12
+    sw6_i         : R5
+    sw7_i         : T5
+    sw8_i         : E4
+  hdmi:
+    hdmi1_d2p     : B12
+    hdmi1_d2n     : A12
+    hdmi1_d1p     : B11
+    hdmi1_d1n     : A11
+    hdmi1_d0p     : G9
+    hdmi1_d0n     : F9
+    hdmi1_clkp    : D11
+    hdmi1_clkn    : C11
+    hdmi1_scl     : C13
+    hdmi1_sda     : A13
+    hdmi2_d2p     : B8
+    hdmi2_d2n     : A8
+    hdmi2_d1p     : C7
+    hdmi2_d1n     : A7
+    hdmi2_d0p     : D8
+    hdmi2_d0n     : C8
+    hdmi2_clkp    : B6
+    hdmi2_clkn    : A6
+    hdmi2_scl     : D9
+    hdmi2_sda     : C9
+    hdmi3_d2p     : J16
+    hdmi3_d2n     : J18
+    hdmi3_d1p     : L17
+    hdmi3_d1n     : L18
+    hdmi3_d0p     : K17
+    hdmi3_d0n     : K18
+    hdmi3_clkp    : H17
+    hdmi3_clkn    : H18
+    hdmi3_scl     : M16
+    hdmi3_sda     : M18
+    hdmi4_d2p     : N5
+    hdmi4_d2n     : P6
+    hdmi4_d1p     : T4
+    hdmi4_d1n     : V4
+    hdmi4_d0p     : R3
+    hdmi4_d0n     : T3
+    hdmi4_clkp    : T9
+    hdmi4_clkn    : V9
+    hdmi4_scl     : C13
+    hdmi4_sda     : A13
+doc: |
+ Authors
+ * Rodrigo A. Melo <rmelo@inti.gob.ar>
+ --
+ Notes:
+ * Clock: clk1 = 100 MHz.
+ * HDMI: 1, 2 and 3 are buffered (1 and 3 are IN and 2 is OUT). 4 is unbuffered.
+ * LEDs: LED1 is LED0 on board and so.
+ * Push buttons: PB1, 2, 3, 4 and 5 are Up, left, center, right and down.
+ --
+ ToDo:
+ * Resources list.
+ * A lot of pads definitions.

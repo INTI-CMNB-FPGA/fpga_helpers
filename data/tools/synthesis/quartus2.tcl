@@ -130,6 +130,9 @@ if { $project_file != "" } {
 foreach_in_collection asgn_id [get_all_assignments -type global -name PROJECT_OUTPUT_DIRECTORY] {
    set ODIR [get_assignment_info $asgn_id -value]
 }
+if {![info exists ODIR]} {
+   set ODIR .
+}
 
 if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
    if {[catch {

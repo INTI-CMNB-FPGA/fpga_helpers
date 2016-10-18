@@ -9,3 +9,106 @@ spi:
     position: 1
     width:    4
     size:     32M
+pads:
+  basics:
+    clk1_i       : v10
+    clk2_i       : k15
+    clk3_i       : c10
+    clk4_i       : r8
+    led1_o       : p4
+    led2_o       : l6
+    led3_o       : f5
+    led4_o       : c2
+    sw1_i        : b3
+    sw2_i        : a3
+    sw3_i        : b4
+    sw4_i        : a4
+    pbr_i        : v4
+    uart1_rx_i   : r7
+    uart1_tx_o   : t7
+  gpios:
+    gpio1_1      : f15
+    gpio1_2      : f16
+    gpio1_3      : c17
+    gpio1_4      : c18
+    gpio1_5      : gnd
+    gpio1_6      : +3.3v
+    gpio1_7      : f14
+    gpio1_8      : g14
+    gpio1_9      : d17
+    gpio1_10     : d18
+    gpio1_11     : gnd
+    gpio1_12     : +3.3v
+    gpio2_1      : h12
+    gpio2_2      : g13
+    gpio2_3      : e16
+    gpio2_4      : e18
+    gpio2_5      : gnd
+    gpio2_6      : +3.3v
+    gpio2_7      : k12
+    gpio2_8      : k13
+    gpio2_9      : f17
+    gpio2_10     : f18
+    gpio2_11     : gnd
+    gpio2_12     : +3.3v
+  ethernet:
+    mii_rst_o    : t18
+    mii_mdc_o    : m16
+    mii_mdio_io  : l18
+    mii_txd0_o   : k18
+    mii_txd1_o   : k17
+    mii_txd2_o   : j18
+    mii_txd3_o   : j16
+    mii_txen_o   : l17
+    mii_txclk_i  : h17
+    mii_crs_i    : n17
+    mii_col_i    : m18
+    mii_rxd0_i   : t17
+    mii_rxd1_i   : n16
+    mii_rxd2_i   : n15
+    mii_rxd3_i   : p18
+    mii_rxdv_i   : p17
+    mii_rxerr_i  : n18
+    mii_rxclk_i  : l15
+    mii_txerr_o  : n.c.
+  config:
+    i2c_sda      : u13
+    i2c_scl      : p12
+  flash_spi:
+    flash_d0_i   : t13
+    flash_d1_i   : r13
+    flash_d2_i   : t14
+    flash_d3_i   : v14
+    flash_clk_o  : r15
+    flash_sel_o  : v3
+doc: |
+ Authors:
+ * Rodrigo A. Melo <rmelo@inti.gob.ar>
+ --
+ Board resources:
+ * FPGA: Spartan-6 LX9.
+ * 4 Clocks (3 internal + 1 external):
+   CLK1 = 40 MHz, CLK2 = 66.7 MHz, CLK3 = 100 MHz and CLK4 = 66.7 MHz
+   with the external oscillator DS1088LU-66+
+ * 1 I2C to configure the Triple Output User programmable Texas
+   Instruments CDCE913 clock (up to 230 MHz).
+ * 2 PMOD (12 pin, 8 useful):
+   * GPIO1 (J5)
+   * GPIO2 (J4)
+   * Pin distribution:
+     7  8  9  10 11 12
+     1  2  3  4  5  6
+ * 4 LEDs: LED1 (D2), LED2 (D3), LED3 (D9) and LED4 (D10).
+ * 4 DIP switches: on SW1.
+ * 1 User Reset: PBR (SW5).
+ * 1 PHY Ethernet (DP83848J PHY).
+ * 1 UART (USB) on J3
+ * 1 LPDDR 32 Mb x 16 (512 Mb) Micron. Part number MT46H32M16LFBF-5.
+     The signals are connected to I/O Bank 3 of the FPGA.
+ * 1 SPI Flash (N25Q128).
+ --
+ Notes:
+  * USB powered.
+  * SPI flash to storage bitstream.
+  * I2C only for configuration. Internall pull-up required.
+  * User reset require an internal pull-down.
