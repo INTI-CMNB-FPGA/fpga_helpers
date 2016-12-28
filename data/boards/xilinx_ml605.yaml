@@ -1,0 +1,94 @@
+---
+name: Xilinx Virtex 6 ML605
+fpga:
+  - name:     xc6vlx240t-1-ff1156
+    position: 2
+    vendor:   xilinx
+bpi:
+  - name:     28F256P30
+    position: 2
+    width:    16
+    size:     32M
+pads:
+  basics:
+    clk1_i     : u23
+    clk2p_i    : h9
+    clk2n_i    : j9
+    clk3p_i    : f5
+    clk3n_i    : f6
+    clk4p_i    : m22
+    clk4n_i    : l23
+    led1_o     : ac22
+    led2_o     : ac24
+    led3_o     : ae22
+    led4_o     : ae23
+    led5_o     : ab23
+    led6_o     : ag23
+    led7_o     : ae24
+    led8_o     : ad24
+    ledc_o     : ap24
+    ledw_o     : ad21
+    lede_o     : ae21
+    leds_o     : ah28
+    ledn_o     : ah27
+    pbr_i      : h10
+    pbc_i      : g26
+    pbw_i      : h17
+    pbe_i      : g17
+    pbs_i      : a18
+    pbn_i      : a19
+    sw1_i      : d22
+    sw2_i      : c22
+    sw3_i      : l21
+    sw4_i      : l20
+    sw5_i      : c18
+    sw6_i      : b18
+    sw7_i      : k22
+    sw8_i      : k21
+doc: |
+ Authors: 
+ * Rodrigo A. Melo <rmelo@inti.gob.ar>
+ --
+ Board resources:
+ * FPGA: Virtex-6 LXT240.
+ * Config. memories:
+   * System ACE (CompactFlash)
+   * 128 Mb Platform Flash XL (XCF128X-FTG64C)
+   * 32 MB Linear BPI Flash (Numonyx JS28F256P30T95)
+ * Clocks:
+   * CLK1: Socketed 2.5V oscillator (single-ended). Populated with 66 MHz (MBH2100H-66.000).
+   * CLK2: Fixed 200 MHz oscillator (differential). SiTime 200 MHz 2.5V LVDS OSC, 50 ppm.
+   * CLK3: SMA connectors for MGT clocking (differential).
+   * CLK4: User SMA connectors (differential).
+ * 8 User Leds (active high): LED1 is GPIO_LED_0 and so.
+ * 5 direcctional Leds: LEDC is GPIO_LED_C and so.
+ * 5 direcctional push buttons (active high): SW5 to 9for N, S, E, W and C.
+ * 1 reset: PBR is CPU_RESET.
+ * 8 dip switches (active high): SW1 is GPIO_DIP_SW1 and so.
+ * 512 MB DDR3 (MT4JSF6464HY-1G1)
+ * 20 GTX MGTs
+ * PCI Express Endpoint Connectivity (Gen1 8-lane (x8), Gen2 4-lane (x4))
+ * SFP Module Connector (AMP 136073-1)
+ * 10/100/1000 Tri-Speed Ethernet PHY with SGMII (Marvell M88E1111 EPHY)
+ * USB-to-UART Bridge (Silicon Labs CP2103GM)
+ * USB Controller (Cypress CY7C67300-100AXI)
+ * DVI Codec (Chrontel CH7301C-TF Video codec)
+ * IIC Bus
+ * LCD character display (16x2) (Displaytech S162D BA BC)
+ * VITA 57.1 FMC HPC Connector
+ * VITA 57.1 FMC LPC Connector
+ --
+ Notes:
+ * Power: 12V (+ in the centre)
+ * It uses JTAG to be configured, through USB J22 (USB Mini-B). It is an
+    embedded USB Xilinx Cable.
+ * The FPGA and the System ACE are always in the chain.
+ * With the jumpers J17 and J18, the HPC and LPC (FMC connectors) are bypassed
+   (1-2) or included (2.3) in the JTAG chain.
+ * Memory to use:
+   * System ACE with S1.4=ON.
+   * BPI with S1.4=OFF and S2.2=ON.
+   * Platform Flash with S1.4=OFF and S2.2=OFF.
+ --
+ ToDo:
+ * Some pads definitions.
