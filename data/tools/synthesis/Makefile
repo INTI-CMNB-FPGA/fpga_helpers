@@ -18,17 +18,19 @@
 #
 ###############################################################################
 
-ifneq ("$(wildcard ise.tcl)","")
+PATH_VENDOR_TCL=.
+
+ifneq ("$(wildcard $(PATH_VENDOR_TCL)/ise.tcl)","")
    TOOL = ise
-else ifneq ("$(wildcard vivado.tcl)","")
+else ifneq ("$(wildcard $(PATH_VENDOR_TCL)/vivado.tcl)","")
    TOOL = vivado
-else ifneq ("$(wildcard quartus2.tcl)","")
+else ifneq ("$(wildcard $(PATH_VENDOR_TCL)/quartus2.tcl)","")
    TOOL = quartus2
 else
    $(error You have to have at least one <vendorTool>.tcl file)
 endif
 
-TCL_FILE           = $(TOOL).tcl
+TCL_FILE           = $(PATH_VENDOR_TCL)/$(TOOL).tcl
 
 ISE_TCL            = xtclsh $(TCL_FILE)
 ISE_TCL_CON        = xtclsh

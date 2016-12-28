@@ -56,14 +56,14 @@ proc cmdLineParser {TOOL} {
    return [array get options]
 }
 
-proc fpga_device {FPGA OPT TOOL} {
+proc fpga_device {FPGA {OPT ""} {TOOL ""}} {
    if {$OPT == "" || ($OPT=="-tool" && $TOOL=="quartus2")} {
       set_global_assignment -name DEVICE $FPGA
    }
 }
 
 proc fpga_file {FILE {OPTION ""} {VALUE ""}} {
-   if {$OPTION!="-lib" && $OPTION!="-top"} {
+   if {$OPTION!="" && $OPTION!="-lib" && $OPTION!="-top"} {
       puts "Valid options for fpga_file command are -lib and -top."
       exit 1
    }
@@ -121,8 +121,9 @@ if { $project_file != "" } {
          set_global_assignment -name OPTIMIZATION_TECHNIQUE SPEED
       }
    }
-   if {[catch {source options.tcl}]} {
-      puts "ERROR: something is wrong in options.tcl"
+   if {[catch {source options.tcl} ERRMSG]} {
+      puts "ERROR: something is wrong in options.tcl\n"
+      puts $ERRMSG
       exit 1
    }
 }
@@ -134,11 +135,12 @@ if {![info exists ODIR]} {
    set ODIR .
 }
 
-if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
+if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit" } {
    if {[catch {
       execute_module -tool map
-   }]} {
-      puts "ERROR: there was a problem running synthesis"
+   } ERRMSG]} {
+      puts "ERROR: there was a problem running synthesis\n"
+      puts $ERRMSG
       exit 1
    }
    if { [ file exists [glob -nocomplain $ODIR/*.map.rpt] ] } {
@@ -146,12 +148,13 @@ if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
    }
 }
 
-if { $RUN=="imp" || $RUN=="bit"} {
+if { $RUN=="imp" || $RUN=="bit" } {
    if {[catch {
       execute_module -tool fit
       execute_module -tool sta
-   }]} {
-      puts "ERROR: there was a problem running implementation"
+   } ERRMSG]} {
+      puts "ERROR: there was a problem running implementation\n"
+      puts $ERRMSG
       exit 1
    }
    if { [ file exists [glob -nocomplain $ODIR/*.fit.rpt] ] } {
@@ -159,11 +162,12 @@ if { $RUN=="imp" || $RUN=="bit"} {
    }
 }
 
-if {$RUN=="bit"} {
+if { $RUN=="bit" } {
    if {[catch {
       execute_module -tool asm
-   }]} {
-      puts "ERROR: there was a problem generating the bitstream"
+   } ERRMSG]} {
+      puts "ERROR: there was a problem generating the bitstream\n"
+      puts $ERRMSG
       exit 1
    }
 }

@@ -56,14 +56,14 @@ proc cmdLineParser {TOOL} {
 
 proc writeFile {PATH MODE DATA} {set fp [open $PATH $MODE];puts $fp $DATA;close $fp}
 
-proc fpga_device {FPGA OPT TOOL} {
+proc fpga_device {FPGA {OPT ""} {TOOL ""}} {
    if {$OPT == "" || ($OPT=="-tool" && $TOOL=="vivado")} {
       set_property "part" $FPGA [current_project]
    }
 }
 
 proc fpga_file {FILE {OPTION ""} {VALUE ""}} {
-   if {$OPTION!="-lib" && $OPTION!="-top"} {
+   if {$OPTION!="" && $OPTION!="-lib" && $OPTION!="-top"} {
       puts "Valid options for fpga_file command are -lib and -top."
       exit 1
    }
@@ -92,7 +92,7 @@ if { [ file exists vivado.xpr ] } {
 
 set project_file [glob -nocomplain *.xpr]
 
-if { $project_file != "" && $project_file != "ise.xise" } {
+if { $project_file != "" } {
    puts "Using Vivado project ($project_file)"
    open_project $project_file
 } else {
@@ -138,13 +138,14 @@ if { $project_file != "" && $project_file != "ise.xise" } {
          set_property "steps.route_design.args.directive" "Explore"            $obj
       }
    }
-   if {[catch {source options.tcl}]} {
-      puts "ERROR: something is wrong in options.tcl"
+   if {[catch {source options.tcl} ERRMSG]} {
+      puts "ERROR: something is wrong in options.tcl\n"
+      puts $ERRMSG
       exit 1
    }
 }
 
-if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
+if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit" } {
    if {[catch {
       reset_run synth_1
       launch_runs synth_1
@@ -154,13 +155,14 @@ if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
       set TIMING [report_timing -return_string]
       writeFile vivado_syn_$OPT.log w $UTILIZATION
       writeFile vivado_syn_$OPT.log a $TIMING
-   }]} {
-      puts "ERROR: there was a problem running synthesis"
+   } ERRMSG]} {
+      puts "ERROR: there was a problem running synthesis\n"
+      puts $ERRMSG
       exit 1
    }
 }
 
-if { $RUN=="imp" || $RUN=="bit"} {
+if { $RUN=="imp" || $RUN=="bit" } {
    if {[catch {
       launch_runs impl_1
       wait_on_run impl_1
@@ -171,18 +173,20 @@ if { $RUN=="imp" || $RUN=="bit"} {
       set TIMING [report_timing -return_string]
       writeFile vivado_imp_$OPT.log w $UTILIZATION
       writeFile vivado_imp_$OPT.log a $TIMING
-   }]} {
-      puts "ERROR: there was a problem running implementation"
+   } ERRMSG]} {
+      puts "ERROR: there was a problem running implementation\n"
+      puts $ERRMSG
       exit 1
    }
 }
 
-if {$RUN=="bit"} {
+if {$RUN=="bit" } {
    if {[catch {
       launch_run impl_1 -to_step write_bitstream
       wait_on_run impl_1
-   }]} {
-      puts "ERROR: there was a problem generating the bitstream"
+   } ERRMSG]} {
+      puts "ERROR: there was a problem generating the bitstream\n"
+      puts $ERRMSG
       exit 1
    }
 }

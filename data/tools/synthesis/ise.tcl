@@ -54,7 +54,7 @@ proc cmdLineParser {TOOL} {
    return [array get options]
  }
 
-proc fpga_device {FPGA OPT TOOL} {
+proc fpga_device {FPGA {OPT ""} {TOOL ""}} {
    if {$OPT == "" || ($OPT=="-tool" && $TOOL=="ise")} {
       regexp -nocase {(.*)(-.*)-(.*)} $FPGA -> device speed package
       set family "Unknown"
@@ -104,7 +104,7 @@ proc fpga_device {FPGA OPT TOOL} {
 }
 
 proc fpga_file {FILE {OPTION ""} {VALUE ""}} {
-   if {$OPTION!="-lib" && $OPTION!="-top"} {
+   if {$OPTION!="" && $OPTION!="-lib" && $OPTION!="-top"} {
       puts "Valid options for fpga_file command are -lib and -top."
       exit 1
    }
@@ -155,17 +155,19 @@ if { $project_file != "" && $project_file != "ise.xise" } {
          project set "Optimization Goal" "Speed"
       }
    }
-   if {[catch {source options.tcl}]} {
-      puts "ERROR: something is wrong in options.tcl"
+   if {[catch {source options.tcl} ERRMSG]} {
+      puts "ERROR: something is wrong in options.tcl\n"
+      puts $ERRMSG
       exit 1
    }
 }
 
-if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
+if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit" } {
    if {[catch {
       process run "Synthesize"    -force rerun
-   }]} {
-      puts "ERROR: there was a problem running synthesis"
+   } ERRMSG]} {
+      puts "ERROR: there was a problem running synthesis\n"
+      puts $ERRMSG
       exit 1
    }
    if { [ file exists [glob -nocomplain *.syr] ] } {
@@ -173,13 +175,14 @@ if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit"} {
    }
 }
 
-if { $RUN=="imp" || $RUN=="bit"} {
+if { $RUN=="imp" || $RUN=="bit" } {
    if {[catch {
       process run "Translate"     -force rerun
       process run "Map"           -force rerun
       process run "Place & Route" -force rerun
-   }]} {
-      puts "ERROR: there was a problem running implementation"
+   } ERRMSG]} {
+      puts "ERROR: there was a problem running implementation\n"
+      puts $ERRMSG
       exit 1
    }
    if { [ file exists [glob -nocomplain *.par] ] } {
@@ -187,11 +190,12 @@ if { $RUN=="imp" || $RUN=="bit"} {
    }
 }
 
-if {$RUN=="bit"} {
+if { $RUN=="bit" } {
    if {[catch {
       process run "Generate Programming File" -force rerun
-   }]} {
-      puts "ERROR: there was a problem generating the bitstream"
+   } ERRMSG]} {
+      puts "ERROR: there was a problem generating the bitstream\n"
+      puts $ERRMSG
       exit 1
    }
 }
