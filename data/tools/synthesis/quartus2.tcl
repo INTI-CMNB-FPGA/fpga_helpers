@@ -1,6 +1,6 @@
 #
 # Tcl for Altera Quartus2 Tool
-# Copyright (C) 2016 INTI, Rodrigo A. Melo <rmelo@inti.gob.ar>
+# Copyright (C) 2016-2017 INTI, Rodrigo A. Melo <rmelo@inti.gob.ar>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ package require ::quartus::flow
 proc cmdLineParser {TOOL} {
 
    set parameters {
-       {run.arg  "syn"    "What to RUN  [syn, imp, bit]"}
+       {task.arg "syn"    "TASK         [syn, imp, bit]"}
        {opt.arg  "user"   "OPTimization [user, area, power, speed]"}
    }
 
@@ -39,8 +39,8 @@ proc cmdLineParser {TOOL} {
 
    set ERROR ""
 
-   if {$options(run)!="syn" && $options(run)!="imp" && $options(run)!="bit"} {
-      append ERROR "<$options(run)> is not a supported RUN option.\n"
+   if {$options(task)!="syn" && $options(task)!="imp" && $options(task)!="bit"} {
+      append ERROR "<$options(task)> is not a supported TASK option.\n"
    }
 
    if {$options(opt)!="user" && $options(opt)!="area" && $options(opt)!="power" && $options(opt)!="speed"} {
@@ -87,13 +87,32 @@ proc fpga_file {FILE {OPTION ""} {VALUE ""}} {
 
 set FPGA_TOOL "quartus2"
 
+proc do_syn {OPT ODIR} {
+   execute_module -tool map
+   if { [ file exists [glob -nocomplain $ODIR/*.map.rpt] ] } {
+      file copy -force [glob -nocomplain $ODIR/*.map.rpt] quartus2_syn_$OPT.log
+   }
+}
+
+proc do_imp {OPT ODIR} {
+   execute_module -tool fit
+   execute_module -tool sta
+   if { [ file exists [glob -nocomplain $ODIR/*.fit.rpt] ] } {
+      file copy -force [glob -nocomplain $ODIR/*.fit.rpt] quartus2_imp_$OPT.log
+   }
+}
+
+proc do_bit {} {
+   execute_module -tool asm
+}
+
 ###################################################################################################
 # Main                                                                                            #
 ###################################################################################################
 
 array set options [cmdLineParser "Altera Quartus2"]
-set  RUN   $options(run)
-set  OPT   $options(opt)
+set TASK $options(task)
+set OPT  $options(opt)
 
 if { [ file exists quartus2.qpf ] } {file delete quartus2.qpf}
 if { [ file exists quartus2.qsf ] } {file delete quartus2.qsf}
@@ -135,41 +154,25 @@ if {![info exists ODIR]} {
    set ODIR .
 }
 
-if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit" } {
-   if {[catch {
-      execute_module -tool map
-   } ERRMSG]} {
-      puts "ERROR: there was a problem running synthesis\n"
-      puts $ERRMSG
-      exit 1
+if {[catch {
+   switch $TASK {
+      "syn"  {
+         do_syn $OPT $ODIR
+      }
+      "imp" {
+         do_syn $OPT $ODIR
+         do_imp $OPT $ODIR
+      }
+      "bit" {
+         do_syn $OPT $ODIR
+         do_imp $OPT $ODIR
+         do_bit
+      }
    }
-   if { [ file exists [glob -nocomplain $ODIR/*.map.rpt] ] } {
-      file copy -force [glob -nocomplain $ODIR/*.map.rpt] quartus2_syn_$OPT.log
-   }
-}
-
-if { $RUN=="imp" || $RUN=="bit" } {
-   if {[catch {
-      execute_module -tool fit
-      execute_module -tool sta
-   } ERRMSG]} {
-      puts "ERROR: there was a problem running implementation\n"
-      puts $ERRMSG
-      exit 1
-   }
-   if { [ file exists [glob -nocomplain $ODIR/*.fit.rpt] ] } {
-      file copy -force [glob -nocomplain $ODIR/*.fit.rpt] quartus2_imp_$OPT.log
-   }
-}
-
-if { $RUN=="bit" } {
-   if {[catch {
-      execute_module -tool asm
-   } ERRMSG]} {
-      puts "ERROR: there was a problem generating the bitstream\n"
-      puts $ERRMSG
-      exit 1
-   }
+} ERRMSG]} {
+   puts "ERROR: there was a problem running $TASK\n"
+   puts $ERRMSG
+   exit 1
 }
 
 project_close

@@ -1,6 +1,6 @@
 #
 # Tcl for Xilinx Vivado Tool
-# Copyright (C) 2016 INTI, Rodrigo A. Melo <rmelo@inti.gob.ar>
+# Copyright (C) 2016-2017 INTI, Rodrigo A. Melo <rmelo@inti.gob.ar>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ package require cmdline
 proc cmdLineParser {TOOL} {
 
    set parameters {
-       {run.arg  "syn"    "What to RUN  [syn, imp, bit]"}
+       {task.arg "syn"    "TASK         [syn, imp, bit]"}
        {opt.arg  "user"   "OPTimization [user, area, power, speed]"}
    }
 
@@ -37,8 +37,8 @@ proc cmdLineParser {TOOL} {
 
    set ERROR ""
 
-   if {$options(run)!="syn" && $options(run)!="imp" && $options(run)!="bit"} {
-      append ERROR "<$options(run)> is not a supported RUN option.\n"
+   if {$options(task)!="syn" && $options(task)!="imp" && $options(task)!="bit"} {
+      append ERROR "<$options(task)> is not a supported TASK option.\n"
    }
 
    if {$options(opt)!="user" && $options(opt)!="area" && $options(opt)!="power" && $options(opt)!="speed"} {
@@ -78,13 +78,41 @@ proc fpga_file {FILE {OPTION ""} {VALUE ""}} {
 
 set FPGA_TOOL "vivado"
 
+proc do_syn {OPT} {
+   reset_run synth_1
+   launch_runs synth_1
+   wait_on_run synth_1
+   open_run synth_1
+   set UTILIZATION [report_utilization -return_string]
+   set TIMING [report_timing -return_string]
+   writeFile vivado_syn_$OPT.log w $UTILIZATION
+   writeFile vivado_syn_$OPT.log a $TIMING
+}
+
+proc do_imp {OPT} {
+   launch_runs impl_1
+   wait_on_run impl_1
+   open_run impl_1
+   report_io    -file io_imp.rpt
+   report_power -file power_imp.rpt
+   set UTILIZATION [report_utilization -return_string]
+   set TIMING [report_timing -return_string]
+   writeFile vivado_imp_$OPT.log w $UTILIZATION
+   writeFile vivado_imp_$OPT.log a $TIMING
+}
+
+proc do_bit {} {
+   launch_run impl_1 -to_step write_bitstream
+   wait_on_run impl_1
+}
+
 ###################################################################################################
 # Main                                                                                            #
 ###################################################################################################
 
 array set options [cmdLineParser "Xilinx Vivado"]
-set  RUN   $options(run)
-set  OPT   $options(opt)
+set TASK $options(task)
+set OPT  $options(opt)
 
 if { [ file exists vivado.xpr ] } {
    file delete vivado.xpr
@@ -145,48 +173,23 @@ if { $project_file != "" } {
    }
 }
 
-if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit" } {
-   if {[catch {
-      reset_run synth_1
-      launch_runs synth_1
-      wait_on_run synth_1
-      open_run synth_1
-      set UTILIZATION [report_utilization -return_string]
-      set TIMING [report_timing -return_string]
-      writeFile vivado_syn_$OPT.log w $UTILIZATION
-      writeFile vivado_syn_$OPT.log a $TIMING
-   } ERRMSG]} {
-      puts "ERROR: there was a problem running synthesis\n"
-      puts $ERRMSG
-      exit 1
+if {[catch {
+   switch $TASK {
+      "syn"  {
+         do_syn $OPT
+      }
+      "imp" {
+         do_syn $OPT
+         do_imp $OPT
+      }
+      "bit" {
+         do_syn $OPT
+         do_imp $OPT
+         do_bit
+      }
    }
-}
-
-if { $RUN=="imp" || $RUN=="bit" } {
-   if {[catch {
-      launch_runs impl_1
-      wait_on_run impl_1
-      open_run impl_1
-      report_io    -file io_imp.rpt
-      report_power -file power_imp.rpt
-      set UTILIZATION [report_utilization -return_string]
-      set TIMING [report_timing -return_string]
-      writeFile vivado_imp_$OPT.log w $UTILIZATION
-      writeFile vivado_imp_$OPT.log a $TIMING
-   } ERRMSG]} {
-      puts "ERROR: there was a problem running implementation\n"
-      puts $ERRMSG
-      exit 1
-   }
-}
-
-if {$RUN=="bit" } {
-   if {[catch {
-      launch_run impl_1 -to_step write_bitstream
-      wait_on_run impl_1
-   } ERRMSG]} {
-      puts "ERROR: there was a problem generating the bitstream\n"
-      puts $ERRMSG
-      exit 1
-   }
+} ERRMSG]} {
+   puts "ERROR: there was a problem running $TASK\n"
+   puts $ERRMSG
+   exit 1
 }

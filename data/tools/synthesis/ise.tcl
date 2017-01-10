@@ -1,6 +1,6 @@
 #
 # Tcl for Xilinx ISE Tool
-# Copyright (C) 2016 INTI, Rodrigo A. Melo <rmelo@inti.gob.ar>
+# Copyright (C) 2016-2017 INTI, Rodrigo A. Melo <rmelo@inti.gob.ar>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ package require cmdline
 proc cmdLineParser {TOOL} {
 
    set parameters {
-       {run.arg  "syn"    "What to RUN  [syn, imp, bit]"}
+       {task.arg "syn"    "TASK         [syn, imp, bit]"}
        {opt.arg  "user"   "OPTimization [user, area, power, speed]"}
    }
 
@@ -37,8 +37,8 @@ proc cmdLineParser {TOOL} {
 
    set ERROR ""
 
-   if {$options(run)!="syn" && $options(run)!="imp" && $options(run)!="bit"} {
-      append ERROR "<$options(run)> is not a supported RUN option.\n"
+   if {$options(task)!="syn" && $options(task)!="imp" && $options(task)!="bit"} {
+      append ERROR "<$options(task)> is not a supported TASK option.\n"
    }
 
    if {$options(opt)!="user" && $options(opt)!="area" && $options(opt)!="power" && $options(opt)!="speed"} {
@@ -121,13 +121,33 @@ proc fpga_file {FILE {OPTION ""} {VALUE ""}} {
 
 set FPGA_TOOL "ise"
 
+proc do_syn {OPT} {
+   process run "Synthesize"    -force rerun
+   if { [ file exists [glob -nocomplain *.syr] ] } {
+      file copy -force [glob -nocomplain *.syr] ise_syn_$OPT.log
+   }
+}
+
+proc do_imp {OPT} {
+   process run "Translate"     -force rerun
+   process run "Map"           -force rerun
+   process run "Place & Route" -force rerun
+   if { [ file exists [glob -nocomplain *.par] ] } {
+      file copy -force [glob -nocomplain *.par] ise_imp_$OPT.log
+   }
+}
+
+proc do_bit {} {
+   process run "Generate Programming File" -force rerun
+}
+
 ###################################################################################################
 # Main                                                                                            #
 ###################################################################################################
 
 array set options [cmdLineParser "Xilinx ISE"]
-set  RUN   $options(run)
-set  OPT   $options(opt)
+set TASK $options(task)
+set OPT  $options(opt)
 
 if { [ file exists ise.xise ] } {
    file delete ise.xise
@@ -162,40 +182,23 @@ if { $project_file != "" && $project_file != "ise.xise" } {
    }
 }
 
-if { $RUN=="syn" || $RUN=="imp" || $RUN=="bit" } {
-   if {[catch {
-      process run "Synthesize"    -force rerun
-   } ERRMSG]} {
-      puts "ERROR: there was a problem running synthesis\n"
-      puts $ERRMSG
-      exit 1
+if {[catch {
+   switch $TASK {
+      "syn"  {
+         do_syn $OPT
+      }
+      "imp" {
+         do_syn $OPT
+         do_imp $OPT
+      }
+      "bit" {
+         do_syn $OPT
+         do_imp $OPT
+         do_bit
+      }
    }
-   if { [ file exists [glob -nocomplain *.syr] ] } {
-      file copy -force [glob -nocomplain *.syr] ise_syn_$OPT.log
-   }
-}
-
-if { $RUN=="imp" || $RUN=="bit" } {
-   if {[catch {
-      process run "Translate"     -force rerun
-      process run "Map"           -force rerun
-      process run "Place & Route" -force rerun
-   } ERRMSG]} {
-      puts "ERROR: there was a problem running implementation\n"
-      puts $ERRMSG
-      exit 1
-   }
-   if { [ file exists [glob -nocomplain *.par] ] } {
-      file copy -force [glob -nocomplain *.par] ise_imp_$OPT.log
-   }
-}
-
-if { $RUN=="bit" } {
-   if {[catch {
-      process run "Generate Programming File" -force rerun
-   } ERRMSG]} {
-      puts "ERROR: there was a problem generating the bitstream\n"
-      puts $ERRMSG
-      exit 1
-   }
+} ERRMSG]} {
+   puts "ERROR: there was a problem running $TASK\n"
+   puts $ERRMSG
+   exit 1
 }
