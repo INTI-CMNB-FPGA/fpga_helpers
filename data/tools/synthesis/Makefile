@@ -25,6 +25,8 @@ else ifneq ("$(wildcard $(PATH_VENDOR_TCL)/vivado.tcl)","")
    TOOL = vivado
 else ifneq ("$(wildcard $(PATH_VENDOR_TCL)/quartus2.tcl)","")
    TOOL = quartus2
+else ifneq ("$(wildcard $(PATH_VENDOR_TCL)/libero-soc.tcl)","")
+   TOOL = libero-soc
 else
    $(error You need to have at least one <vendorTool>.tcl file)
 endif
@@ -32,8 +34,9 @@ endif
 ifeq      ($(TOOL),ise)
 else ifeq ($(TOOL),vivado)
 else ifeq ($(TOOL),quartus2)
+else ifeq ($(TOOL),libero-soc)
 else
-   $(error TOOL is unsupported [ise, vivado, quartus2])
+   $(error TOOL is unsupported [ise, vivado, quartus2, libero-soc])
 endif
 
 TASK=bit
@@ -55,46 +58,56 @@ endif
 
 ###############################################################################
 
-TCL_FILE           = $(PATH_VENDOR_TCL)/$(TOOL).tcl
-BIT_FILE           = $(shell find -type f -name '*.bit' -o -name '*.sof' -o -name '*.pof')
+TCL_FILE             = $(PATH_VENDOR_TCL)/$(TOOL).tcl
+BIT_FILE             = $(shell find -type f -name '*.bit' -o -name '*.sof' -o -name '*.pof')
 
 # ISE - Xilinx
 
-ise_TCL            = xtclsh $(TCL_FILE)
-ise_TCL_CON        = xtclsh
-ise_GUI            = ise ise.xise
-ise_CLEAN          = iseconfig _ngo xst xlnx_auto_0_xdb _xmsgs *.bgn *.bld  \
-                     *.cmd_log *.csv *.drc *.gise *.html *.log *.lso *.map  \
-                     *.mrp *.ncd *.ngc *.ngd *.ngm *.ngr *.pad *.par *.pcf  \
-                     *.prj *.ptwx *.stx *.syr *.twr *.twx *.unroutes *.ut   \
-                     *.txt *.xml *.xpi *.xrpt *.xst *.xwbt
-ise_CLEAN_ALL      = $(ise_CLEAN) *.xise
+ise_TCL              = xtclsh $(TCL_FILE)
+ise_TCL_CON          = xtclsh
+ise_GUI              = ise ise.xise
+ise_CLEAN            = iseconfig _ngo xst xlnx_auto_0_xdb _xmsgs *.bgn *.bld  \
+                       *.cmd_log *.csv *.drc *.gise *.html *.log *.lso *.map  \
+                       *.mrp *.ncd *.ngc *.ngd *.ngm *.ngr *.pad *.par *.pcf  \
+                       *.prj *.ptwx *.stx *.syr *.twr *.twx *.unroutes *.ut   \
+                       *.txt *.xml *.xpi *.xrpt *.xst *.xwbt
+ise_CLEAN_ALL        = $(ise_CLEAN) ise.xise
 
 # Vivado - Xilinx
 
-vivado_TCL         = vivado -mode batch -notrace -source $(TCL_FILE) -tclargs
-vivado_TCL_CON     = vivado -mode tcl
-vivado_GUI         = vivado vivado.xpr
-vivado_CLEAN       = .Xil *.cache *.hw *.ip_user_files *.jou *.log *.rpt    \
-                     *.runs *.sim *.srcs vivado_*.zip
-vivado_CLEAN_ALL   = $(vivado_CLEAN) *.xpr
+vivado_TCL           = vivado -mode batch -notrace -source $(TCL_FILE) -tclargs
+vivado_TCL_CON       = vivado -mode tcl
+vivado_GUI           = vivado vivado.xpr
+vivado_CLEAN         = .Xil *.cache *.hw *.ip_user_files *.jou *.log *.rpt    \
+                       *.runs *.sim *.srcs vivado_*.zip
+vivado_CLEAN_ALL     = $(vivado_CLEAN) vivado.xpr
 
 # Quartus2 - Intel (Altera)
 
-quartus2_TCL       = quartus_sh --script $(TCL_FILE)
-quartus2_TCL_CON   = quartus_sh -s
-quartus2_GUI       = quartus quartus2.qpf
-quartus2_CLEAN     = db incremental_db output_files *.done *.jdi *.log *.pin\
-                     *.qws *.rpt *.sld *.sof *.sop *.summary *.txt
-quartus2_CLEAN_ALL = $(quartus2_CLEAN) *.qpf *.qsf
+quartus2_TCL         = quartus_sh --script $(TCL_FILE)
+quartus2_TCL_CON     = quartus_sh -s
+quartus2_GUI         = quartus quartus2.qpf
+quartus2_CLEAN       = db incremental_db output_files *.done *.jdi *.log *.pin\
+                       *.qws *.rpt *.sld *.sof *.sop *.summary *.txt
+quartus2_CLEAN_ALL   = $(quartus2_CLEAN) quartus2.qpf quartus2.qsf
+
+# Libero-SoC - Microsemi (Actel)
+
+libero-soc_TCL       = libero SCRIPT:$(TCL_FILE) SCRIPT_ARGS:"
+libero-soc_END       = "
+libero-soc_TCL_CON   = @echo console target not supported on Libero-SoC
+libero-soc_GUI       = libero libero-soc/libero-soc.prjx
+libero-soc_CLEAN     = libero-soc
+libero-soc_CLEAN_ALL = $(libero-soc_CLEAN)
 
 # Assign according to the selected tool
 
-TCL_CMD            = $($(TOOL)_TCL)
-TCL_CON            = $($(TOOL)_TCL_CON)
-GUI_CMD            = $($(TOOL)_GUI)
-CLEAN              = $($(TOOL)_CLEAN)
-CLEAN_ALL          = $($(TOOL)_CLEAN_ALL) $(BIT_FILE)
+TCL_CMD              = $($(TOOL)_TCL)
+TCL_END              = $($(TOOL)_END)
+TCL_CON              = $($(TOOL)_TCL_CON)
+GUI_CMD              = $($(TOOL)_GUI)
+CLEAN                = $($(TOOL)_CLEAN)
+CLEAN_ALL            = $($(TOOL)_CLEAN_ALL) $(BIT_FILE)
 
 ###############################################################################
 
@@ -114,7 +127,7 @@ all help:
 	@echo "* prog-fpga and others (according to the specified board) for programming."
 
 run:
-	$(TCL_CMD) -task $(TASK) -opt $(OPT)
+	$(TCL_CMD) -task $(TASK) -opt $(OPT) $(TCL_END)
 
 clean:
 	@rm -fr $(CLEAN)
