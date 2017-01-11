@@ -53,8 +53,8 @@ parser.add_argument(
    'tool',
    metavar='TOOLNAME',
    nargs='?',
-   choices=['ise','vivado','quartus2','all'],
-   help='Name of the vendor tool to be used [ise|vivado|quartus2|all]'
+   choices=['ise','vivado','quartus2','libero-soc','all'],
+   help='Name of the vendor tool to be used [ise|vivado|quartus2|libero-soc|all]'
 )
 
 parser.add_argument(
@@ -71,19 +71,22 @@ print ('fpga_synt (INFO): ' + version)
 
 if options.tool is None:
    print ("fpga_synt (INFO): you did not select tool to use. Choose one:")
-   print ("1. All")
-   print ("2. ISE (Xilinx)")
-   print ("3. Vivado (Xilinx)")
-   print ("4. Quartus2 (Altera)")
+   print ("0. All")
+   print ("1. ISE (Xilinx)")
+   print ("2. Vivado (Xilinx)")
+   print ("3. Quartus2 (Altera)")
+   print ("4. Libero-SoC (Microsemi)")
    option = sys.stdin.read(1)
-   if option == "1":
+   if option == "0":
       options.tool = "all"
-   elif option == "2":
+   elif option == "1":
       options.tool = "ise"
-   elif option == "3":
+   elif option == "2":
       options.tool = "vivado"
-   elif option == "4":
+   elif option == "3":
       options.tool = "quartus2"
+   elif option == "4":
+      options.tool = "libero-soc"
    else:
       sys.exit('fpga_synt (ERROR): invalid option.')
 
