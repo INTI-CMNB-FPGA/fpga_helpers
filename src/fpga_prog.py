@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
 # FPGA Prog, transfers a BitStream to a device
-# Copyright (C) 2015-2016 INTI, Rodrigo A. Melo
+# Copyright (C) 2015-2017 INTI, Rodrigo A. Melo
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import argparse, yaml, os, sys
+import argparse, yaml, os, sys, shutil
 
 bin_dir = os.path.dirname(os.path.abspath(__file__))
 if os.path.exists(bin_dir + '/../data'):
@@ -58,8 +58,8 @@ parser.add_argument(
 parser.add_argument(
    '-t', '--tool',
    metavar='TOOLNAME',
-   choices=['ise','quartus2'],
-   help='Name of the vendor tool to be used [ise |quartus2]'
+   choices=['ise','quartus2','libero-soc'],
+   help='Name of the vendor tool to be used [ise |quartus2|libero-soc]'
 )
 
 devices = parser.add_argument_group('device arguments')
@@ -111,16 +111,19 @@ print ('fpga_prog (INFO): ' + version)
 if options.tool is None:
    print ("fpga_prog (INFO): you did not select tool to use. Choose one:")
    print ("1. ISE (Xilinx)")
-   print ("2. Quartus2 (Altera)")
+   print ("2. Quartus2 (INTEL/Altera)")
+   print ("3. Libero-SoC (Microsemi)")
    option = sys.stdin.read(1)
    if option == "1":
       options.tool = "ise"
    elif option == "2":
       options.tool = "quartus2"
+   elif option == "3":
+      options.tool = "libero-soc"
    else:
       sys.exit('fpga_prog (ERROR): invalid option.')
 
-if not os.path.exists(options.bit) and options.device != "detect" and options.device != "unlock":
+if not os.path.exists(options.bit) and options.device != "detect" and options.device != "unlock" and options.tool != 'libero-soc':
    sys.exit('fpga_prog (ERROR): bitstream not found.')
 
 if options.board is not None:
@@ -171,6 +174,14 @@ if options.tool == 'ise':
    batch = options.output_dir + '/impact.cmd'
    open(batch, 'w').write(text)
    print ('fpga_prog (INFO): <' + batch + '> was generated.')
+if options.tool == 'libero-soc':
+   path = share_dir + '/data/tools/program/flashpro/'
+   if options.device == 'fpga':
+      shutil.copy(path + 'flashpro5_fpga.tcl', 'libero-soc/flashpro5.tcl')
+   if options.device == 'spi':
+      shutil.copy(path + 'flashpro5_spi.tcl', 'libero-soc/flashpro5.tcl')
+   shutil.copy(path + 'program.tcl', 'libero-soc/program.tcl')
+   print ('fpga_prog (INFO): files were generated.')
 
 ## Running the tool ###########################################################
 
@@ -178,10 +189,12 @@ if options.tool == 'ise':
    lib = "/usr/lib/libusb-driver.so";
    if os.path.exists(lib):
       os.environ['LD_PRELOAD'] = str(lib)
-      print ('fpga_prog (INFO): <' + lib + '> exists.')
+      print ('fpga_prog (INFO): <' + lib + '> exists and was loaded.')
    command = 'impact -batch ' + batch
 if options.tool == 'quartus2':
    command  = "jtagconfig; "
    command += "quartus_pgm -c USB-blaster --mode jtag -o "
    command += "'p;" + options.bit + "@" + str(options.position) + "'"
+if options.tool == 'libero-soc':
+   command  = "libero SCRIPT:libero-soc/program.tcl"
 os.system(command)

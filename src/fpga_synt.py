@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
 # FPGA Synt, generates files to make a Synthesis
-# Copyright (C) 2015-2016 INTI, Rodrigo A. Melo
+# Copyright (C) 2015-2017 INTI, Rodrigo A. Melo
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@ if options.tool is None:
 fpga_prog_text = "ifneq ($(shell which fpga_prog),)\n\n";
 if options.board is None:
    fpga_prog_text += 'prog-fpga:\n\tfpga_prog --tool=$(TOOL)' + \
-                     ' --device=fpga --position=1 $(firstword $(BITFILE))\n'
+                     ' --device=fpga --position=1 $(firstword $(BIT_FILE))\n'
 else:
    if options.board.endswith(".yaml"):
       path = options.board
@@ -108,13 +108,13 @@ else:
       for device in sorted(board):
           if device == 'fpga':
              fpga_prog_text += 'prog-fpga:\n\tfpga_prog --tool=$(TOOL) --board=' + \
-                               options.board + ' --device=fpga $(firstword $(BITFILE))\n'
+                               options.board + ' --device=fpga $(firstword $(BIT_FILE))\n'
           if device == 'spi':
              fpga_prog_text += 'prog-spi:\n\tfpga_prog --tool=$(TOOL) --board=' + \
-                               options.board + ' --device=spi  $(firstword $(BITFILE))\n'
+                               options.board + ' --device=spi  $(firstword $(BIT_FILE))\n'
           if device == 'bpi':
              fpga_prog_text += 'prog-bpi:\n\tfpga_prog --tool=$(TOOL) --board=' + \
-                               options.board + ' --device=bpi  $(firstword $(BITFILE))\n'
+                               options.board + ' --device=bpi  $(firstword $(BIT_FILE))\n'
 fpga_prog_text += "\nendif\n";
 
 ## Generating files ###########################################################
