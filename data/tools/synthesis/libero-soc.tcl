@@ -98,7 +98,17 @@ proc fpga_file {FILE {OPTION ""} {VALUE ""}} {
       puts "Valid options for fpga_file command are -lib and -top."
       exit 1
    }
-   create_links -hdl_source $FILE
+   regexp -nocase {\.(\w*)$} $FILE -> ext
+   if {$ext == "pdc"} {
+      create_links -io_pdc $FILE
+      organize_tool_files -tool {PLACEROUTE} -file $FILE -input_type {constraint}
+   } elseif {$ext == "sdc"} {
+      create_links -sdc $FILE
+      organize_tool_files -tool {SYNTHESIZE} -file $FILE -input_type {constraint} 
+      organize_tool_files -tool {VERIFYTIMING} -file $FILE -input_type {constraint}
+   } else {
+      create_links -hdl_source $FILE
+   }
    if {$OPTION=="-lib"} {
       add_library -library $VALUE
       add_file_to_library -library $VALUE -file $FILE
@@ -111,11 +121,19 @@ proc fpga_file {FILE {OPTION ""} {VALUE ""}} {
 set FPGA_TOOL "libero-soc"
 
 proc do_syn {OPT} {
-   run_tool -name {SYNTHESIZE}
+   #run_tool -name {SYNTHESIZE}
+   run_tool -name {COMPILE}
+   if { [ file exists [glob -nocomplain libero-soc/synthesis/*.srr] ] } {
+      file copy -force [glob -nocomplain libero-soc/synthesis/*.srr] libero-soc_syn_$OPT.log
+   }
 }
 
 proc do_imp {OPT} {
    run_tool -name {PLACEROUTE}
+   run_tool -name {VERIFYTIMING}
+   if { [ file exists [glob -nocomplain libero-soc/designer/*/*_layout_log.log] ] } {
+      file copy -force [glob -nocomplain libero-soc/designer/*/*_layout_log.log] libero-soc_imp_$OPT.log
+   }
 }
 
 proc do_bit {} {
@@ -144,10 +162,15 @@ if { $project_file != "" } {
    new_project -name "libero-soc" -location {libero-soc} -hdl {VHDL} -family {Fusion}
    switch $OPT {
       "area"  {
+          configure_tool -name {SYNTHESIZE} -params {RAM_OPTIMIZED_FOR_POWER:true}
       }
       "power" {
+          configure_tool -name {SYNTHESIZE} -params {RAM_OPTIMIZED_FOR_POWER:true}
+          configure_tool -name {PLACEROUTE} -params {PDPR:true}
       }
       "speed" {
+          configure_tool -name {SYNTHESIZE} -params {RAM_OPTIMIZED_FOR_POWER:false}
+          configure_tool -name {PLACEROUTE} -params {EFFORT_LEVEL:true}
       }
    }
    if {[catch {source options.tcl} ERRMSG]} {
@@ -158,6 +181,7 @@ if { $project_file != "" } {
 }
 
 if {[catch {
+   configure_tool -name {PLACEROUTE} -params {REPAIR_MIN_DELAY:true}
    switch $TASK {
       "syn"  {
          do_syn $OPT

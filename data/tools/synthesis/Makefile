@@ -59,7 +59,7 @@ endif
 ###############################################################################
 
 TCL_FILE             = $(PATH_VENDOR_TCL)/$(TOOL).tcl
-BIT_FILE             = $(shell find -type f -name '*.bit' -o -name '*.sof' -o -name '*.pof')
+BIT_FILE             = $(shell find -type f -name '*.bit' -o -name '*.sof' -o -name '*.pof' -o -name '*.ipd')
 
 # ISE - Xilinx
 
