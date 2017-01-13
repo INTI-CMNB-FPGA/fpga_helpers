@@ -23,7 +23,12 @@ It is a Free Software development under the terms of GPL3. If you want to contri
 ```
 directory: short comment
 
-[Optional long description optional long description optional long description optional long description optional long description optional long description optional long description optional long description optional long description optional long description optional long description optional long description optional long description optional long description optional long description optional long description.]
+[Optional long description optional long description optional long description
+optional long description optional long description optional long description
+optional long description optional long description optional long description
+optional long description optional long description optional long description
+optional long description optional long description optional long description
+optional long description.]
 ```
 * If you touch files of several directories, but the important things are in one, that is the important 'directory'. If there is more than one important change in different directories, please consider to do multiple commits.
 

@@ -1,7 +1,9 @@
 All this must be done on fpga_helpers root directory.
 
 * Delete previous generated files
-```$ ./bootstrap clean```
+```
+$ ./bootstrap clean
+```
 
 * AutoTools
 ```
@@ -10,9 +12,15 @@ $ ./configure
 $ make
 ```
   * For tarball generation:
-```$ make dist```
+```
+$ make dist
+```
   * For installation:
-```$ make install```
+```
+$ make install
+```
 
 * Debian Package (it also run AutoTools for tarball generation)
-```$ make -f Makfile.debian deb```
+```
+$ make -f Makfile.debian deb
+```

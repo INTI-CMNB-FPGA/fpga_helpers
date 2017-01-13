@@ -22,9 +22,13 @@ It can be done:
 * Using *fpga_setup*.
 
 There are default configuration of paths and license servers (when needed), which can be changed running:
-```$ fpga_setup --configure```
+```
+$ fpga_setup --configure
+```
 To prepare a console to run all the available vendors tools:
-```$ fpga_setup --all```
+```
+$ fpga_setup --all
+```
 
 There are specific options for each tool, such as --vivado, --quartus2, and more. You can use --help to see available options.
 
@@ -44,11 +48,17 @@ In options.tcl you can specified the target FPGA and the design files using the 
 
 The TCL for synthesis could be one for a specific tool or all the supported.
 * To generate the desired tool:
-```$ fpga_synt TOOLNAME```
+```
+$ fpga_synt TOOLNAME
+```
 * To generate a TCL for each available TOOL:
-```$ fpga_synt all```
+```
+$ fpga_synt all
+```
 * For help, options and their values, run:
-```$ fpga_synt -h```
+```
+$ fpga_synt -h
+```
 
 You can specify a board name or a board file (YAML format) with the option -b. It is useful to add at the bottom of the Makefile, *fpga_prog* with the needed options to support the specified board. If it is not specified, this section is not generated. As template of your own board you can use:
 
@@ -72,7 +82,11 @@ spi:
 If you use the -b option of *fpga_synt*, the generated *Makefile* use *fpga_prog* with the needed options. If you need to transfer an existintg bitstream without a *fpga_synt* project, you can use *fpga_prog*. It also need vendors tools in the system path (you can use *fpga_setup*).
 
 The general form to use it is:
-```$ fpga_prog OPTIONS BITSTREAM```
+```
+$ fpga_prog OPTIONS BITSTREAM
+```
 
 OPTIONS include the same -b option of *fpga_synt* and others, which specify board features. For help you can run:
-```$ fpga_prog -h```
+```
+$ fpga_prog -h
+```
