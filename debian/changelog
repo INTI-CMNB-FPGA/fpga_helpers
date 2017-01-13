@@ -1,3 +1,9 @@
+fpga-helpers (0.2.0-1) stable; urgency=medium
+
+  * Added Libero-SoC support.
+
+ -- Rodrigo Alejandro Melo <rodrigomelo9@gmail.com>  Thu, 12 Jan 2017 17:16:28 -0300
+
 fpga-helpers (0.1.1-1) stable; urgency=low
 
   * Initial release.

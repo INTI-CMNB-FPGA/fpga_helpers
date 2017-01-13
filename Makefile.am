@@ -15,6 +15,9 @@ synthesis_DATA    = data/tools/synthesis/*
 impactdir         = $(pkgdatadir)/data/tools/program/impact
 impact_DATA       = data/tools/program/impact/*
 
+flashprodir       = $(pkgdatadir)/data/tools/program/flashpro
+flashpro_DATA     = data/tools/program/flashpro/*
+
 #Generation of file Changelog from git changelog
 dist-hook:
 	@if test -d "$(srcdir)/.git"; \

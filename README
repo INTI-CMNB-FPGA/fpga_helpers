@@ -91,9 +91,6 @@ spi:
     position: 1
     width:    4
     size:     32M
-tool:
-  synt: [ise]
-  prog: [ise]
 
 FPGA Prog
 ---------

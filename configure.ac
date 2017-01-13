@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([FPGA Helpers], [0.1.1], [rodrigomelo9@gmail.com])
+AC_INIT([FPGA Helpers], [0.2.0], [rodrigomelo9@gmail.com])
 AM_INIT_AUTOMAKE
 # Checks for programs.
 AC_PROG_MAKE_SET
