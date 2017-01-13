@@ -12,8 +12,11 @@ if [ $# -eq 1 ] && [ $1 == "clean" ]; then
    rm -fr src/Makefile src/Makefile.in
    rm -fr doc/Makefile doc/Makefile.in
    rm -fr doc/tutorial/Makefile doc/tutorial/Makefile.in
+   rm README
 else
+   git log --format='%aN <%aE>' | LC_ALL=C.UTF-8 sort -uf > AUTHORS
+   grep -oP '\d\.\d\.\d-?d?e?v?' configure.ac > VERSION
+   cp README.md README
    echo "Running autoreconf (autotools)..."
    autoreconf -i -f
-   grep -oP '\d\.\d\.\d-?d?e?v?' configure.ac > VERSION
 fi
