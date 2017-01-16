@@ -75,7 +75,7 @@ ise_CLEAN_ALL        = $(ise_CLEAN) ise.xise
 
 # Vivado - Xilinx
 
-vivado_TCL           = vivado -mode batch -notrace -source $(TCL_FILE) -tclargs
+vivado_TCL           = vivado -mode batch -notrace -quiet -source $(TCL_FILE) -tclargs
 vivado_TCL_CON       = vivado -mode tcl
 vivado_GUI           = vivado vivado.xpr
 vivado_CLEAN         = .Xil *.cache *.hw *.ip_user_files *.jou *.log *.rpt    \

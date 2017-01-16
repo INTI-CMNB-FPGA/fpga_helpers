@@ -2,6 +2,8 @@
 
 A Free Software project which consist on a bunch of scripts to use FPGA development tools in a vendor independent way.
 
+This project is mainly developed and mantained by the *FPGA team* of the *Centre of Nano and Microelectronics* [CMNB](http://www.inti.gob.ar/microynanoelectronica/) of the *National Institute of Industrial Technology* [INTI](http://www.inti.gob.ar/). Contributions are welcome.
+
 The target development platform is Debian GNU/Linux, but it is probably easy to run in others OS.
 
 ## Helpers Overview
