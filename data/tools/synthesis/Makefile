@@ -139,6 +139,7 @@ clean-multi:
 	@rm -fr $(ise_CLEAN_ALL)
 	@rm -fr $(vivado_CLEAN_ALL)
 	@rm -fr $(quartus2_CLEAN_ALL)
+	@rm -fr $(libero-soc_CLEAN_ALL)
 
 console:
 	$(TCL_CON)

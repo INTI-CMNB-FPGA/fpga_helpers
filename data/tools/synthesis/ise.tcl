@@ -52,7 +52,7 @@ proc cmdLineParser {TOOL} {
    }
 
    return [array get options]
- }
+}
 
 proc fpga_device {FPGA {OPT ""} {TOOL ""}} {
    if {$OPT == "" || ($OPT=="-tool" && $TOOL=="ise")} {
