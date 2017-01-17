@@ -16,7 +16,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-#package require cmdline # Not supported by libero?
+# The package cmdline is not in the library directory.
+# <LIBERO_ROOT_PATH>/Model/modeltech/tcl/tcllib1.12/cmdline
+# info library: returns the name of the library directory in which standard Tcl scripts are stored.
+# <LIBERO_ROOT_PATH>/Libero/lib/tcl8.5
+# $auto_path: is a list of directories used by package to find packages
+lappend auto_path [info library]/../../../Model/modeltech/tcl/tcllib1.12/cmdline
+package require cmdline
 
 ###################################################################################################
 # Functions                                                                                       #
@@ -24,19 +30,16 @@
 
 proc cmdLineParser {TOOL} {
 
-   #set parameters {
-   #    {task.arg "syn"    "TASK         [syn, imp, bit]"}
-   #    {opt.arg  "user"   "OPTimization [user, area, power, speed]"}
-   #}
+   set parameters {
+       {task.arg "syn"    "TASK         [syn, imp, bit]"}
+       {opt.arg  "user"   "OPTimization [user, area, power, speed]"}
+   }
 
-   #set usage "- A Tcl script to synthesise with $TOOL Tool"
-   #if {[catch {array set options [cmdline::getoptions ::argv $parameters $usage]}]} {
-   #   puts [cmdline::usage $parameters $usage]
-   #   exit 1
-   #}
-
-   set options(task) [expr {[lindex $::argv 1] eq "" ? "syn"  : [lindex $::argv 1]}]
-   set options(opt)  [expr {[lindex $::argv 3] eq "" ? "user" : [lindex $::argv 3]}]
+   set usage "- A Tcl script to synthesise with $TOOL Tool"
+   if {[catch {array set options [cmdline::getoptions ::argv $parameters $usage]}]} {
+      puts [cmdline::usage $parameters $usage]
+      exit 1
+   }
 
    set ERROR ""
 
@@ -50,14 +53,12 @@ proc cmdLineParser {TOOL} {
 
    if {$ERROR != ""} {
       puts $ERROR
-      # puts "Use -help to see available options."
+      puts "Use -help to see available options."
       exit 1
    }
 
    return [array get options]
 }
-
-#proc writeFile {PATH MODE DATA} {set fp [open $PATH $MODE];puts $fp $DATA;close $fp}
 
 proc fpga_device {FPGA {OPT ""} {TOOL ""}} {
    if {$OPT == "" || ($OPT=="-tool" && $TOOL=="libero-soc")} {
