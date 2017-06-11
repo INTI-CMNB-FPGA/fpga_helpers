@@ -1,6 +1,0 @@
-setMode -bs
-setCable -port auto
-Identify
-attachflash -position [POSITION] -bpi "[MEMNAME]"
-assignfiletoattachedflash -position [POSITION] -file "[MCSFILE]"
-Program -p [POSITION] -dataWidth [WIDTH] -rs1 NONE -rs0 NONE -bpionly -e -v-loadfpga

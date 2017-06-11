@@ -1,5 +1,0 @@
-setMode -bs
-setCable -port auto
-Identify -inferir
-assignFile -p [POSITION] -file "[BITSTREAM]"
-Program -p [POSITION]

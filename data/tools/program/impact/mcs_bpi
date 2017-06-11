@@ -1,8 +1,0 @@
-setMode -pff
-addConfigDevice -name "[NAME]" -path "[PATH]"
-setSubmode -pffbpi
-addDesign -version 0 -name "0"
-addDeviceChain -index 0
-setAttribute -configdevice -attr flashDataWidth -value "[WIDTH]"
-addDevice -p 1 -file "[BITSTREAM]"
-generate -generic
