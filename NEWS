@@ -1,3 +1,9 @@
+v0.3.0:
+* Unified again Tcl scripts for synthesis.
+* Unified programming in a Tcl script. Added support for Vivado.
+* Improved Tcl scripts and its Makefile.
+* Renamed quartus2 and libero-soc to quartus and libero.
+
 v0.2.0:
 * Code of Tcl scripts and Makefile were improved.
 * Added a Tcl script for Libero-SoC.
