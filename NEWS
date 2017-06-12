@@ -3,6 +3,9 @@ v0.3.0:
 * Unified programming in a Tcl script. Added support for Vivado.
 * Improved Tcl scripts and its Makefile.
 * Renamed quartus2 and libero-soc to quartus and libero.
+* Added fpga_wizard.py to help to obtain options.tcl and Makefile. It replaces old fpga_synt.py.
+* New fpga_synt.py. It helps to do synthesis based on the project file of a vendor's tool.
+* YAML files were replaced by data in fpga_helpers.py (shared database).
 
 v0.2.0:
 * Code of Tcl scripts and Makefile were improved.
