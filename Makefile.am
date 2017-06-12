@@ -1,22 +1,6 @@
 SUBDIRS           = src doc
-doc_DATA          = README NEWS
-dist_pkgdata_DATA = VERSION
-EXTRA_DIST        = data test
-
-boardsdir         = $(pkgdatadir)/data/boards
-boards_DATA       = data/boards/*
-
-synthesisdir      = $(pkgdatadir)/data/tools/synthesis
-synthesis_DATA    = data/tools/synthesis/*
-
-#simulationdir     = $(pkgdatadir)/data/tools/simulation
-#simulation_DATA   = data/tools/simulation/*
-
-impactdir         = $(pkgdatadir)/data/tools/program/impact
-impact_DATA       = data/tools/program/impact/*
-
-flashprodir       = $(pkgdatadir)/data/tools/program/flashpro
-flashpro_DATA     = data/tools/program/flashpro/*
+doc_DATA          = README.md NEWS
+EXTRA_DIST        = test
 
 #Generation of file Changelog from git changelog
 dist-hook:
