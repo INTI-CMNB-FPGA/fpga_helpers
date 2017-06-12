@@ -26,14 +26,14 @@ else # Default values
    ISE_ROOT_DIR=/opt/Xilinx/ise
    # Vivado
    VIVADO_ROOT_DIR=/opt/Xilinx/vivado
-   # Quartus2
-   QUARTUS2_ROOT_DIR=/opt/Altera/quartus2
-   # Libero-SoC
-   LIBEROSOC_ROOT_DIR=/opt/Microsemi/Libero
-   LIBEROSOC_LMGRD_DIR=/opt/Microsemi/Linux_Licensing_Daemon
-   LIBEROSOC_LIC_FILE=/opt/Microsemi/License.dat
-   LIBEROSOC_LIC_PORT=1702
-   LIBEROSOC_LIC_HOST=localhost
+   # Quartus
+   QUARTUS_ROOT_DIR=/opt/Altera/quartus
+   # Libero
+   LIBERO_ROOT_DIR=/opt/Microsemi/Libero
+   LIBERO_LMGRD_DIR=/opt/Microsemi/Linux_Licensing_Daemon
+   LIBERO_LIC_FILE=/opt/Microsemi/License.dat
+   LIBERO_LIC_PORT=1702
+   LIBERO_LIC_HOST=localhost
    # Add here new tool code
 fi
 
@@ -44,8 +44,8 @@ if [ $# -eq 0 ] || [ $1 == "--quit" ]; then # running interactively
    echo "0. set to use all the available vendors tools"
    echo "1. set to use ISE (Xilinx)"
    echo "2. set to use Vivado (Xilinx)"
-   echo "3. set to use Quartus2 (Altera)"
-   echo "4. set to use Libero-SoC (Microsemi)"
+   echo "3. set to use Quartus (Altera)"
+   echo "4. set to use Libero (Microsemi)"
    # Add here new tool code
    echo "q. quit"
    if [ $# -eq 0 ]; then
@@ -56,16 +56,16 @@ if [ $# -eq 0 ] || [ $1 == "--quit" ]; then # running interactively
          0)
             ISE=1
             VIVADO=1
-            QUARTUS2=1
-            LIBEROSOC=1;;
+            QUARTUS=1
+            LIBERO=1;;
          1)
             ISE=1;;
          2)
             VIVADO=1;;
          3)
-            QUARTUS2=1;;
+            QUARTUS=1;;
          4)
-            LIBEROSOC=1;;
+            LIBERO=1;;
          # Add here new tool code
          q) ;;
          *)
@@ -82,16 +82,16 @@ elif [ $# -eq 1 ]; then # running with a option
    elif [ $OPTION == "--all" ]; then
       ISE=1
       VIVADO=1
-      QUARTUS2=1
-      LIBEROSOC=1
+      QUARTUS=1
+      LIBERO=1
    elif [ $OPTION == "--ise" ]; then
       ISE=1
    elif [ $OPTION == "--vivado" ]; then
       VIVADO=1
-   elif [ $OPTION == "--quartus2" ]; then
-      QUARTUS2=1
-   elif [ $OPTION == "--libero-soc" ]; then
-      LIBEROSOC=1
+   elif [ $OPTION == "--quartus" ]; then
+      QUARTUS=1
+   elif [ $OPTION == "--libero" ]; then
+      LIBERO=1
    # Add here new tool code
    else
       echo "fpga_setup (ERROR): '$OPTION' is not a valid option."
@@ -110,8 +110,8 @@ if [[ $HELP ]]; then
    echo "--all        : set to use all the available vendors tools"
    echo "--ise        : set to use ISE (Xilinx)"
    echo "--vivado     : set to use Vivado (Xilinx)"
-   echo "--quartus2   : set to use Quartus2 (Altera)"
-   echo "--libero-soc : set to use Libero-SoC (Microsemi)"
+   echo "--quartus    : set to use Quartus (Altera)"
+   echo "--libero     : set to use Libero (Microsemi)"
    # Add here new tool code
 fi
 
@@ -156,45 +156,45 @@ if [[ $VIVADO ]]; then
 fi
 
 ###############################################################################
-# Quartus2                                                                    #
+# Quartus                                                                     #
 ###############################################################################
 
 if [[ $CONFIG ]]; then
-   echo "* Configure Altera Quartus2:"
-   read -e -p "QUARTUS2 ROOT DIR:            " -i $QUARTUS2_ROOT_DIR QUARTUS2_ROOT_DIR
+   echo "* Configure Altera Quartus:"
+   read -e -p "QUARTUS ROOT DIR:             " -i $QUARTUS_ROOT_DIR QUARTUS_ROOT_DIR
 fi
-if [[ $QUARTUS2 ]]; then
-   echo -n "* Setting Altera Quartus2... "
-   QUARTUS2_BIN_DIR=${QUARTUS2_ROOT_DIR}/quartus/bin
-   export PATH=$PATH:$QUARTUS2_BIN_DIR
+if [[ $QUARTUS ]]; then
+   echo -n "* Setting Altera Quartus... "
+   QUARTUS_BIN_DIR=${QUARTUS_ROOT_DIR}/quartus/bin
+   export PATH=$PATH:$QUARTUS_BIN_DIR
    echo "Done"
    SET=1
 fi
 
 ###############################################################################
-# Libero-SoC                                                                  #
+# Libero                                                                  #
 ###############################################################################
 
 if [[ $CONFIG ]]; then
-   echo "* Configure Microsemi Libero-Soc:"
-   read -e -p "LIBERO SOC ROOT DIR:          " -i $LIBEROSOC_ROOT_DIR  LIBEROSOC_ROOT_DIR
-   read -e -p "LIBERO SOC LICENSE PORT:      " -i $LIBEROSOC_LIC_PORT  LIBEROSOC_LIC_PORT
-   read -e -p "LIBERO SOC LICENSE HOST:      " -i $LIBEROSOC_LIC_HOST  LIBEROSOC_LIC_HOST
-   if [ $LIBEROSOC_LIC_HOST == "localhost" ]; then
-      read -e -p "LIBERO SOC LICENSE FILE:      " -i $LIBEROSOC_LIC_FILE  LIBEROSOC_LIC_FILE
-      read -e -p "LIBERO SOC LMGRD DIR:         " -i $LIBEROSOC_LMGRD_DIR LIBEROSOC_LMGRD_DIR
+   echo "* Configure Microsemi Libero:"
+   read -e -p "LIBERO ROOT DIR:              " -i $LIBERO_ROOT_DIR  LIBERO_ROOT_DIR
+   read -e -p "LIBERO LICENSE PORT:          " -i $LIBERO_LIC_PORT  LIBERO_LIC_PORT
+   read -e -p "LIBERO LICENSE HOST:          " -i $LIBERO_LIC_HOST  LIBERO_LIC_HOST
+   if [ $LIBERO_LIC_HOST == "localhost" ]; then
+      read -e -p "LIBERO LICENSE FILE:          " -i $LIBERO_LIC_FILE  LIBERO_LIC_FILE
+      read -e -p "LIBERO LMGRD DIR:             " -i $LIBERO_LMGRD_DIR LIBERO_LMGRD_DIR
    fi
 fi
-if [[ $LIBEROSOC ]]; then
-   echo -n "* Setting Microsemi Libero-SoC... "
-   LIBEROSOC_BIN_DIR=${LIBEROSOC_ROOT_DIR}/Libero/bin
-   export PATH=$PATH:$LIBEROSOC_BIN_DIR
+if [[ $LIBERO ]]; then
+   echo -n "* Setting Microsemi Libero... "
+   LIBERO_BIN_DIR=${LIBERO_ROOT_DIR}/Libero/bin
+   export PATH=$PATH:$LIBERO_BIN_DIR
    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu
-   export LM_LICENSE_FILE=$LIBEROSOC_LIC_PORT@$LIBEROSOC_LIC_HOST
-   if [ $LIBEROSOC_LIC_HOST == "localhost" ]; then
+   export LM_LICENSE_FILE=$LIBERO_LIC_PORT@$LIBERO_LIC_HOST
+   if [ $LIBERO_LIC_HOST == "localhost" ]; then
       if [ -z `pidof lmgrd` ]; then
          echo -n "Launcingh Microsemi License manager... "
-         $LIBEROSOC_LMGRD_DIR/lmgrd -c $LIBEROSOC_LIC_FILE -l /tmp/libero-soc-license.log
+         $LIBERO_LMGRD_DIR/lmgrd -c $LIBERO_LIC_FILE -l /tmp/libero-license.log
       else
          echo -n "Microsemi License manager is already running... "
       fi
@@ -214,12 +214,12 @@ if [[ $CONFIG ]]; then
    echo "ISE_64_BITS=$ISE_64_BITS"                 >> $HOME/.fpga_helpers
    echo "ISE_ROOT_DIR=$ISE_ROOT_DIR"               >> $HOME/.fpga_helpers
    echo "VIVADO_ROOT_DIR=$VIVADO_ROOT_DIR"         >> $HOME/.fpga_helpers
-   echo "QUARTUS2_ROOT_DIR=$QUARTUS2_ROOT_DIR"     >> $HOME/.fpga_helpers
-   echo "LIBEROSOC_ROOT_DIR=$LIBEROSOC_ROOT_DIR"   >> $HOME/.fpga_helpers
-   echo "LIBEROSOC_LMGRD_DIR=$LIBEROSOC_LMGRD_DIR" >> $HOME/.fpga_helpers
-   echo "LIBEROSOC_LIC_FILE=$LIBEROSOC_LIC_FILE"   >> $HOME/.fpga_helpers
-   echo "LIBEROSOC_LIC_PORT=$LIBEROSOC_LIC_PORT"   >> $HOME/.fpga_helpers
-   echo "LIBEROSOC_LIC_HOST=$LIBEROSOC_LIC_HOST"   >> $HOME/.fpga_helpers
+   echo "QUARTUS_ROOT_DIR=$QUARTUS_ROOT_DIR"       >> $HOME/.fpga_helpers
+   echo "LIBERO_ROOT_DIR=$LIBERO_ROOT_DIR"         >> $HOME/.fpga_helpers
+   echo "LIBERO_LMGRD_DIR=$LIBERO_LMGRD_DIR"       >> $HOME/.fpga_helpers
+   echo "LIBERO_LIC_FILE=$LIBERO_LIC_FILE"         >> $HOME/.fpga_helpers
+   echo "LIBERO_LIC_PORT=$LIBERO_LIC_PORT"         >> $HOME/.fpga_helpers
+   echo "LIBERO_LIC_HOST=$LIBERO_LIC_HOST"         >> $HOME/.fpga_helpers
    echo "Configurations saved in $HOME/.fpga_helpers"
    # Add here new tool code
 fi
