@@ -12,7 +12,7 @@ if [ $# -eq 1 ] && [ $1 == "clean" ]; then
    rm -fr src/Makefile src/Makefile.in
    rm -fr doc/Makefile doc/Makefile.in
    rm -fr doc/tutorial/Makefile doc/tutorial/Makefile.in
-   rm README
+   rm -f README
 else
    git log --format='%aN <%aE>' | LC_ALL=C.UTF-8 sort -uf > AUTHORS
    grep -oP '\d\.\d\.\d-?d?e?v?' configure.ac > VERSION

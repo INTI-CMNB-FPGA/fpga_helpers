@@ -1,6 +1,9 @@
 SUBDIRS           = src doc
-doc_DATA          = README.md NEWS
-EXTRA_DIST        = test
+doc_DATA          = README NEWS
+EXTRA_DIST        = test tcl
+
+tcldir            = $(pkgdatadir)/tcl
+tcl_DATA          = tcl/*
 
 #Generation of file Changelog from git changelog
 dist-hook:

@@ -22,5 +22,5 @@ $ make install
 
 * Debian Package (it also run AutoTools for tarball generation)
 ```
-$ make -f Makfile.debian deb
+$ make -f Makefile.debian deb
 ```
