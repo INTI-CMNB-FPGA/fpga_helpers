@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 #
 # FPGA Deps collects the files of an HDL project
-# Copyright (C) 2015-2016 INTI, Rodrigo A. Melo
+# Copyright (C) 2015-2017 INTI
+# Copyright (C) 2015-2017 Rodrigo A. Melo
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,21 +29,11 @@
 #   * A file could have one or more modules.
 
 import argparse, os, sys, re, mimetypes
-
-bin_dir = os.path.dirname(os.path.abspath(__file__))
-if os.path.exists(bin_dir + '/../data'):
-   share_dir = bin_dir + '/..'
-   lib_dir   = bin_dir
-else:
-   share_dir = bin_dir + '/../share/fpga-helpers'
-   lib_dir   = share_dir
-
-sys.path.insert(0, lib_dir)
-from fpga_lib import *
+from fpga_helpers import *
 
 ## Parsing the command line ###################################################
 
-version = 'FPGA Deps (FPGA Helpers) v' + getVersion(share_dir)
+version = "fpga_deps is a member of FPGA Helpers v%s" % (fpga_helpers.version)
 
 parser = argparse.ArgumentParser(
    prog='fpga_deps',
@@ -262,7 +253,7 @@ if options.verbose:
    print
 
 done.reverse()
-print done
+print(done)
 
 #foreach $prj_file (@prj_files) {
 #   $text .= "$prj_file\n";
