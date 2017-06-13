@@ -34,8 +34,8 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument(
    '-v', '--version',
-   action='version',
-   version=version
+   action  = 'version',
+   version = version
 )
 
 parser.add_argument(
@@ -108,5 +108,5 @@ try:
 except:
    print("fpga_synt (ERROR): failed when run %s" % options.task)
 
-# The Makefile was destroyed
+# The Makefile is destroyed
 temp.close()
