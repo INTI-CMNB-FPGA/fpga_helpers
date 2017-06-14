@@ -168,7 +168,7 @@ if not os.path.exists('options.tcl'):
 
 # Executing the Makefile
 try:
-   os.system("make -f %s prog" % temp.name)
+   os.system("make -f %s prog" % tempmake.name)
 except:
    print("fpga_prog (ERROR): failed when programming")
 
