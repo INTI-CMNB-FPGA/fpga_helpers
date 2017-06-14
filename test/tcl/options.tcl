@@ -10,7 +10,7 @@
 # Constant: $FPGA_TOOL                              Name of the running tool
 #   Useful when comparing synthesis results between vendors.
 
-fpga_device "xc7a100t-3-csg324" -tool "ise"
+fpga_device "XC6SLX9-2-CSG324"  -tool "ise"
 fpga_device "xc7a100t-3-csg324" -tool "vivado"
 fpga_device "5CGXFC7C7F23C8"    -tool "quartus"
 fpga_device "M2S090TS-1-fg484"  -tool "libero"
@@ -18,6 +18,13 @@ fpga_device "M2S090TS-1-fg484"  -tool "libero"
 fpga_file "core_file.vhdl"      -lib "LIB_NAME"
 fpga_file "package_file.vhdl"   -lib "LIB_NAME"
 fpga_file "top_file.vhdl"       -top "TOP_NAME"
+
+if {$FPGA_TOOL == "ise"} {
+   fpga_file "s6micro.ucf"
+} elseif {$FPGA_TOOL == "vivado"} {
+} elseif {$FPGA_TOOL == "quartus"} {
+} elseif {$FPGA_TOOL == "libero"} {
+}
 
 # This part could be useful when comparing synthesis results between vendors.
 

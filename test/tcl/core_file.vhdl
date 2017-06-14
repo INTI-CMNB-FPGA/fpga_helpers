@@ -8,7 +8,6 @@ entity CORE_NAME is
    );
    port (
       clk_i :  in std_logic;
-      rst_i :  in std_logic;
       led_o : out std_logic
    );
 end entity CORE_NAME;
@@ -22,16 +21,11 @@ begin
       variable cnt: natural range 0 to DIV:=0;
    begin
       if rising_edge(clk_i) then
-         if rst_i='0' then
+         if cnt=DIV then
             cnt:=0;
-            led <= '0';
+            led <= not(led);
          else
-            if cnt=DIV then
-               cnt:=0;
-               led <= not(led);
-            else
-               cnt:=cnt+1;
-            end if;
+            cnt:=cnt+1;
          end if;
       end if;
    end process blink;

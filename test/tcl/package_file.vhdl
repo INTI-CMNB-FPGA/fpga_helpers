@@ -9,7 +9,6 @@ package PACKAGE_NAME is
       );
       port (
          clk_i :  in std_logic;
-         rst_i :  in std_logic;
          led_o : out std_logic
       );
    end component CORE_NAME;
