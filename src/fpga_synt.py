@@ -70,7 +70,7 @@ if options.file is None:
    try:
       options.file = options.file[0]
    except:
-      sys.exit("fpga_synt (ERROR): project file not auto detected")
+      sys.exit("fpga_synt (ERROR): the project file was not auto detected")
 
 if not os.path.exists(options.file):
    sys.exit("fpga_synt (ERROR): file %s do not exists" % options.file)
@@ -90,23 +90,38 @@ else:
    sys.exit("fpga_synt (ERROR): unsupported vendor's tool")
 
 ###################################################################################################
-# Running
+# Preparing files
 ###################################################################################################
 
+# Finding original Tcl Files
+tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../tcl"
+if not os.path.exists(tcl_orig):
+   tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../share/fpga_helpers/tcl"
+if not os.path.exists(tcl_orig):
+   sys.exit("fpga_wizard (ERROR): I don't find the original Tcl files.")
+
 # Preparing a temporary Makefile
-temp = tempfile.NamedTemporaryFile()
+temp = tempfile.NamedTemporaryFile(mode='w')
 temp.write("#!/usr/bin/make\n")
 temp.write("TOOL=%s\n" % options.tool)
 temp.write("TASK=%s\n" % options.task)
-temp.write("TCLPATH=%s\n" % (os.path.dirname(os.path.abspath(__file__)) + "/../tcl"))
+temp.write("TCLPATH=%s\n" % tcl_orig)
 temp.write("include $(TCLPATH)/Makefile")
 temp.flush()
+
+###################################################################################################
+# Running
+###################################################################################################
 
 # Executing the Makefile
 try:
    os.system("make -f %s run" % temp.name)
 except:
    print("fpga_synt (ERROR): failed when run %s" % options.task)
+
+###################################################################################################
+# Ending
+###################################################################################################
 
 # The Makefile is destroyed
 temp.close()

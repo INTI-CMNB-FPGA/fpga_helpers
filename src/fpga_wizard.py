@@ -183,7 +183,12 @@ if not os.path.exists(options['tcl_path']):
    os.mkdir(options['tcl_path'])
    print("fpga_wizard (INFO): directory %s was created" % options['tcl_path'])
 
+# Finding original Tcl Files
 tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../tcl"
+if not os.path.exists(tcl_orig):
+   tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../share/fpga_helpers/tcl"
+if not os.path.exists(tcl_orig):
+   sys.exit("fpga_wizard (ERROR): I don't find the original Tcl files.")
 
 if not os.path.exists(options['tcl_path'] + "/Makefile"):
    shutil.copy(tcl_orig + '/Makefile', options['tcl_path'])
@@ -242,5 +247,9 @@ if 'top_file' in options:
 
 open("Makefile", 'w').write(makefile)
 open("options.tcl", 'w').write(optfile)
+
+###################################################################################################
+# Ending
+###################################################################################################
 
 print("fpga_wizard (INFO): Makefile and options.tcl were generated")

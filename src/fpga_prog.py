@@ -50,6 +50,7 @@ parser.add_argument(
 parser.add_argument(
    '-t', '--tool',
    metavar     = 'TOOL',
+   default     = 'vivado',
    choices     = ['ise','quartus','libero','vivado'],
    help        = 'name of the vendor tool to be used (ise|quartus|libero|vivado) [vivado]'
 )
@@ -117,34 +118,23 @@ if options.board is not None and options.device not in ['detect','unlock']:
          options.memname = fpga_helpers.boards[options.board][options.device + '_name']
          options.width   = fpga_helpers.boards[options.board][options.device + '_width']
 
-if options.tool is None:
-   print("fpga_prog (INFO): you did not specified a tool to use. Choose one:")
-   print("1. ISE (Xilinx)")
-   print("2. Quartus (INTEL/Altera)")
-   print("3. Libero (Microsemi)")
-   print("4. Vivado (Xilinx) [default]")
-   option = sys.stdin.read(1)
-   if option == '1':
-      options.tool = "ise"
-   elif option == '2':
-      options.tool = "quartus"
-   elif option == '3':
-      options.tool = "libero"
-   elif option == '4':
-      options.tool = "vivado"
-   else:
-      sys.exit('fpga_prog (ERROR): invalid option.')
+###################################################################################################
+# Preparing files
+###################################################################################################
 
-###################################################################################################
-# Running
-###################################################################################################
+# Finding original Tcl Files
+tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../tcl"
+if not os.path.exists(tcl_orig):
+   tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../share/fpga_helpers/tcl"
+if not os.path.exists(tcl_orig):
+   sys.exit("fpga_prog (ERROR): I don't find the original Tcl files.")
 
 # Preparing a temporary Makefile
-tempmake = tempfile.NamedTemporaryFile()
+tempmake = tempfile.NamedTemporaryFile(mode='w')
 tempmake.write("#!/usr/bin/make\n")
 tempmake.write("TOOL=%s\n" % options.tool)
 tempmake.write("DEV=%s\n" % options.device)
-tempmake.write("TCLPATH=%s\n" % (os.path.dirname(os.path.abspath(__file__)) + "/../tcl"))
+tempmake.write("TCLPATH=%s\n" % tcl_orig)
 tempmake.write("include $(TCLPATH)/Makefile")
 tempmake.flush()
 
@@ -166,11 +156,19 @@ if not os.path.exists('options.tcl'):
       tempopt.write("set xcf_width %s\n" % options.width)
    tempopt.flush()
 
+###################################################################################################
+# Running
+###################################################################################################
+
 # Executing the Makefile
 try:
    os.system("make -f %s prog" % tempmake.name)
 except:
    print("fpga_prog (ERROR): failed when programming")
+
+###################################################################################################
+# Ending
+###################################################################################################
 
 # The temporary files are destroyed
 tempmake.close()
