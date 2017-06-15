@@ -155,7 +155,7 @@ else:
       print("")
       print("Specify the SPI bits width [%s]" % options['spi_width'])
       options['spi_width'] = get_input() or options['spi_width']
-      if int(options['spi_width']) not in [1, 2, 3, 4]:
+      if int(options['spi_width']) not in [1, 2, 4]:
          sys.exit("fpga_wizard (ERROR): SPI data width can be 1 to 4")
 
    print("")

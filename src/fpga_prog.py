@@ -90,9 +90,9 @@ parser.add_argument(
    metavar     = 'WIDTH',
    type        = int,
    default     = 1,
-   choices     = [1, 2, 3, 4, 8, 16, 32],
+   choices     = [1, 2, 4, 8, 16, 32, 64],
    help        = 'positive number which representes the WIDTH of bits of the target ' +
-                 'memory (1, 2, 3, 4, 8, 16, 32, 64) [1]'
+                 'memory (1, 2, 4, 8, 16, 32, 64) [1]'
 )
 
 options = parser.parse_args()
