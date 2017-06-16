@@ -28,7 +28,8 @@ arguments needed.
   * `imp`: for implementation (technology mapping, place & route, timing verification).
   * `bit`: [default] for bitstream generation.
 * If a vendor tool project file exists, it is used.
-  * You can make the project with the graphical interface of the vendor tool and use this script for synthesis.
+  * You can make the project with the graphical interface of the vendor tool and use this script
+    for synthesis.
 * If a vendor tool project file does not exists:
   * File options.tcl is used to create a new project.
   * Functions *fpga_device* and *fpga_file* are provided to be used on options.tcl.
@@ -43,7 +44,8 @@ arguments needed.
 * The device to be programmed can be specified with the `-dev` argument. Possible values are:
   `fpga` (default), `spi` and `bpi`.
 * Additional device options can be specified in options.tcl.
-* The bistream *path/name* is specified with the `-bit` argument. **NOTE:** Libero uses the project file to find it.
+* The bistream *path/name* is specified with the `-bit` argument.
+  **NOTE:** Libero uses the project file to find it.
 
 ### Makefile
 
@@ -71,14 +73,14 @@ arguments needed.
 
 * If you do not want a lot of copies of synthesis.tcl, programming.tcl and Makefile, you can create
   a simple Makefile to point where files are.
-  Add *fpga_lib* as git submodule and point to *fpga_lib/tcl* to use the original and updated
-  version, or make a local copy in your project. Example *Makefile*:
+  Add *fpga_helpers* as git submodule and point to *fpga_helpers/tcl* to use the original and
+  updated version, or make a local copy in your project. Example *Makefile*:
 ```Makefile
 #!/usr/bin/make
 
 # You can set here variables such as TOOL, TASK, OPT and DEV if you
 # want to change the predefined values. Do it before the include.
-TCLPATH=../../fpga_lib/tcl
+TCLPATH=../../fpga_helpers/tcl
 include $(TCLPATH)/Makefile
 
 # You can add here extra targets if you need.
@@ -103,7 +105,7 @@ set spi_width 4
 set spi_name  SPI_NAME
 ```
 
-[Here](test/options.tcl) you have a full documented version to use as boilerplate.
+[Here](test/tcl/options.tcl) you have a full documented version to use as boilerplate.
 
 ### Examples
 
