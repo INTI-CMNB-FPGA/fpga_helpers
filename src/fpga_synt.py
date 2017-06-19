@@ -96,7 +96,7 @@ else:
 # Finding original Tcl Files
 tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../tcl"
 if not os.path.exists(tcl_orig):
-   tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../share/fpga_helpers/tcl"
+   tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../share/fpga-helpers/tcl"
 if not os.path.exists(tcl_orig):
    sys.exit("fpga_wizard (ERROR): I don't find the original Tcl files.")
 
