@@ -135,3 +135,12 @@ make clean
 make clean-all
 make clean-multi
 ```
+
+## Tcl scripts vs Chain of programs running from Command Line
+
+The tasks of the vendor's tools can be achieved using a chain of programs running from the
+command line, where the output from one is the input of another. However, we prefer Tcl because:
+* Is supported for all the vendor's tools, so a lot of code can be shared.
+* Instead of learn and use several small programs, we only study some new commands.
+* Each small program uses a particular project file, while with Tcl it can be shared.
+It seems better for a vendor independent implementation.
