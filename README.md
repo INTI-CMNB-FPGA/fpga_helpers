@@ -26,3 +26,7 @@ The project is divided in two part:
    in an effective way the Tcl scripts for certain tasks.
 
 For more information read [tcl/README.md](tcl/README.md) and [src/README.md](src/README.md).
+
+## License
+
+FPGA Helpers is licensed under the GPL3. See [LICENSE](LICENSE) for details.

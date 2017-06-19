@@ -8,7 +8,7 @@
 
 ## FPGA Setup
 
-The Makefile which run the Tcl scripts for synthesis and programming assume that the vendor's tool
+The Makefile which run the Tcl scripts for synthesis and programming assumes that the vendor's tool
 is well configured and available in the system path.
 
 It can be done:
