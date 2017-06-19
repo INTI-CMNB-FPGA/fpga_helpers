@@ -19,7 +19,10 @@
 #
 
 import sys, os, readline, re, glob, shutil
-from fpga_helpers import *
+# When installed in the system, the database is in another directory
+if not os.path.exists(os.path.dirname(os.path.abspath(__file__)) + '/database.py'):
+   sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + '/../share/fpga-helpers')
+from database import *
 
 # config autocomplete
 readline.set_completer_delims(' \t\n;')
@@ -70,11 +73,11 @@ def complete(text, state):
 # Collect info
 ###################################################################################################
 
-print("fpga_wizard is a member of FPGA Helpers v%s" % (fpga_helpers.version))
+print("fpga_wizard is a member of FPGA Helpers v%s" % (database.version))
 
 print("") # TOOL ----------------------------------------------------------------------------------
 
-alternatives = fpga_helpers.tools # available tools
+alternatives = database.tools # available tools
 readline.set_completer(complete)
 print("Select TOOL to use [%s]" % options['tool'])
 options['tool'] = get_input() or options['tool']
@@ -122,7 +125,7 @@ while (morefiles):
 
 print("") # BOARD ---------------------------------------------------------------------------------
 
-alternatives = fpga_helpers.boards # available boards
+alternatives = database.boards # available boards
 readline.set_completer(complete)
 print("Board to be used? [None]")
 options['board'] = get_input()
@@ -133,7 +136,7 @@ if options['board'] and options['board'] not in alternatives:
 print("") # DEVICES -------------------------------------------------------------------------------
 
 if options['board']:
-   options.update(fpga_helpers.boards[options['board']])
+   options.update(database.boards[options['board']])
 else:
    alternatives = [] # no options yet
    readline.set_completer(complete)
@@ -186,7 +189,7 @@ if not os.path.exists(options['tcl_path']):
 # Finding original Tcl Files
 tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../tcl"
 if not os.path.exists(tcl_orig):
-   tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../share/fpga_helpers/tcl"
+   tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../share/fpga-helpers/tcl"
 if not os.path.exists(tcl_orig):
    sys.exit("fpga_wizard (ERROR): I don't find the original Tcl files.")
 
@@ -203,7 +206,7 @@ if not os.path.exists(options['tcl_path'] + "/programming.tcl"):
 # The Makefile ------------------------------------------------------------------------------------
 
 makefile  = "#!/usr/bin/make\n"
-makefile += "#Generated with fpga_wizard v%s\n\n" % fpga_helpers.version
+makefile += "#Generated with fpga_wizard v%s\n\n" % database.version
 makefile += "TOOL    = %s\n" % (options['tool'])
 makefile += "TCLPATH = %s\n" % (options['tcl_path'])
 makefile += "include $(TCLPATH)/Makefile"

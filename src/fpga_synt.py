@@ -19,13 +19,16 @@
 #
 
 import argparse, glob, sys, os, tempfile
-from fpga_helpers import *
+# When installed in the system, the database is in another directory
+if not os.path.exists(os.path.dirname(os.path.abspath(__file__)) + '/database.py'):
+   sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + '/../share/fpga-helpers')
+from database import *
 
 ###################################################################################################
 # Parsing the command line
 ###################################################################################################
 
-version = "fpga_synt is a member of FPGA Helpers v%s" % (fpga_helpers.version)
+version = "fpga_synt is a member of FPGA Helpers v%s" % (database.version)
 
 parser = argparse.ArgumentParser(
    prog="fpga_synt",

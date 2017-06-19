@@ -1,7 +1,9 @@
 bin_SCRIPTS       = fpga_deps fpga_prog fpga_setup fpga_synt fpga_wizard
 CLEANFILES        = $(bin_SCRIPTS)
-EXTRA_DIST        = fpga_deps.py fpga_helpers.py fpga_prog.py fpga_setup.sh fpga_synt.py fpga_wizard.py
-dist_bin_SCRIPTS  = fpga_helpers.py
+EXTRA_DIST        = database.py fpga_deps.py fpga_prog.py fpga_setup.sh fpga_synt.py fpga_wizard.py
+
+dbdir             = $(pkgdatadir)
+db_DATA           = database.py
 
 fpga_deps: fpga_deps.py
 	cp $< $@

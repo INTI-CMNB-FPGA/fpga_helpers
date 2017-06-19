@@ -19,18 +19,21 @@
 #
 
 import argparse, os, sys, tempfile
-from fpga_helpers import *
+# When installed in the system, the database is in another directory
+if not os.path.exists(os.path.dirname(os.path.abspath(__file__)) + '/database.py'):
+   sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + '/../share/fpga-helpers')
+from database import *
 
 ###################################################################################################
 # Parsing the command line
 ###################################################################################################
 
-version = "fpga_prog is a member of FPGA Helpers v%s" % (fpga_helpers.version)
+version = "fpga_prog is a member of FPGA Helpers v%s" % (database.version)
 
 parser = argparse.ArgumentParser(
    prog        = 'fpga_prog',
    description = 'Transfers a BitStream to a device.',
-   epilog      = "Supported boards: " + ', '.join(fpga_helpers.boards)
+   epilog      = "Supported boards: " + ', '.join(database.boards)
 )
 
 parser.add_argument(
@@ -105,18 +108,18 @@ options = parser.parse_args()
 if not os.path.exists(options.bit) and options.device not in ['detect','unlock'] and options.tool not in ['libero']:
    sys.exit('fpga_prog (ERROR): bitstream needed but not found.')
 
-if options.board and options.board not in fpga_helpers.boards:
+if options.board and options.board not in database.boards:
    sys.exit("fpga_prog (ERROR): unsupported board")
 
 if options.board is not None and options.device not in ['detect','unlock']:
-   if options.device + '_name' not in fpga_helpers.boards[options.board]:
+   if options.device + '_name' not in database.boards[options.board]:
       sys.exit('fpga_prog (ERROR): the device <' + options.device + '> is not ' +
                           'supported in the board <' + options.board + '>.')
    else:
-      options.position = fpga_helpers.boards[options.board]['fpga_pos']
+      options.position = database.boards[options.board]['fpga_pos']
       if options.device != 'fpga':
-         options.memname = fpga_helpers.boards[options.board][options.device + '_name']
-         options.width   = fpga_helpers.boards[options.board][options.device + '_width']
+         options.memname = database.boards[options.board][options.device + '_name']
+         options.width   = database.boards[options.board][options.device + '_width']
 
 ###################################################################################################
 # Preparing files

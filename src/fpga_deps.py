@@ -29,11 +29,11 @@
 #   * A file could have one or more modules.
 
 import argparse, os, sys, re, mimetypes
-from fpga_helpers import *
+from database import *
 
 ## Parsing the command line ###################################################
 
-version = "fpga_deps is a member of FPGA Helpers v%s" % (fpga_helpers.version)
+version = "fpga_deps is a member of FPGA Helpers v%s" % (database.version)
 
 parser = argparse.ArgumentParser(
    prog='fpga_deps',

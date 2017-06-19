@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# FPGA Helpers, shared database between FPGA Helpers
+# Shared database between FPGA Helpers
 # Copyright (C) 2017 INTI
 # Copyright (C) 2017 Rodrigo A. Melo
 #
@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-class fpga_helpers:
+class database:
 
    version = "0.3.0"
 
@@ -82,23 +82,23 @@ if __name__ == "__main__":
    print("")
    print("## Supported tools ############################################################")
    print("")
-   for tool in sorted(fpga_helpers.tools):
+   for tool in sorted(database.tools):
        print("* %s" % tool)
    print("")
    print("## Supported boards ###########################################################")
    print("")
-   for board in sorted(fpga_helpers.boards):
-       print("%s (%s)" % (board,fpga_helpers.boards[board]['full_name']))
-       if 'fpga_name' in fpga_helpers.boards[board] and 'fpga_pos' in fpga_helpers.boards[board]:
+   for board in sorted(database.boards):
+       print("%s (%s)" % (board,database.boards[board]['full_name']))
+       if 'fpga_name' in database.boards[board] and 'fpga_pos' in database.boards[board]:
           print ("* FPGA %s in position %s" %
-             (fpga_helpers.boards[board]['fpga_name'],fpga_helpers.boards[board]['fpga_pos'])
+             (database.boards[board]['fpga_name'],database.boards[board]['fpga_pos'])
           )
-       if 'spi_name' in fpga_helpers.boards[board] and 'spi_width' in fpga_helpers.boards[board]:
+       if 'spi_name' in database.boards[board] and 'spi_width' in database.boards[board]:
           print ("* SPI %s with width %s" %
-             (fpga_helpers.boards[board]['spi_name'],fpga_helpers.boards[board]['spi_width'])
+             (database.boards[board]['spi_name'],database.boards[board]['spi_width'])
           )
-       if 'bpi_name' in fpga_helpers.boards[board] and 'bpi_width' in fpga_helpers.boards[board]:
+       if 'bpi_name' in database.boards[board] and 'bpi_width' in database.boards[board]:
           print ("* BPI %s with width %s" %
-             (fpga_helpers.boards[board]['bpi_name'],fpga_helpers.boards[board]['bpi_width'])
+             (database.boards[board]['bpi_name'],database.boards[board]['bpi_width'])
           )
        print("")

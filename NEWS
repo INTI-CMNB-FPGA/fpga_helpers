@@ -6,7 +6,7 @@ v0.3.0:
 * Added fpga_wizard.py to help to obtain options.tcl and Makefile. It replaces old fpga_synt.py.
 * New fpga_synt.py. It helps to do synthesis based on the project file of a vendor's tool.
 * Modified fpga_prog.py. Now it use the Tcl script for programming.
-* YAML files were replaced by data in fpga_helpers.py (shared database).
+* YAML files were replaced by data in database.py (shared database).
 * Updated the tutorial.
 
 v0.2.0:
