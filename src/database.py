@@ -27,54 +27,59 @@ class database:
    boards = {
       'avnet_s6micro' : {
          'full_name' : 'Avnet Spartan-6 FPGA LX9 MicroBoard',
-         'fpga_name' : 'xc6slx9-csg324',
+         'fpga_name' : 'xc6slx9-2-csg324',
          'fpga_pos'  : '1',
          'spi_name'  : 'N25Q128',
-         'spi_width' : '4'
+         'spi_width' : '4',
+         'spi_size'  : '128Mb'
       },
       'digilent_atlys' : {
          'full_name' : 'Digilent Atlys - Comprehensive Spartan 6 Design Platform',
-         'fpga_name' : 'xc6slx45-csg324',
+         'fpga_name' : 'xc6slx45-3-csg324',
          'fpga_pos'  : '1',
-         'spi_name'  : 'N25Q12',
-         'spi_width' : '4'
+         'spi_name'  : 'N25Q128',
+         'spi_width' : '4',
+         'spi_size'  : '128Mb'
       },
       'gaisler_xc6s' : {
          'full_name' : 'Gaisler Research GR-XC6S',
          'fpga_name' : 'xc6slx75-2-fgg484',
          'fpga_pos'  : '1',
          'spi_name'  : 'W25Q64BV',
-         'spi_width' : '4'
+         'spi_width' : '4',
+         'spi_size'  : '64Mb'
       },
       'microsemi_m2s090ts' : {
          'full_name' : 'Microsemi M2S090TS-EVAL-KIT',
          'fpga_name' : 'm2s090ts-1-fg484',
-         'fpga_pos'  : '1',
-         'spi_name'  : 'W25Q64FVSSIG',
-         'spi_width' : '1'
+         'fpga_pos'  : '1'
       },
       'terasic_de0nano' : {
          'full_name' : 'Terasic DE0-Nano development and education board',
          'fpga_name' : 'EP4CE22F17C6',
          'fpga_pos'  : '1',
          'spi_name'  : 'EPCS64',
-         'spi_width' : '4'
+         'spi_width' : '1',
+         'spi_size'  : '4Mb'
       },
       'xilinx_ml605' : {
          'full_name' : 'Xilinx Virtex 6 ML605',
          'fpga_name' : 'xc6vlx240t-1-ff1156',
          'fpga_pos'  : '2',
          'bpi_name'  : '28F256P30',
-         'bpi_width' : '16'
+         'bpi_width' : '16',
+         'bpi_size'  : '256Mb'
       },
       'xilinx_sp601' : {
          'full_name' : 'Xilinx Spartan 6 SP601',
          'fpga_name' : 'xc6slx16-2-csg324',
          'fpga_pos'  : '1',
          'spi_name'  : 'W25Q64BV',
-         'spi_width' : '1',
+         'spi_width' : '4',
+         'spi_size'  : '64Mb',
          'bpi_name'  : '28F128J3D',
-         'bpi_width' : '8'
+         'bpi_width' : '8',
+         'bpi_size'  : '16Mb'
       }
    }
 
@@ -89,16 +94,21 @@ if __name__ == "__main__":
    print("")
    for board in sorted(database.boards):
        print("%s (%s)" % (board,database.boards[board]['full_name']))
-       if 'fpga_name' in database.boards[board] and 'fpga_pos' in database.boards[board]:
-          print ("* FPGA %s in position %s" %
-             (database.boards[board]['fpga_name'],database.boards[board]['fpga_pos'])
-          )
-       if 'spi_name' in database.boards[board] and 'spi_width' in database.boards[board]:
-          print ("* SPI %s with width %s" %
-             (database.boards[board]['spi_name'],database.boards[board]['spi_width'])
-          )
-       if 'bpi_name' in database.boards[board] and 'bpi_width' in database.boards[board]:
-          print ("* BPI %s with width %s" %
-             (database.boards[board]['bpi_name'],database.boards[board]['bpi_width'])
-          )
+       if 'fpga_name' in database.boards[board]:
+          print ("* FPGA %s in position %s" % (
+             database.boards[board]['fpga_name'],
+             database.boards[board]['fpga_pos']
+          ))
+       if 'spi_name' in database.boards[board]:
+          print ("* SPI %s with width %s (%s)" % (
+             database.boards[board]['spi_name'],
+             database.boards[board]['spi_width'],
+             database.boards[board]['spi_size']
+          ))
+       if 'bpi_name' in database.boards[board]:
+          print ("* BPI %s with width %s (%s)" % (
+             database.boards[board]['bpi_name'],
+             database.boards[board]['bpi_width'],
+             database.boards[board]['bpi_size']
+          ))
        print("")
