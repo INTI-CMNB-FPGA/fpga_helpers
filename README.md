@@ -1,18 +1,18 @@
 # FPGA Helpers
 
-[GNU/Linux support](https://img.shields.io/badge/Linux-Ok-green.svg)
-[Windows support](https://img.shields.io/badge/Window-Untested-yellow.svg)
-[Other](https://img.shields.io/badge/Other-Unknown-red.svg)
+![GNU/Linux support](https://img.shields.io/badge/Linux-Ok-green.svg)
+![Windows support](https://img.shields.io/badge/Window-Untested-yellow.svg)
+![Other](https://img.shields.io/badge/Other-Unknown-red.svg)
 
-[Vivado version](https://img.shields.io/badge/Vivado-2016.4-green.svg)
-[ISE version](https://img.shields.io/badge/ISE-14.7-green.svg)
-[Quartus version](https://img.shields.io/badge/Quartus-15.0-green.svg)
-[Libero-SoC version](https://img.shields.io/badge/Libero SoC-11.7-green.svg)
-[Libero-SoC Polarfire version](https://img.shields.io/badge/Libero SoC Polarfire-Unsupported-red.svg)
-[Libero-IDE version](https://img.shields.io/badge/Libero IDE-Unsupported-red.svg)
-[Diamond version](https://img.shields.io/badge/Diamond-Not Yet-red.svg)
-[IceCube2 version](https://img.shields.io/badge/IceCube2-Not Yet-red.svg)
-[OpenFlow version](https://img.shields.io/badge/Yosis+Arachne+IceStorm-Not Yet-red.svg)
+![Vivado version](https://img.shields.io/badge/Vivado-2016.4-green.svg)
+![ISE version](https://img.shields.io/badge/ISE-14.7-green.svg)
+![Quartus version](https://img.shields.io/badge/Quartus-15.0-green.svg)
+![Libero-SoC version](https://img.shields.io/badge/Libero SoC-11.7-green.svg)
+![Libero-SoC Polarfire version](https://img.shields.io/badge/Libero SoC Polarfire-Unsupported-red.svg)
+![Libero-IDE version](https://img.shields.io/badge/Libero IDE-Unsupported-red.svg)
+![Diamond version](https://img.shields.io/badge/Diamond-Not Yet-red.svg)
+![IceCube2 version](https://img.shields.io/badge/IceCube2-Not Yet-red.svg)
+![OpenFlow version](https://img.shields.io/badge/Yosis+Arachne+IceStorm-Not Yet-red.svg)
 
 A set of **Tcl** and **Python** scripts which helps to use FPGA development tools from command line
 in a vendor independent way.
@@ -20,7 +20,7 @@ in a vendor independent way.
 This project is mainly developed and mantained by the *FPGA team* of the
 *Centre of Nano and Microelectronics* [CMNB](http://www.inti.gob.ar/microynanoelectronica/) of the
 *National Institute of Industrial Technology* [INTI](http://www.inti.gob.ar/).
-[Contributions](https://img.shields.io/badge/Contributions-Welcome-green.svg)
+![Contributions](https://img.shields.io/badge/Contributions-Welcome-green.svg)
 
 # Why from command line?
 
