@@ -1,5 +1,8 @@
 # FPGA Helpers
 
+[![License](https://img.shields.io/github/license/INTI-CMNB-FPGA/fpga_helpers.svg)](LICENSE)
+![Contributions](https://img.shields.io/badge/Contributions-Welcome-green.svg)
+
 ![GNU/Linux support](https://img.shields.io/badge/Linux-Ok-green.svg)
 ![Windows support](https://img.shields.io/badge/Window-Untested-yellow.svg)
 ![Other](https://img.shields.io/badge/Other-Unknown-red.svg)
@@ -19,7 +22,6 @@ in a vendor independent way.
 This project is mainly developed and mantained by the *FPGA team* of the
 *Centre of Nano and Microelectronics* [CMNB](http://www.inti.gob.ar/microynanoelectronica/) of the
 *National Institute of Industrial Technology* [INTI](http://www.inti.gob.ar/).
-![Contributions](https://img.shields.io/badge/Contributions-Welcome-green.svg)
 
 # Why from command line?
 
@@ -39,7 +41,3 @@ commands, so a lot of code can be shared.
 * Each small program uses a particular project file, but with Tcl a unique file can be shared.
 
 This features seems better for a vendor independent implementation.
-
-## License
-
-FPGA Helpers is licensed under the GPL3. See [LICENSE](LICENSE) for details.
