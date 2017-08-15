@@ -7,12 +7,11 @@
 ![Vivado version](https://img.shields.io/badge/Vivado-2016.4-green.svg)
 ![ISE version](https://img.shields.io/badge/ISE-14.7-green.svg)
 ![Quartus version](https://img.shields.io/badge/Quartus-15.0-green.svg)
-![Libero-SoC version](https://img.shields.io/badge/Libero SoC-11.7-green.svg)
-![Libero-SoC Polarfire version](https://img.shields.io/badge/Libero SoC Polarfire-Unsupported-red.svg)
-![Libero-IDE version](https://img.shields.io/badge/Libero IDE-Unsupported-red.svg)
-![Diamond version](https://img.shields.io/badge/Diamond-Not Yet-red.svg)
-![IceCube2 version](https://img.shields.io/badge/IceCube2-Not Yet-red.svg)
-![OpenFlow version](https://img.shields.io/badge/Yosis+Arachne+IceStorm-Not Yet-red.svg)
+![Libero-SoC version](https://img.shields.io/badge/LiberoSoC-11.7-green.svg)
+![Libero-IDE version](https://img.shields.io/badge/LiberoIDE-Unsupported-red.svg)
+![Diamond version](https://img.shields.io/badge/Diamond-NotYet-red.svg)
+![IceCube2 version](https://img.shields.io/badge/IceCube2-NotYet-red.svg)
+![OpenFlow version](https://img.shields.io/badge/Yosis+Arachne+IceStorm-NotYet-red.svg)
 
 A set of **Tcl** and **Python** scripts which helps to use FPGA development tools from command line
 in a vendor independent way.
