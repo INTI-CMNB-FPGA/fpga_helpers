@@ -27,6 +27,7 @@ if {$FPGA_TOOL == "ise"} {
 }
 
 # This part could be useful when comparing synthesis results between vendors.
+# Add here needed particular options for each vendor tool
 
 #if {$FPGA_TOOL == "ise"} {
 #   # Customize with commands supported by ISE. Example:
