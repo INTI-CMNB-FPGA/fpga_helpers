@@ -1,20 +1,7 @@
-# FPGA Helpers
+# FPGA Helpers ![Version](https://img.shields.io/github/tag/INTI-CMNB-FPGA/fpga_helpers.svg)
 
 [![License](https://img.shields.io/github/license/INTI-CMNB-FPGA/fpga_helpers.svg)](LICENSE)
 ![Contributions](https://img.shields.io/badge/Contributions-Welcome-green.svg)
-
-![GNU/Linux support](https://img.shields.io/badge/Linux-Ok-green.svg)
-![Windows support](https://img.shields.io/badge/Window-Untested-yellow.svg)
-![Other](https://img.shields.io/badge/Other-Unknown-red.svg)
-
-![Vivado version](https://img.shields.io/badge/Vivado-2016.4-green.svg)
-![ISE version](https://img.shields.io/badge/ISE-14.7-green.svg)
-![Quartus version](https://img.shields.io/badge/Quartus-15.0-green.svg)
-![Libero-SoC version](https://img.shields.io/badge/LiberoSoC-11.7-green.svg)
-![Libero-IDE version](https://img.shields.io/badge/LiberoIDE-Unsupported-red.svg)
-![Diamond version](https://img.shields.io/badge/Diamond-NotYet-red.svg)
-![IceCube2 version](https://img.shields.io/badge/IceCube2-NotYet-red.svg)
-![OpenFlow version](https://img.shields.io/badge/Yosis+Arachne+IceStorm-NotYet-red.svg)
 
 A set of **Tcl** and **Python** scripts which helps to use FPGA development tools from command line
 in a vendor independent way.
@@ -41,3 +28,48 @@ commands, so a lot of code can be shared.
 * Each small program uses a particular project file, but with Tcl a unique file can be shared.
 
 This features seems better for a vendor independent implementation.
+
+# Status
+
+![GNU/Linux support](https://img.shields.io/badge/Linux-Supported-green.svg)
+![MacOS support](https://img.shields.io/badge/MacOS-Untested-yellow.svg)
+![Windows support](https://img.shields.io/badge/Window-Untested-yellow.svg)
+![Other](https://img.shields.io/badge/Other-Unknown-red.svg)
+
+![Vivado tool](https://img.shields.io/badge/Tool-Vivado-blue.svg)
+![Vivado version](https://img.shields.io/badge/Version-2016.4-yellow.svg)
+![Vivado devices](https://img.shields.io/badge/Devices-fpga-yellow.svg)
+![Vivado cable](https://img.shields.io/badge/Cable-auto&nbsp;detected&nbsp;by&nbsp;HW&nbsp;manager-green.svg)
+
+![ISE tool](https://img.shields.io/badge/Tool-ISE-blue.svg)
+![ISE version](https://img.shields.io/badge/Version-14.7-green.svg)
+![ISE devices](https://img.shields.io/badge/Devices-fpga,spi,bpi-green.svg)
+![ISE cable](https://img.shields.io/badge/Cable-auto&nbsp;detected&nbsp;by&nbsp;Impact-green.svg)
+
+![Quartus tool](https://img.shields.io/badge/Tool-Quartus-blue.svg)
+![Quartus version](https://img.shields.io/badge/Version-15.0-orange.svg)
+![Quartus devices](https://img.shields.io/badge/Devices-fpga-yellow.svg)
+![Quartus cable](https://img.shields.io/badge/Cable-Usb&nbsp;Blaster-green.svg)
+
+![LiberoSoC tool](https://img.shields.io/badge/Tool-Libero&nbsp;SoC-blue.svg)
+![LiberoSoC version](https://img.shields.io/badge/Version-11.7-yellow.svg)
+![LiberoSoC devices](https://img.shields.io/badge/Devices-fpga-green.svg)
+![LiberoSoC cable](https://img.shields.io/badge/Cable-FlashPro5&nbsp;in&nbsp;spi_slave&nbsp;mode-yellow.svg)
+
+![LiberoSoC Polarfire tool](https://img.shields.io/badge/Tool-Libero&nbsp;SoC&nbsp;Polarfire-blue.svg)
+![LiberoSoC Polarfire version](https://img.shields.io/badge/Version-Untested-yellow.svg)
+
+![LiberoIDE tool](https://img.shields.io/badge/Tool-Libero&nbsp;IDE-blue.svg)
+![LiberoIDE version](https://img.shields.io/badge/Version-Unsupported-red.svg)
+
+![Diamond tool](https://img.shields.io/badge/Tool-Diamond-blue.svg)
+![Diamond version](https://img.shields.io/badge/Version-Unsupported-red.svg)
+
+![IceCube2 tool](https://img.shields.io/badge/Tool-IceCube2-blue.svg)
+![IceCube2 version](https://img.shields.io/badge/Version-Cooming&nbsp;Soon-orange.svg)
+
+![OpenFlow tool](https://img.shields.io/badge/Tool-Yosis+Arachne+IceStorm-blue.svg)
+![OpenFlow version](https://img.shields.io/badge/Version-Cooming&nbsp;Soon-orange.svg)
+
+![Other tool](https://img.shields.io/badge/Tool-Other-blue.svg)
+![Other version](https://img.shields.io/badge/Version-Unsupported-red.svg)
