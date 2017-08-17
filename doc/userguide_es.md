@@ -7,10 +7,10 @@ ayudan a utilizar las herramientas de desarrollo de FPGAs desde línea de comand
 Dos *scripts* **Tcl**, acompañados de un *Makefile*, resuelven el soporte de múltiples
 herramientas:
 * *synthesis.tcl:* resuelve la Síntesis, Implementación y Generación del *bitstream*.
-* *programming.tcl:* resuelve la programación de FPGAs o memorias.
+* *programming.tcl:* resuelve la programación de FPGAs y/o memorias.
 * *Makefile:* ejecuta el *script* necesario con el interprete correspondiente.
-* *options.tcl [generado]:* archivo de opciones del proyecto, como la FPGA utilizada, archivos de
-proyectos, datos de memorias y opciones particulares de la herramienta.
+* *options.tcl [generado]:* archivo de opciones del proyecto, indica la FPGA utilizada, archivos,
+datos de memorias y opciones particulares de la herramienta.
 
 > Implementación implica optimizaciones, mapeo tecnológico, *place & route* (P&R) y
 > *static timing analysis* (STA).
@@ -22,7 +22,7 @@ Los *scripts* **Python** ayudan a utilizar a los **Tcl**, ya sea incorporándolo
 (en cuyo caso, pasan a formar parte del mismo) o ejecutándolos para tareas específicas:
 * *fpga_setup (sólo Linux):* prepara el sistema para ejecutar las herramientas de los fabricantes.
 * *fpga_wizard:* genera los archivos de proyecto *options.tcl* y un *Makefile* auxiliar.
-* *fpga_synt*:* ejecuta síntesis en base a archivo de proyecto generado con la herramienta del
+* *fpga_synt*: ejecuta la síntesis en base a archivo de proyecto generado con la herramienta del
 fabricante.
 * *fpga_prog:* transfiere un *bitstream* a una FPGA o memoria.
 * *fpga_deps [WIP]:* recoge automáticamente archivos HDL que forman parte de un proyecto.
@@ -115,7 +115,7 @@ programación.
 ## programming.tcl
 
 * Detecta automáticamente el interprete **Tcl** que lo está ejecutando.
-* La mayoría de las herramientas no poseen soporte **Tcl** para programar. este *script* arma
+* La mayoría de las herramientas no poseen soporte **Tcl** para programar. Este *script* arma
 archivos de soporte cuando hace falta, prepara los comandos a ejecutar y finalmente realiza una
 llamada al sistema.
 * El dispositivo a ser programado puede especificarse con el argumento `-dev`.
@@ -207,7 +207,7 @@ Consideraciones:
 la independencia del proveedor.
 * Si no se realiza una comparación entre fabricantes, *fpga_device* se utiliza una única vez y sin
 especificar la herramienta.
-* En este archivo se puede agregar otras opciones y comandos **Tcl** propias de la herramienta que
+* En este archivo se pueden agregar otras opciones y comandos **Tcl** propias de la herramienta que
 se utilice. Si se trata de una comparación, utilizar la constante *$FPGA_TOOL* según el caso.
 
 ## Makefile (auxiliar)
@@ -244,7 +244,7 @@ sistema para que el *Makefile* principal las conozca). Esto puede ser realizado:
 > contraproducente, dado que aveces usan bibliotecas propias que entran en conflicto
 > con otros programas.
 
-FPGA setup es un *script* **Bash** que cumple dos funciones:
+* Es un *script* **Bash** que cumple dos funciones:
 * Permite configurar *PATHs* y opciones de servidores de licencia (crea archivo .fpga_helpers en
 *home* del usuario).
 * Prepara una consola para poder ejecutar las herramientas indicadas.
@@ -265,7 +265,7 @@ preguntas. La mayoría de ellas, tienen opciones por defecto auto detectadas.
 
 Se puede realizar un proyecto utilizando la GUI de la herramienta del fabricante y luego utilizar
 *fpga_synt* para ejecutar síntesis, implementación y generación de *bitstream*.
-El archivo de proyecto puede ser especificado o se auto detecta si está en el mismo directorio
+El archivo de proyecto puede ser especificado o se auto detecta si está en el mismo directorio.
 La herramienta del fabricante que se utiliza es acorde al archivo de proyecto encontrado y debe
 estar lista para ser ejecutada.
 
@@ -285,7 +285,7 @@ el *bitstream*, el dispositivo a programar, la placa a utilizar o datos sobre el
 `$ fpga_setup --config`.
 * Cada vez que se utilice el *Makefile* principal (al usarlo desde el auxiliar, al ejecutar
 *fpga_synt* o *fpga_prog*) hace falta estar en una consola configurada. Para disponer de todas
-las herramientas, ejecutar `$ fpga_setup --all`. Para disponer de una cierta herramienta, ejecutar
+las herramientas, ejecutar `$ fpga_setup --all` y para una en particular, ejecutar
 `$ fpga_setup --TOOLNAME`.
 * También se puede acceder a un menú interactivo ejecutando simplemente `$ fpga_setup`.
 * Para ver la ayuda: `$ fpga_setup --help`.
