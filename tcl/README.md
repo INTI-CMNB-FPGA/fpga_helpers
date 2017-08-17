@@ -34,7 +34,7 @@ arguments needed.
   * File options.tcl is used to create a new project.
   * Functions *fpga_device* and *fpga_file* are provided to be used on options.tcl.
   * Predefined optimizations can be specified with the `-opt` argument.
-    Possible values are: user (default, no optimization is used), area, power and speed.
+    Possible values are: none (default, no optimization is used), area, power and speed.
 
 ### programming.tcl
 

@@ -43,15 +43,15 @@ else
 endif
 
 ifndef OPT
-   OPT=user
+   OPT=none
 endif
 
-ifeq      ($(OPT),user)
+ifeq      ($(OPT),none)
 else ifeq ($(OPT),area)
 else ifeq ($(OPT),power)
 else ifeq ($(OPT),speed)
 else
-   $(error Unsupported OPT [user, area, power, speed])
+   $(error Unsupported OPT [none, area, power, speed])
 endif
 
 ifndef DEV
@@ -139,7 +139,7 @@ all help:
 	@echo "Options:"
 	@echo "* TOOL: ise , vivado, quartus, libero [default=vivado]"
 	@echo "* TASK: syn, imp, bit, prog           [default=bit]"
-	@echo "* OPT:  user ,area, power, speed      [default=user]"
+	@echo "* OPT:  none ,area, power, speed      [default=none]"
 	@echo "* DEV:  fpga, spi, bpi, xcf           [default=fpga]"
 	@echo "Targets:"
 	@echo "* run:         run TASK with the OPTimization using the selected TOOL."

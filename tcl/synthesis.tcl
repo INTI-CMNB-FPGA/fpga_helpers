@@ -63,7 +63,7 @@ package require cmdline
 
 set parameters {
     {task.arg "bit"    "TASK         [syn, imp, bit]"}
-    {opt.arg  "user"   "OPTimization [user, area, power, speed]"}
+    {opt.arg  "none"   "OPTimization [none, area, power, speed]"}
 }
 
 set usage "- A Tcl script to run synthesis with a supported Vendor Tool"
@@ -79,7 +79,7 @@ if { $options(task)!="syn" && $options(task)!="imp" && $options(task)!="bit" } {
 }
 
 if {
-    $options(opt)!="user"  && $options(opt)!="area" &&
+    $options(opt)!="none"  && $options(opt)!="area" &&
     $options(opt)!="power" && $options(opt)!="speed"
    } {
    append ERROR "<$options(opt)> is not a supported OPTimization.\n"

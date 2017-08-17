@@ -107,7 +107,7 @@ programación.
   * Provee las funciones *fpga_device* y *fpga_file* para ser utilizadas en *options.tcl*.
   * Utiliza los parámetros del archivo *options.tcl* para crear un nuevo proyecto.
   * Utiliza el argumento `-opt` para seleccionar optimizaciones predefinidas. Los valores posibles
-  son `user` (default, no utiliza optimizaciones predefinidas), `area`, `power` y `speed`.
+  son `none` (default, no utiliza optimizaciones predefinidas), `area`, `power` y `speed`.
 
 > Se puede utilizar la interfaz gráfica de la herramienta para hacer el proyecto y utilizar este
 > *script* para realizar el proceso de síntesis.
