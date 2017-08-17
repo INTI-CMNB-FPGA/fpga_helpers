@@ -40,7 +40,7 @@ Considerar que:
 * FPGA Helpers es desarrollado bajo sistemas Debian GNU/Linux.
 * Los *scripts* **Tcl** son soportados por los interpretes de cada herramienta de desarrollo y
 deberían ser independientes del Sistema Operativo.
-* Deberián servir en cualquier Sistema Operativo que soporte la utilidad *make* y el interprete
+* Deberían servir en cualquier Sistema Operativo que soporte la utilidad *make* y el interprete
 *python*.
 * Se pueden utilizar de forma *standalone* (sin instalar).
 
@@ -255,7 +255,11 @@ utilizar *--help*.
 ## FPGA Wizard
 
 Crea *options.tcl*, y un *Makefile* auxiliar cuando hace falta, a partir de contestar unas pocas
-preguntas de manera interactiva. No posee opciones.
+preguntas. La mayoría de ellas, tienen opciones por defecto auto detectadas.
+
+> Esta herramienta no posee argumentos. Es un menú interactivo, con cada opción documentada.
+
+> Esta herramienta soporta *TAB completion*.
 
 ## FPGA Synt
 
@@ -274,50 +278,112 @@ el *bitstream*, el dispositivo a programar, la placa a utilizar o datos sobre el
 
 # Ejemplos
 
-Con todos los archivos ubicados y listos para utilizar, dentro del directorio donde se realizará
-la síntesis y/o programación:
+## Ejemplo 1: FPGA Setup (sólo Linux)
 
+* Al instalar una nueva herramienta soportada, o si cambia algo en el sistema (archivo de licencia,
+*PATH* de la herramienta, etc), hace falta realizar una configuración. Esto se logra ejecutando
+`$ fpga_setup --config`.
+* Cada vez que se utilice el *Makefile* principal (al usarlo desde el auxiliar, al ejecutar
+*fpga_synt* o *fpga_prog*) hace falta estar en una consola configurada. Para disponer de todas
+las herramientas, ejecutar `$ fpga_setup --all`. Para disponer de una cierta herramienta, ejecutar
+`$ fpga_setup --TOOLNAME`.
+* También se puede acceder a un menú interactivo ejecutando simplemente `$ fpga_setup`.
+* Para ver la ayuda: `$ fpga_setup --help`.
+
+## Ejemplo 2: FPGA Synth
+
+Teniendo archivos de proyecto generados con la GUI de alguna herramienta soportada:
+* Generar el *bitstream* auto detectando archivo de proyecto: `$ fpga_synt`.
+* Ejecutar sólo la síntesis especificando el archivo de proyecto de Vivado:
+`$ fpga_synt --task=syn PROJECT_FILE.xpr`
+* Para ver la ayuda: `$ fpga_synt --help`.
+
+## Ejemplo 3: FPGA Prog
+
+Teniendo ya *bitstreams* generados:
+* Utilizar ISE para programar la SPI de la placa Avnet Spartan 6 MicroBoard:
+`$ fpga_prog --tool=ise --device=spi --borad=avnet_s6micro BITSTREAM.bit`
+* Ayuda y lista de placas disponibles: `$ fpga_prog --help`
+
+## Ejemplo 4: FPGA Wizard
+
+Suponiendo tener los archivos:
+* *core_file.vhdl* (entity CORE_NAME, incluido en LIB_NAME).
+* *package_file.vhdl* (entity PACKAGE_NAME, incluido en LIB_NAME).
+* *top_file.vhdl* (entity TOP_NAME, es el Top Level).
+* *s6micro.ucf* (*constraints* IO de placa *Avnet Spartan 6 MicroBoard*).
+
+Vamos a utilizar la herramienta ISE y los **Tcl** directamente habiendo incluido a FPGA Helpers
+como submódulo **git**:
+
+```
+$ fpga_wizard 
+fpga_wizard is a member of FPGA Helpers v0.3.0
+
+Select TOOL to use [vivado]
+EMPTY for default option. TAB for autocomplete. Your selection here > ise
+
+Where to get (if exists) or put Tcl files? [../tcl]
+EMPTY for default option. TAB for autocomplete. Your selection here > ../fpga_helpers/tcl/
+
+Top Level file? [top_file.vhdl]
+EMPTY for default option. TAB for autocomplete. Your selection here > 
+
+Add files to the project (EMPTY to FINISH):
+* Path to the file [FINISH]:
+EMPTY for default option. TAB for autocomplete. Your selection here > core_file.vhdl
+* In library [None]:
+EMPTY for default option. TAB for autocomplete. Your selection here > LIB_NAME
+* Path to the file [FINISH]:
+EMPTY for default option. TAB for autocomplete. Your selection here > package_file.vhdl
+* In library [None]:
+EMPTY for default option. TAB for autocomplete. Your selection here > LIB_NAME
+* Path to the file [FINISH]:
+EMPTY for default option. TAB for autocomplete. Your selection here > s6micro.ucf
+* In library [None]:
+EMPTY for default option. TAB for autocomplete. Your selection here > 
+* Path to the file [FINISH]:
+EMPTY for default option. TAB for autocomplete. Your selection here > 
+
+Board to be used? [None]
+EMPTY for default option. TAB for autocomplete. Your selection here > avnet_s6micro
+
+
+fpga_wizard (INFO): Makefile and options.tcl were generated
+```
+
+El archivo *options.tcl* resultante es:
+
+```
+set fpga_name xc6slx9-csg324
+set fpga_pos  1
+set spi_name  N25Q128
+set spi_width 4
+
+fpga_device   $fpga_name
+
+fpga_file     core_file.vhdl                 -lib LIB_NAME
+fpga_file     package_file.vhdl              -lib LIB_NAME
+fpga_file     s6micro.ucf
+fpga_file     top_file.vhdl                  -top TOP_NAME
+```
+
+El archivo *Makefile* resultante es:
+```
+#!/usr/bin/make
+#Generated with fpga_wizard v0.3.0
+
+TOOL    = ise
+TCLPATH = ../../../fpga_helpers/tcl/
+include $(TCLPATH)/Makefile
+```
+
+Y a partir de aquí, podemos:
 * Obtener ayuda con: `make help`
 * Ejecutar síntesis con valores predefinidos: `make run`
 * Ejecutar síntesis cambiando valores de las variables del *Makefile*:
-`make TOOL=quartus TASK=imp OPT=speed run`
+`make TASK=imp OPT=speed run`
 * Ejecutar programación con valores predefinidos:`make prog`
 * Ejecutar programación cambiando valores de las variables del *Makefile*:
-`make TOOL=libero DEV=spi prog`
-* Para eliminar archivos generados: `make clean`, `make clean-all` or `make clean-multi`.
-
-```
-$ fpga_setup --configure
-```
-* Para preparar la consola para ejecutar todas las herramientas disponibles:
-```
-$ fpga_setup --all
-```
-* Para preparar la consola para ejecutar una herramienta en particular:
-```
-$ fpga_setup --vivado
-```
-
-```
-$ fpga_wizard
-```
-
-Ejemplo:
-* Generacióm de *bitstream* auto detectando archivo de proyecto:
-```
-$ fpga_synt
-```
-* Ejecutar sólo la síntesis de un proyecto de Vivado:
-```
-$ fpga_synt --task=syn PROJECT_FILE.xpr
-```
-
-Ejemplos:
-* Utilizando ISE para programar la SPI de la placa Avnet Spartan 6 MicroBoard:
-```
-$ fpga_prog --tool=ise --device=spi --borad=avnet_s6micro BITSTREAM.bit
-```
-* Ayuda y lista de placas disponibles:
-```
-$ fpga_prog --help
-```
+`make DEV=spi prog`
+* Para eliminar archivos generados: `make clean`.
