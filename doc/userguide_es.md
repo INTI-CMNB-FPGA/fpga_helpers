@@ -1,32 +1,48 @@
 # Introducción
 
 FPGA Helpers es un conjunto de *scripts* **Tcl** (*Tool Command Language*) y **Python**, que
-ayudan a utilizar las herramientas de desarrollo desde línea de comandos y de manera
-*vendor independent*. Las tareas que permiten realizar son:
-* Síntesis.
-* Implementación (optimizaciones, mapeo tecnológico, *place & route*, *static timing analysis*).
-* Generación de *bitstreams*.
-* Programación de FPGAs o memorias.
+ayudan a utilizar las herramientas de desarrollo de FPGAs desde línea de comandos y de manera
+*vendor independent*.
 
-Dos *scripts* **Tcl** son los que dan soporte a las tareas disponibles y los que resuelven la
-independencia de proveedor. Están acompañados por un Makefile que facilita su ejecución.
-Hace falta generar un tercer *script* **Tcl** para especificar opciones (FPGA, archivos, etc).
-Un proyecto basado en la utilización de FPGA Helpers debería incorporar estos archivos bajo control
-de versiones o *tarball*.
+Dos *scripts* **Tcl**, acompañados de un *Makefile*, resuelven el soporte de múltiples
+herramientas:
+* *synthesis.tcl:* resuelve la Síntesis, Implementación y Generación del *bitstream*.
+* *programming.tcl:* resuelve la programación de FPGAs o memorias.
+* *Makefile:* ejecuta el *script* necesario con el interprete correspondiente.
+* *options.tcl [generado]:* archivo de opciones del proyecto, como la FPGA utilizada, archivos de
+proyectos, datos de memorias y opciones particulares de la herramienta.
+
+> Implementación implica optimizaciones, mapeo tecnológico, *place & route* (P&R) y
+> *static timing analysis* (STA).
 
 > El Makefile asume que la herramienta que ejecutará está bien instalada, con una licencia
 > válida configurada y se encuentra en el *PATH* de ejecutables del sistema.
 
-Los *scripts* **Python** están para generar el archivo de opciones o ejecutar los **Tcl** para
-tareas específicas. Nunca pasan a formar parte de los archivos de proyecto y deberían estar
-instalados a nivel de sistema por comodidad y facilidad de uso.
+Los *scripts* **Python** ayudan a utilizar a los **Tcl**, ya sea incorporándolos al proyecto
+(en cuyo caso, pasan a formar parte del mismo) o ejecutándolos para tareas específicas:
+* *fpga_setup (sólo Linux):* prepara el sistema para ejecutar las herramientas de los fabricantes.
+* *fpga_wizard:* genera los archivos de proyecto *options.tcl* y un *Makefile* auxiliar.
+* *fpga_synt*:* ejecuta síntesis en base a archivo de proyecto generado con la herramienta del
+fabricante.
+* *fpga_prog:* transfiere un *bitstream* a una FPGA o memoria.
+* *fpga_deps [WIP]:* recoge automáticamente archivos HDL que forman parte de un proyecto.
+
+> Los *script* **Python** nunca pasan a formar parte de los archivos de proyecto.
+> Por comodidad y facilidad de uso, se recomienda que estén instalados a nivel de
+> sistema (sin el sufijo *.py*), pero se pueden utilizar también *standalone*.
+
+> La parte **Tcl** de FPGA Helpers puede ser utilizada sin necesidad de los
+> *script* *Python*, manipulando manualmente los archivos.
 
 # Instalación
 
-FPGA Helpers es desarrollado bajo sistemas Debian GNU/Linux.
-Los *scripts* **Tcl** son soportados por los interpretes de cada herramienta de desarrollo y
+Considerar que:
+* FPGA Helpers es desarrollado bajo sistemas Debian GNU/Linux.
+* Los *scripts* **Tcl** son soportados por los interpretes de cada herramienta de desarrollo y
 deberían ser independientes del Sistema Operativo.
-Adicionalmente se precisa soporte de la utilidad *make* y el interprete *python*.
+* Deberián servir en cualquier Sistema Operativo que soporte la utilidad *make* y el interprete
+*python*.
+* Se pueden utilizar de forma *standalone* (sin instalar).
 
 ## GNU/Linux en general
 
@@ -57,64 +73,61 @@ Una vez descargado el paquete deb:
 
 ## Windows
 
-No hay una versión oficial de Windows, pero debería alcanzar con instalar un Shell de Linux.
-Imagino que una buena opción es instalar [Git For Windows](https://git-for-windows.github.io).
-Para *Windows 10 Anniversary Update* y posteriores, está disponible
-[Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide).
-También se puede probar con proyectos más maduros como [Cygwin](https://www.cygwin.com).
+* No hay una versión oficial de Windows, pero debería alcanzar con instalar un Shell de Linux.
+* En *Windows 10 Anniversary Update* y posteriores, está disponible
+[Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide), que
+permite instalar paquetes de Linux (seleccionar compatibilidad con Ubuntu).
+* En cualquier versión, debería servir [Git For Windows](https://git-for-windows.github.io).
+* También se puede probar un proyecto como [Cygwin](https://www.cygwin.com).
 
 # Tcl
 
-Los *scripts* *synthesis.tcl*, *programming.tcl* y el *Makefile* que automatiza su uso, son los
-archivos que resuelven el uso de las herramientas de los fabricantes. Son de soporte y no
-debería hacer falta modificarlos. La FPGA utilizada, archivos de proyectos, datos de memorias
-y opciones particulares de la herramienta, se definen en el archivo *options.tcl*, que debe ser
-generado según el caso.
+Consideraciones:
+* Los *scripts* **Tcl** pueden incluirse en un proyecto de diversas maneras:
+  * Clonando o agregando como submódulo al repositorio FPGA Helpers. Útil cuando queremos
+  actualizar fácilmente a la versión actual.
+  * Agregándolos en un directorio local del proyecto, para ser compartidos. Útil si queremos
+  garantizar el uso de una determinada versión.
+  * Agregándolos en cada directorio donde se desee realizar síntesis y programación. Sólo
+  recomendable si se piensan modificar en cada caso.
+* Hace falta un archivo *options.tcl* por cada directorio donde se desee realizar síntesis y
+programación.
+* Cuando el *Makefile* principal no se encuentre en el mismo directorio, deberá agregarse un
+*Makefile* auxiliar que lo incluya.
 
-> La parte **Tcl** de FPGA Helpers puede ser utilizada sin necesidad de los *script* *Python*,
-> manipulando manualmente los archivos.
+## synthesis.tcl
 
-Hay diversas formas de incluir los archivos de soporte dentro de un proyecto:
-* El repositorio FPGA Helpers puede ser clonado o incluido como submódulo, y sus archivos **Tcl**
-utilizados directamente. En esta opción se estará utilizando siempre la versión más actual.
-* Los archivos **Tcl** pueden copiarse a un directorio local del proyecto y ser utilizados desde
-allí.
-* Los archivos **Tcl** pueden copiarse en cada directorio donde se desee realizar síntesis y
-programación. Sólo recomendable si se piensa modificar los **Tcl** o el *Makefile*.
-
-Deberá haber un archivo *options.tcl* por cada directorio donde se desee realizar síntesis y
-programación. Si el *Makefile* de soporte no se encuentre en el mismo directorio, deberá agregarse
-otro *Makefile* que lo incluya.
-
-## Características de los archivos de soporte
-
-*synthesis.tcl*
 * Detecta automáticamente el interprete **Tcl** que lo está ejecutando.
 * La tarea a ejecutar puede ser especificada con el argumento `-task`. Los valores posibles son:
   * `syn`: síntesis lógica.
   * `imp`: implementación (optimizaciones, mapeo, P&R, STA).
   * `bit`: [default] generación de *bitstream*.
 * Si detecta que existe un archivo de proyecto de la herramienta, lo utiliza.
-> Se puede utilizar la interfaz gráfica de la herramienta para hacer el proyecto y utilizar este
-> *script* para realizar el proceso de síntesis.
 * Si no detecta un archivo de proyecto de la herramienta:
   * Provee las funciones *fpga_device* y *fpga_file* para ser utilizadas en *options.tcl*.
   * Utiliza los parámetros del archivo *options.tcl* para crear un nuevo proyecto.
   * Utiliza el argumento `-opt` para seleccionar optimizaciones predefinidas. Los valores posibles
   son `user` (default, no utiliza optimizaciones predefinidas), `area`, `power` y `speed`.
 
-*programming.tcl*
-* Detecta automáticamente el interprete **Tcl** que lo está ejecutando.
-* La mayoría de las herramientas no poseen soporte **Tcl** para programar. Aquí armamos archivos
-de soporte cuando hace falta, preparamos los comandos a ejecutar y finalmente se utiliza `exec`.
-* El dispositivo a ser programado puede especificarse con el argumento `-dev`.
-  Los valores posibles son `fpga` (default), `spi` y `bpi`.
-* Opciones de los dispositivos, tales como nombre, cantidad de bits y posición en la cadena
-**JTAG**, se especifican en *options.tcl*.
-* El *path/name* del *bitstream* a utilizar se especifica con el argumento `-bit`.
-> Libero SoC usa el archivo de proyecto para encontrarlo.
+> Se puede utilizar la interfaz gráfica de la herramienta para hacer el proyecto y utilizar este
+> *script* para realizar el proceso de síntesis.
 
-*Makefile*
+## programming.tcl
+
+* Detecta automáticamente el interprete **Tcl** que lo está ejecutando.
+* La mayoría de las herramientas no poseen soporte **Tcl** para programar. este *script* arma
+archivos de soporte cuando hace falta, prepara los comandos a ejecutar y finalmente realiza una
+llamada al sistema.
+* El dispositivo a ser programado puede especificarse con el argumento `-dev`.
+Los valores posibles son `fpga` (default), `spi` y `bpi`.
+* Opciones de los dispositivos, tales como nombre, cantidad de bits y posición en la cadena
+**JTAG** los toma de *options.tcl*.
+* El *path/name* del *bitstream* a utilizar se especifica con el argumento `-bit`.
+
+> Libero SoC usa el archivo de proyecto para encontrar el *bitstream*.
+
+## Makefile (principal)
+
 * Cada interprete:
   * Tiene su propio nombre y locación dentro del directorio de la herramienta.
   * Se llama con diferentes argumentos.
@@ -132,14 +145,12 @@ Los valores posibles son los del argumento `-task` de *synthesis.tcl*.
 Los valores posibles son los del argumento `-opt` de *synthesis.tcl*.
 * El dispositivo a programar se puede especificar en la variable *DEV*.
 Los valores posibles son los del argumento `-dev` de *programming.tcl*.
-* El *bitstream* es auto detectado (cuando ya fue generado).
+* El *bitstream* es auto detectado (cuando ya ha sido generado).
 
-> El Makefile asume que la herramienta que ejecutará está bien instalada, con una licencia
-> válida configurada y se encuentra en el *PATH* de ejecutables del sistema.
+## options.tcl
 
-## Archivos a generar
+A continuación un ejemplo completo y auto documentado:
 
-A continuación un ejemplo completo y documentado de *options.tcl* para usar como ejemplo:
 ```
 # For Synthesis ###############################################################
 
@@ -191,7 +202,7 @@ set bpi_width 8
 set bpi_name  28F128J3D
 ```
 
-Notar que:
+Consideraciones:
 * *fpga_device*, *fpga_file* y las variables con opciones de dispositivos, son las que logran
 la independencia del proveedor.
 * Si no se realiza una comparación entre fabricantes, *fpga_device* se utiliza una única vez y sin
@@ -199,24 +210,69 @@ especificar la herramienta.
 * En este archivo se puede agregar otras opciones y comandos **Tcl** propias de la herramienta que
 se utilice. Si se trata de una comparación, utilizar la constante *$FPGA_TOOL* según el caso.
 
-Si el *Makefile* de soporte se incluye en el mismo directorio que *options.tcl*, modificar la
-variable *TOOL* según la herramienta que se vaya a utilizar.
+## Makefile (auxiliar)
 
-Si el *Makefile* de soporte se encuentra en otro directorio, hace falta un *Makefile* local al
-directorio. Ejemplo:
+* Si el *Makefile* principal se incluye en el mismo directorio que *options.tcl*, modificar los
+valores por defecto de las variables si hace falta (se encuentran al comienzo).
+* Si el *Makefile* principal está en otro directorio, hace falta un *Makefile* auxiliar. Ejemplo:
+
 ```Makefile
 #!/usr/bin/make
 
 # You can set here variables such as TOOL, TASK, OPT and DEV if you
 # want to change the predefined values. Do it before the include.
 TOOL=ise
+
 TCLPATH=../../fpga_helpers/tcl
 include $(TCLPATH)/Makefile
 
 # You can add here extra targets if you need.
 ```
 
-## Ejemplos
+# Python
+
+## FPGA Setup (sólo Linux)
+
+En Linux, una vez instalada la herramienta del fabricante, hacen falta acciones adicionales
+para poder ejecutarla (correr servidor de licencias en algunos casos, agregarlas al *PATH* del
+sistema para que el *Makefile* principal las conozca). Esto puede ser realizado:
+* Corriendo manualmente las acciones requeridas cada vez que se van a utilizar;
+* Tenerlo automatizado, utilizando por ejemplo *.bashrc*;
+* Utilizando *fpga_setup*.
+
+> Tener automáticamente los *PATHs* de las herramientas en una consola puede ser
+> contraproducente, dado que aveces usan bibliotecas propias que entran en conflicto
+> con otros programas.
+
+FPGA setup es un *script* **Bash** que cumple dos funciones:
+* Permite configurar *PATHs* y opciones de servidores de licencia (crea archivo .fpga_helpers en
+*home* del usuario).
+* Prepara una consola para poder ejecutar las herramientas indicadas.
+
+Si se invoca sin argumentos, provee un menú interactivo. Para ver las opciones disponibles,
+utilizar *--help*.
+
+## FPGA Wizard
+
+Crea *options.tcl*, y un *Makefile* auxiliar cuando hace falta, a partir de contestar unas pocas
+preguntas de manera interactiva. No posee opciones.
+
+## FPGA Synt
+
+Se puede realizar un proyecto utilizando la GUI de la herramienta del fabricante y luego utilizar
+*fpga_synt* para ejecutar síntesis, implementación y generación de *bitstream*.
+El archivo de proyecto puede ser especificado o se auto detecta si está en el mismo directorio
+La herramienta del fabricante que se utiliza es acorde al archivo de proyecto encontrado y debe
+estar lista para ser ejecutada.
+
+## FPGA Prog
+
+Si se tiene un *bitsream* se puede utilizar *fpga_prog* para transferirlo a la FPGA o memoria sin
+la necesidad de crear un proyecto. Tiene opciones para especificar la herramienta a utilizar,
+el *bitstream*, el dispositivo a programar, la placa a utilizar o datos sobre el dispositivo
+(posición, nombre, bits). La herramienta del fabricante debe estar lista para ser ejecutada.
+
+# Ejemplos
 
 Con todos los archivos ubicados y listos para utilizar, dentro del directorio donde se realizará
 la síntesis y/o programación:
@@ -230,35 +286,6 @@ la síntesis y/o programación:
 `make TOOL=libero DEV=spi prog`
 * Para eliminar archivos generados: `make clean`, `make clean-all` or `make clean-multi`.
 
-# Python
-
-Estos *scripts* sirven para ayudar a generar *options.tcl* y el *Makefile* local, o para ejecutar
-tareas especificas que utilizan por debajo los archivos **Tcl** de soporte, pero no pasan a formar
-parte del proyecto y no hace falta utilizarlos si se manipulan a mano los mencionados archivos. Se
-recomienda instalarlos a nivel de sistema (donde dejan de tener el sufijo *.py*) pero también se
-pueden ejecutar con el interprete de *Python* y el *PATH* al *script*.
-
-Los Helpers actuales son:
-
-* *fpga_setup*:  prepara el sistema para ejecutar las herramientas de los fabricantes (sólo Linux).
-* *fpga_wizard*: genera los archivos de proyecto *options.tcl* y *Makefile*.
-* *fpga_synt*:   ejecuta síntesis en base a un archivo de proyecto generado con la herramienta del
-fabricante.
-* *fpga_prog*:   transfiere un *bitstream* a una FPGA o memoria.
-* *fpga_deps*:   recoge automáticamente archivos HDL que forman parte de un proyecto [WIP].
-
-## FPGA Setup (sólo Linux)
-
-> El Makefile asume que la herramienta que ejecutará está bien instalada, con una licencia
-> válida configurada y se encuentra en el *PATH* de ejecutables del sistema.
-
-Esto puede ser realizado:
-* Corriendo manualmente las acciones requeridas;
-* Automáticamente, utilizando por ejemplo *.bashrc*;
-* Utilizando *fpga_setup*.
-
-Ejemplos de uso:
-* Hay configuraciones por defecto de *PATHS* y servidores de licencia, que pueden cambiarse con:
 ```
 $ fpga_setup --configure
 ```
@@ -270,26 +297,10 @@ $ fpga_setup --all
 ```
 $ fpga_setup --vivado
 ```
-* Se pueden ver las opciones disponibles con la opción *--help*.
-* O utilizar un menú interactivo si se invoca sin opciones.
 
-## FPGA Wizard
-
-Se ejecuta sin argumentos y despliega un menú interactivo con unas pocas preguntas (explicadas):
 ```
 $ fpga_wizard
 ```
-
-Se obtiene *options.tcl* y el *Makefile* local. Ver la sección *Tcl* para ver como utilizarlos.
-
-## FPGA Synt
-
-Se puede realizar un proyecto utilizando la GUI de la herramienta del fabricante y luego utilizar
-*fpga_synt* para ejecutar síntesis, implementación y generación de *bitstream*.
-El archivo de proyecto puede ser especificado o se auto detecta si está en el directorio donde
-se ejecuta.
-La herramienta del fabricante que se utiliza es acorde al archivo de proyecto encontrado y debe
-estar lista para ser ejecutada.
 
 Ejemplo:
 * Generacióm de *bitstream* auto detectando archivo de proyecto:
@@ -301,15 +312,6 @@ $ fpga_synt
 $ fpga_synt --task=syn PROJECT_FILE.xpr
 ```
 
-Ver valores posibles de argumento `-task` de *synthesis.tcl* para otras opciones.
-
-## FPGA Prog
-
-Si se tiene un *bitsream* se puede utilizar *fpga_prog* para transferirlo a la FPGA o memoria sin
-la necesidad de crear un proyecto. Tiene opciones para especificar la herramienta a utilizar,
-el *bitstream*, el dispositivo a programar (ver valores del argumento `-dev` de *programming.tcl*)
-y la placa a utilizar o datos sobre el dispositivo (posición, nombre, bits).
-
 Ejemplos:
 * Utilizando ISE para programar la SPI de la placa Avnet Spartan 6 MicroBoard:
 ```
@@ -319,5 +321,3 @@ $ fpga_prog --tool=ise --device=spi --borad=avnet_s6micro BITSTREAM.bit
 ```
 $ fpga_prog --help
 ```
-
-La herramienta del fabricante debe estar lista para ser ejecutada.
