@@ -7,7 +7,8 @@ v0.3.0:
 * New fpga_synt.py. It helps to do synthesis based on the project file of a vendor's tool.
 * Modified fpga_prog.py. Now it use the Tcl script for programming.
 * YAML files were replaced by data in database.py (shared database).
-* Updated the tutorial.
+* Added the User Guide (English and Spanish).
+* The tutorial was updated.
 
 v0.2.0:
 * Code of Tcl scripts and Makefile were improved.
