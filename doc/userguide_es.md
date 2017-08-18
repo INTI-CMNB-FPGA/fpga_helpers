@@ -255,11 +255,14 @@ utilizar *--help*.
 ## FPGA Wizard
 
 Crea *options.tcl*, y un *Makefile* auxiliar cuando hace falta, a partir de contestar unas pocas
-preguntas. La mayoría de ellas, tienen opciones por defecto auto detectadas.
-
-> Esta herramienta no posee argumentos. Es un menú interactivo, con cada opción documentada.
-
-> Esta herramienta soporta *TAB completion*.
+preguntas:
+* No posee argumentos, ofrece un menú interactivo.
+* Las preguntas están documentadas.
+* Soporta *TAB completion* (la doble pulsación de la tecla **TAB** da opciones o completa en
+función de lo escrito).
+* Detecta el archivo *top level* si está en el mismo directorio donde se ejecutó.
+* Permite seleccionar una placa (opciones preconfiguradas) o especificar datos de cada dispositivo
+a programar.
 
 ## FPGA Synt
 
@@ -307,14 +310,14 @@ Teniendo ya *bitstreams* generados:
 
 ## Ejemplo 4: FPGA Wizard
 
-Suponiendo tener los archivos:
-* *core_file.vhdl* (entity CORE_NAME, incluido en LIB_NAME).
-* *package_file.vhdl* (entity PACKAGE_NAME, incluido en LIB_NAME).
-* *top_file.vhdl* (entity TOP_NAME, es el Top Level).
-* *s6micro.ucf* (*constraints* IO de placa *Avnet Spartan 6 MicroBoard*).
-
-Vamos a utilizar la herramienta ISE y los **Tcl** directamente habiendo incluido a FPGA Helpers
-como submódulo **git**:
+* Archivos:
+  * *core_file.vhdl* (incluido en biblioteca LIB_NAME).
+  * *package_file.vhdl* (incluido en biblioteca LIB_NAME).
+  * *top_file.vhdl* (*top level* con entidad TOP_NAME).
+  * *s6micro.ucf* (*constraints* IO de placa *Avnet Spartan 6 MicroBoard*).
+* Herramienta a utilizar: ISE.
+* Ubicación de archivos **Tcl**: se encuentran en ../fpga_helpers/tcl (se incluyó FPGA Helpers
+como submódulo **git**).
 
 ```
 $ fpga_wizard 
@@ -386,4 +389,58 @@ Y a partir de aquí, podemos:
 * Ejecutar programación con valores predefinidos:`make prog`
 * Ejecutar programación cambiando valores de las variables del *Makefile*:
 `make DEV=spi prog`
-* Para eliminar archivos generados: `make clean`.
+* Eliminar archivos generados: `make clean`.
+
+## Ejemplo 5: Proyecto Multi Vendor
+
+* Archivos:
+  * *core_file.vhdl* (incluido en biblioteca LIB_NAME).
+  * *package_file.vhdl* (incluido en biblioteca LIB_NAME).
+  * *top_file.vhdl* (*top level* con entidad TOP_NAME).
+  * *s6micro.ucf* (*constraints* IO de placa *Avnet Spartan 6 MicroBoard*).
+  * *de0nano.tcl* (*constraints* IO de placa *Terasic DE0-Nano development and education board*).
+* Herramienta a utilizar: ISE y Quartus.
+* Ubicación de archivos **Tcl**: se encuentran en ../tcl (se copiaron a directorio compartido en
+el proyecto).
+
+Realizamos el archivo *options.tcl*:
+```
+fpga_file     core_file.vhdl                 -lib LIB_NAME
+fpga_file     package_file.vhdl              -lib LIB_NAME
+fpga_file     top_file.vhdl                  -top TOP_NAME
+
+if {$FPGA_TOOL == "ise"} {
+   fpga_file     s6micro.ucf
+   set fpga_name xc6slx9-csg324
+   set fpga_pos  1
+   set spi_name  N25Q128
+   set spi_width 4
+} elseif {$FPGA_TOOL == "quartus"} {
+   fpga_file     de0nano.tcl
+   set fpga_name EP4CE22F17C6
+   set fpga_pos  1
+   set spi_name  EPCS64
+   set spi_width 4
+}
+
+fpga_device   $fpga_name
+```
+
+Realizamos el archivo *Makefile*:
+```
+#!/usr/bin/make
+
+TOOL    = ise
+TCLPATH = ../tcl/
+include $(TCLPATH)/Makefile
+```
+
+Y a partir de aquí, podemos:
+* Obtener *bitstream* con ISE: `make TOOL=ise run`
+* Obtener *bitstream* con Quartus: `make TOOL=quartus run`
+* Programar la FPGA con ISE: `make TOOL=ise prog`
+* Programar la FPGA con Quartus: `make TOOL=quartus prog`
+* Eliminar todos los archivos generados con: `make clean-multi`.
+
+> No es posible programar cualquier placa con cualquier programa. En el ejemplo, se asume que
+> está conectada la placa correspondiente en cada caso.
