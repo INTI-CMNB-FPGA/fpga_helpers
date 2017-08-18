@@ -15,8 +15,8 @@ datos de memorias y opciones particulares de la herramienta.
 > Implementación implica optimizaciones, mapeo tecnológico, *place & route* (P&R) y
 > *static timing analysis* (STA).
 
-> El Makefile asume que la herramienta que ejecutará está bien instalada, con una licencia
-> válida configurada y se encuentra en el *PATH* de ejecutables del sistema.
+> El *Makefile* asume que la herramienta que ejecutará está bien instalada, con una
+> licencia válida configurada y se encuentra en el *PATH* de ejecutables del sistema.
 
 Los *scripts* **Python** ayudan a utilizar a los **Tcl**, ya sea incorporándolos al proyecto
 (en cuyo caso, pasan a formar parte del mismo) o ejecutándolos para tareas específicas:
@@ -32,7 +32,7 @@ fabricante.
 > sistema (sin el sufijo *.py*), pero se pueden utilizar también *standalone*.
 
 > La parte **Tcl** de FPGA Helpers puede ser utilizada sin necesidad de los
-> *script* *Python*, manipulando manualmente los archivos.
+> *script* *Python*, creando manualmente los archivos.
 
 # Instalación
 
@@ -304,7 +304,7 @@ Teniendo archivos de proyecto generados con la GUI de alguna herramienta soporta
 ## Ejemplo 3: FPGA Prog
 
 Teniendo ya *bitstreams* generados:
-* Utilizar ISE para programar la SPI de la placa Avnet Spartan 6 MicroBoard:
+* Utilizar ISE para programar la SPI de la placa *Avnet Spartan 6 MicroBoard*:
 `$ fpga_prog --tool=ise --device=spi --borad=avnet_s6micro BITSTREAM.bit`
 * Ayuda y lista de placas disponibles: `$ fpga_prog --help`
 
@@ -356,7 +356,6 @@ fpga_wizard (INFO): Makefile and options.tcl were generated
 ```
 
 El archivo *options.tcl* resultante es:
-
 ```
 set fpga_name xc6slx9-csg324
 set fpga_pos  1
@@ -429,8 +428,6 @@ fpga_device   $fpga_name
 Realizamos el archivo *Makefile*:
 ```
 #!/usr/bin/make
-
-TOOL    = ise
 TCLPATH = ../tcl/
 include $(TCLPATH)/Makefile
 ```
@@ -442,5 +439,5 @@ Y a partir de aquí, podemos:
 * Programar la FPGA con Quartus: `make TOOL=quartus prog`
 * Eliminar todos los archivos generados con: `make clean-multi`.
 
-> No es posible programar cualquier placa con cualquier programa. En el ejemplo, se asume que
-> está conectada la placa correspondiente en cada caso.
+> No es posible programar cualquier placa con cualquier herramienta del fabricante.
+> En el ejemplo, se asume que está conectada la placa correspondiente en cada caso.
