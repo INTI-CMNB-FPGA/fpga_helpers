@@ -14,7 +14,7 @@ memories and particular options of the tool.
 > and *static timing analysis* (STA).
 
 > The *Makefile* assumes that the tool to be executed is well installed, has a valid
-> licence configured and is included in the system path.
+> license configured and is included in the system path.
 
 **Python** scripts helps to use the **Tcl**, either by incorporating them into the project
 (in which case they become part of it) or by executing them for specific tasks:
@@ -25,13 +25,13 @@ memories and particular options of the tool.
 * *fpga_deps [WIP]:* collects automatically HDL files which are part of a project.
 
 > The **Python** scripts never are part of the project files. For convenience and
-> easy of use, is recommended to be installed (without the *.py* suffix), but can
+> ease of use is recommended to be installed (without the *.py* suffix), but can
 > be used standalone.
 
 > The **Tcl** part of FPGA Helpers can be used without the use of the **Python**
 > scripts, creating manually the files.
 
-# Instalation
+# Installation
 
 Considerer that:
 * FPGA Helpers is developed under a Debian GNU/Linux system.
@@ -63,36 +63,36 @@ $ make
 
 ## Debian/Ubuntu and derivatives
 
-When the deb package has been donwloaded:
+When the deb package has been downloaded:
 ```
 # dpkg -i fpga-helpers_X.Y.Z-N_all.deb
 ```
 
 ## Windows
 
-* There is no a oficial Windows version, but should be enough with a Linux Shell.
+* There is no a official Windows version but should be enough with a Linux Shell.
 * In *Windows 10 Anniversary Update* and later,
 [Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide)
-is availabe, which allows to install Linux packages (select Ubuntu compatibility).
+is available, which allows installing Linux packages (select Ubuntu compatibility).
 * In any Windows version, [Git For Windows](https://git-for-windows.github.io) should be useful.
-* Also is possible try with a project such as [Cygwin](https://www.cygwin.com).
+* Also is possible to try with a project such as [Cygwin](https://www.cygwin.com).
 
 # Tcl
 
 Considerations:
 * The **Tcl** scripts can be included in a project in different ways:
-  * Cloning it or adding as submodule the repository. Useful when we want and updated version.
+  * Cloning it or adding as submodule the repository. Useful when we want an updated version.
   * Adding it to a local directory of the project, to be shared. Useful to ensure that works
   with a particular version.
   * Adding it in each directory where you want to do synthesis and programming. Only recommended
-  when you will to modify the files.
+  when you will modify the files.
 * A *options.tcl* file is needed in each directory where you want to do synthesis and programming.
 * When the main *Makefile* is in another directory, an auxiliar *Makefile* is needed.
 
 ## synthesis.tcl
 
 * The **Tcl** interpreter is automatically detected.
-* Which task to run can be specified with `-task`. The availabe values are:
+* Which task to run can be specified with `-task`. The available values are:
   * `syn`: synthesis.
   * `imp`: implementation (optimizations, mapping, P&R, STA).
   * `bit`: [default] bitstream generation.
@@ -100,7 +100,7 @@ Considerations:
 * If not detected:
   * Functions *fpga_device* and *fpga_file* are available to be used in *options.tcl*.
   * Parameters of *options.tcl* are used to create a new project.
-  * Argument `-opt` is used to select a predefined optimization. The availabe values are
+  * Argument `-opt` is used to select a predefined optimization. The available values are
   `none` (default, no optimization is used), `area`, `power` y `speed`.
 
 > The GUI of the vendor tool can be used to create the project file and after that,
@@ -113,7 +113,7 @@ Considerations:
 prepares commands to be executed and do a system call.
 * The device to be programmed can be specified with `-dev`. The available values are `fpga`
 (default), `spi` y `bpi`.
-* The options of the devices, such as name, bits and **JTAG** chain position, are obtained from
+* The options of the devices, such as name, bits and **JTAG** chain position are obtained from
 *options.tcl*.
 * The *path/name* of the bitstream can be specified with `-bit`.
 
@@ -122,7 +122,7 @@ prepares commands to be executed and do a system call.
 ## Makefile (main)
 
 * Each interpreter:
-  * Has its own name and path inside the directoy of the tool.
+  * Has its own name and path inside the directory of the tool.
   * Is running with different options.
   * Pass options to the **Tcl** script in different ways.
 * This file provides:
@@ -132,11 +132,11 @@ prepares commands to be executed and do a system call.
 * The tool to use can be specified in the variable *TOOL*.
 Available values are `vivado`, `ise`, `quartus` and `libero`.
 * The task to do can be specified in the variable *TASK*.
-Available values are the same of `-task` in *synthesis.tcl*.
+Available values are the same as `-task` in *synthesis.tcl*.
 * The optimization to use can be specified in the variable *OPT*.
-Available values are the same of `-opt` in *synthesis.tcl*.
+Available values are the same as `-opt` in *synthesis.tcl*.
 * The device to be programmed can be specified in the variable *DEV*.
-Available values are the same of `-dev` in *programming.tcl*.
+Available values are the same as `-dev` in *programming.tcl*.
 * The bitstream is auto detected (when generated).
 
 ## options.tcl
@@ -195,7 +195,7 @@ set bpi_name  28F128J3D
 ```
 
 Considerations:
-* *fpga_device*, *fpga_file* and the variables with devices options, are in charge of provide
+* *fpga_device*, *fpga_file* and the variables with devices options are in charge of providing
 the vendor independent feature.
 * If we do not compare results between vendors, *fpga_device* is used without specifying a tool.
 * In this file we can add other options and **Tcl** commands, own of each tool. In a comparation,
@@ -223,53 +223,44 @@ include $(TCLPATH)/Makefile
 # Python
 
 ## FPGA Setup (Linux only)
+In Linux systems, once the vendor's tools are installed, to execute them extra steps are required
+(run license server, add the necessary environment variables to the system *PATH* so the main
+*Makefile* could know them). This could be made by:
+* Running the required actions manually each time you need to use them.
+* Having it automated, e.g. using *.bashrc*.
+* Using *fpga_setup*.
 
-En Linux, una vez instalada la herramienta del fabricante, hacen falta acciones adicionales
-para poder ejecutarla (correr servidor de licencias en algunos casos, agregarlas al *PATH* del
-sistema para que el *Makefile* principal las conozca). Esto puede ser realizado:
-* Corriendo manualmente las acciones requeridas cada vez que se van a utilizar;
-* Tenerlo automatizado, utilizando por ejemplo *.bashrc*;
-* Utilizando *fpga_setup*.
+> Having the console tools *PATHs* automated precharged may be counterproductive, sometimes
+> system libraries and others applications can crash with the vendors libraries.
 
-> Tener automáticamente los *PATHs* de las herramientas en una consola puede ser
-> contraproducente, dado que aveces usan bibliotecas propias que entran en conflicto
-> con otros programas.
+* It's a **Bash** *script*  with two main purposes:
+* *PATHs* and license servers configurations (creates an .fpga_helpers file on user home*).
+* Prepares a terminal to execute the selected tools.
 
-* Es un *script* **Bash** que cumple dos funciones:
-* Permite configurar *PATHs* y opciones de servidores de licencia (crea archivo .fpga_helpers en
-*home* del usuario).
-* Prepara una consola para poder ejecutar las herramientas indicadas.
-
-Si se invoca sin argumentos, provee un menú interactivo. Para ver las opciones disponibles,
-utilizar *--help*.
+When it's run without arguments, an interactive menu is provided. To see the available options,
+use *--help*.
 
 ## FPGA Wizard
 
-Crea *options.tcl*, y un *Makefile* auxiliar cuando hace falta, a partir de contestar unas pocas
-preguntas:
-* No posee argumentos, ofrece un menú interactivo.
-* Las preguntas están documentadas.
-* Soporta *TAB completion* (la doble pulsación de la tecla **TAB** da opciones o completa en
-función de lo escrito).
-* Detecta el archivo *top level* si está en el mismo directorio donde se ejecutó.
-* Permite seleccionar una placa (opciones preconfiguradas) o especificar datos de cada dispositivo
-a programar.
+Creates *options.tcl* and an auxiliary *Makefile* when needed, based on answering a few questions:
+* No arguments needed, interactive menu interface.
+* Questions are well documented.
+* *TAB completion* supported (double **TAB** key hitting enables options or complete as written).
+* Finds and detects the *top level* file if in the same directory as executed.
+* Allows the selection of a board (preconfigured options) or charging the data and features of the device being programmed.
 
 ## FPGA Synt
-
-Se puede realizar un proyecto utilizando la GUI de la herramienta del fabricante y luego utilizar
-*fpga_synt* para ejecutar síntesis, implementación y generación de *bitstream*.
-El archivo de proyecto puede ser especificado o se auto detecta si está en el mismo directorio.
-La herramienta del fabricante que se utiliza es acorde al archivo de proyecto encontrado y debe
-estar lista para ser ejecutada.
+It can be used the manufacturer's GUI tool to make a project and then use *fpga_synt* to execute
+synthesis, implementation, and *bitstream* generation.
+The project file can be specified as an argument or is autodetected if in the same directory.
+Manufacturer's tool to be used is accordingly the project file found and must be ready to be executed.
 
 ## FPGA Prog
 
-Si se tiene un *bitsream* se puede utilizar *fpga_prog* para transferirlo a la FPGA o memoria sin
-la necesidad de crear un proyecto. Tiene opciones para especificar la herramienta a utilizar,
-el *bitstream*, el dispositivo a programar, la placa a utilizar o datos sobre el dispositivo
-(posición, nombre, bits). La herramienta del fabricante debe estar lista para ser ejecutada.
-
+If there exists a *bitsream*, *fpga_prog* can be used to transfer to the FPGA or memory without
+the need of project creation. There are options to choose the tool to use, the *bitstream*,
+the device to be program, the board to use, or device specific features (position, name, bits).
+The manufacturer's tool must be ready to be executed.
 # Examples
 
 ## Example 1: FPGA Setup (Linux only)
@@ -279,7 +270,7 @@ path, etc), a configuration is needed. Run `$ fpga_setup --config` for that.
 * Each time the main *Makefile* is used (invoked from the auxiliar, when *fpga_synt* or *fpga_prog*
 are used) a configured terminal is needed. To have all the tools available, run `$ fpga_setup --all`
 and to use one in particular, run `$ fpga_setup --TOOLNAME`.
-* Also a interactive menu is available: `$ fpga_setup`.
+* Also an interactive menu is available: `$ fpga_setup`.
 * Run `$ fpga_setup --help` to see the help.
 
 ## Example 2: FPGA Synth

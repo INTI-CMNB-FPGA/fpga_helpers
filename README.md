@@ -1,18 +1,10 @@
-# FPGA Helpers ![Version](https://img.shields.io/github/tag/INTI-CMNB-FPGA/fpga_helpers.svg)
+# FPGA Helpers ![Version](https://img.shields.io/github/tag/INTI-CMNB-FPGA/fpga_helpers.svg) [![License](https://img.shields.io/github/license/INTI-CMNB-FPGA/fpga_helpers.svg)](LICENSE) ![Contributions](https://img.shields.io/badge/Contributions-Welcome-green.svg)
 
-[![License](https://img.shields.io/github/license/INTI-CMNB-FPGA/fpga_helpers.svg)](LICENSE)
-![Contributions](https://img.shields.io/badge/Contributions-Welcome-green.svg)
-
-A set of **Tcl** and **Python** scripts which helps to use FPGA development tools from command line
-in a vendor independent way.
-
-This project is mainly developed and mantained by the *FPGA team* of the
-*Centre of Nano and Microelectronics* ([CMNB](http://www.inti.gob.ar/microynanoelectronica/)) of
-the *National Institute of Industrial Technology* ([INTI](http://www.inti.gob.ar/)).
+A set of **Tcl** and **Python** scripts which helps to use FPGA development tools from the command line in a vendor independent way.
 
 User Guide [[EN](doc/userguide_en.md)] [[ES](doc/userguide_es.md)].
 
-# Why from command line?
+# Why from the command line?
 
 * To be friendly with version control systems.
 * To provide a vendor independent use mode.
@@ -21,11 +13,9 @@ User Guide [[EN](doc/userguide_en.md)] [[ES](doc/userguide_es.md)].
 
 # Why Tcl instead of a chain of programs?
 
-The tasks of the vendor's tools can be achieved using a chain of command line programs, where the
-output from one is the input of another. However, we prefer Tcl because:
+The tasks of the vendor's tools can be achieved using a chain of command line programs, where the output from one is the input of another. However, we prefer Tcl because:
 
-* All the vendors tools supports Tcl (*Tool Command Language*) scripting, with additional own
-commands, so a lot of code can be shared.
+* All the vendors tools supports Tcl (*Tool Command Language*) scripting, with additional own commands, so a lot of code can be shared.
 * Instead of learn and use several small programs, we only study some new commands.
 * Each small program uses a particular project file, but with Tcl a unique file can be shared.
 
@@ -58,9 +48,6 @@ This features seems better for a vendor independent implementation.
 ![LiberoSoC devices](https://img.shields.io/badge/Devices-fpga-green.svg)
 ![LiberoSoC cable](https://img.shields.io/badge/Cable-FlashPro5&nbsp;in&nbsp;spi_slave&nbsp;mode-yellow.svg)
 
-![LiberoSoC Polarfire tool](https://img.shields.io/badge/Tool-Libero&nbsp;SoC&nbsp;Polarfire-blue.svg)
-![LiberoSoC Polarfire version](https://img.shields.io/badge/Version-Untested-yellow.svg)
-
 ![LiberoIDE tool](https://img.shields.io/badge/Tool-Libero&nbsp;IDE-blue.svg)
 ![LiberoIDE version](https://img.shields.io/badge/Version-Unsupported-red.svg)
 
@@ -68,10 +55,10 @@ This features seems better for a vendor independent implementation.
 ![Diamond version](https://img.shields.io/badge/Version-Unsupported-red.svg)
 
 ![IceCube2 tool](https://img.shields.io/badge/Tool-IceCube2-blue.svg)
-![IceCube2 version](https://img.shields.io/badge/Version-Cooming&nbsp;Soon-orange.svg)
+![IceCube2 version](https://img.shields.io/badge/Version-Unsupported-red.svg)
 
 ![OpenFlow tool](https://img.shields.io/badge/Tool-Yosis+Arachne+IceStorm-blue.svg)
-![OpenFlow version](https://img.shields.io/badge/Version-Cooming&nbsp;Soon-orange.svg)
+![OpenFlow version](https://img.shields.io/badge/Version-Unsupported-red.svg)
 
 ![Other tool](https://img.shields.io/badge/Tool-Other-blue.svg)
 ![Other version](https://img.shields.io/badge/Version-Unsupported-red.svg)
