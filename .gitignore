@@ -1,7 +1,6 @@
-README
 ignore
 temp
-package/fpga-helpers*
+
 *.aux
 *.log
 *.nav
@@ -11,3 +10,6 @@ package/fpga-helpers*
 *.pdf
 *.pyc
 *.vrb
+
+dist
+fpgahelpers.egg-info
