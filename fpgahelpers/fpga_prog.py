@@ -19,16 +19,13 @@
 #
 
 import argparse, os, sys, tempfile
-# When installed in the system, the database is in another directory
-if not os.path.exists(os.path.dirname(os.path.abspath(__file__)) + '/database.py'):
-   sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + '/../share/fpga-helpers')
 from database import *
 
 ###################################################################################################
 # Parsing the command line
 ###################################################################################################
 
-version = "fpga_prog is a member of FPGA Helpers v%s" % (database.version)
+version = "fpga_prog is a member of FPGA Helpers v%s" % (database.__version__)
 
 parser = argparse.ArgumentParser(
    prog        = 'fpga_prog',
@@ -125,12 +122,7 @@ if options.board is not None and options.device not in ['detect','unlock']:
 # Preparing files
 ###################################################################################################
 
-# Finding original Tcl Files
-tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../tcl"
-if not os.path.exists(tcl_orig):
-   tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/../share/fpga-helpers/tcl"
-if not os.path.exists(tcl_orig):
-   sys.exit("fpga_prog (ERROR): I don't find the original Tcl files.")
+tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/tcl"
 
 # Preparing a temporary Makefile
 tempmake = tempfile.NamedTemporaryFile(mode='w')
