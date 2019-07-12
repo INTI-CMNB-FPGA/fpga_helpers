@@ -17,6 +17,13 @@ setup(
     url="https://github.com/INTI-CMNB-FPGA/fpga_helpers",
     package_data={'': ['tcl/Makefile', 'tcl/*.tcl']},
     packages=find_packages(),
+    entry_points={
+        'console_scripts': [
+            'fpga_wizard = fpgahelpers.fpga_wizard.py:main',
+            'fpga_synt   = fpgahelpers.fpga_synt.py:main',
+            'fpga_prog   = fpgahelpers.fpga_prog.py:main',
+        ],
+    },
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
