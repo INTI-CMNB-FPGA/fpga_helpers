@@ -25,8 +25,6 @@ import database
 # Parsing the command line
 ###################################################################################################
 
-version = "fpga_synt is a member of FPGA Helpers v%s" % database.__version__
-
 parser = argparse.ArgumentParser(
    prog="fpga_synt",
    description="Do synthesis based on the project file of the vendor's tool"
@@ -35,7 +33,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
    '-v', '--version',
    action  = 'version',
-   version = version
+   version = database.get_version(__file__)
 )
 
 parser.add_argument(

@@ -70,7 +70,7 @@ def complete(text, state):
 # Collect info
 ###################################################################################################
 
-print("fpga_wizard is a member of FPGA Helpers v%s" % database.__version__)
+print(database.get_version(__file__))
 
 print("") # TOOL ----------------------------------------------------------------------------------
 

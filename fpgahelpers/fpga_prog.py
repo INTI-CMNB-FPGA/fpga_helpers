@@ -25,8 +25,6 @@ import database
 # Parsing the command line
 ###################################################################################################
 
-version = "fpga_prog is a member of FPGA Helpers v%s" % database.__version__
-
 parser = argparse.ArgumentParser(
    prog        = 'fpga_prog',
    description = 'Transfers a BitStream to a device.',
@@ -36,7 +34,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
    '-v', '--version',
    action      = 'version',
-   version     = version
+   version     = database.get_version(__file__)
 )
 
 parser.add_argument(

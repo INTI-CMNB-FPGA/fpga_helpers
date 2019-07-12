@@ -33,8 +33,6 @@ import database
 
 ## Parsing the command line ###################################################
 
-version = "fpga_deps is a member of FPGA Helpers v%s" % database.__version__
-
 parser = argparse.ArgumentParser(
    prog='fpga_deps',
    description='Collects the files of an HDL project.'
@@ -43,7 +41,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
    '-v', '--version',
    action='version',
-   version=version
+   version=database.get_version(__file__)
 )
 
 parser.add_argument(
