@@ -1,8 +1,8 @@
 #!/usr/bin/python
 #
 # FPGA Wizard
-# Copyright (C) 2017 INTI
-# Copyright (C) 2017 Rodrigo A. Melo
+# Copyright (C) 2017-2019 INTI
+# Copyright (C) 2017-2019 Rodrigo A. Melo
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #
 
 import sys, os, readline, re, glob, shutil
-from database import *
+import database
 
 # config autocomplete
 readline.set_completer_delims(' \t\n;')
@@ -70,7 +70,7 @@ def complete(text, state):
 # Collect info
 ###################################################################################################
 
-print("fpga_wizard is a member of FPGA Helpers v%s" % (database.__version__))
+print("fpga_wizard is a member of FPGA Helpers v%s" % database.__version__)
 
 print("") # TOOL ----------------------------------------------------------------------------------
 
@@ -197,7 +197,7 @@ if not os.path.exists(options['tcl_path'] + "/programming.tcl"):
 # The Makefile ------------------------------------------------------------------------------------
 
 makefile  = "#!/usr/bin/make\n"
-makefile += "#Generated with fpga_wizard v%s\n\n" % database.version
+makefile += "#Generated with fpga_wizard v%s\n\n" % database.__version__
 makefile += "TOOL    = %s\n" % (options['tool'])
 makefile += "TCLPATH = %s\n" % (options['tcl_path'])
 makefile += "include $(TCLPATH)/Makefile"

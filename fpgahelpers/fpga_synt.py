@@ -1,8 +1,8 @@
 #!/usr/bin/python
 #
 # FPGA Synt, do synthesis based on the project file of the vendor's tool
-# Copyright (C) 2017 INTI
-# Copyright (C) 2017 Rodrigo A. Melo
+# Copyright (C) 2017-2019 INTI
+# Copyright (C) 2017-2019 Rodrigo A. Melo
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,13 +19,13 @@
 #
 
 import argparse, glob, sys, os, tempfile
-from database import *
+import database
 
 ###################################################################################################
 # Parsing the command line
 ###################################################################################################
 
-version = "fpga_synt is a member of FPGA Helpers v%s" % (database.__version__)
+version = "fpga_synt is a member of FPGA Helpers v%s" % database.__version__
 
 parser = argparse.ArgumentParser(
    prog="fpga_synt",
