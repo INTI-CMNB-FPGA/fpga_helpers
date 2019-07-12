@@ -9,4 +9,4 @@ uninstall:
 	pip uninstall fpgahelpers
 
 clean:
-	@rm -fr dist *.egg-info
+	@rm -fr dist *.egg-info .eggs

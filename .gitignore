@@ -12,4 +12,5 @@ temp
 *.vrb
 
 dist
-fpgahelpers.egg-info
+*.egg-info
+.eggs
