@@ -47,13 +47,14 @@ if options.board is not None and options.device not in ['detect','unlock']:
 # Preparing files
 ###################################################################################################
 
+text = common.get_makefile_content(
+   tool=options.tool, task=None, dev=options.device,
+   path=(common.get_script_path(__file__) + "/tcl")
+)
+
 # Preparing a temporary Makefile
 tempmake = tempfile.NamedTemporaryFile(mode='w')
-tempmake.write("#!/usr/bin/make\n")
-tempmake.write("TOOL=%s\n" % options.tool)
-tempmake.write("DEV=%s\n" % options.device)
-tempmake.write("TCLPATH=%s\n" % (common.get_script_path(__file__) + "/tcl"))
-tempmake.write("include $(TCLPATH)/Makefile")
+tempmake.write(text)
 tempmake.flush()
 
 tempopt = None;

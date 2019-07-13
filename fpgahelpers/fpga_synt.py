@@ -61,13 +61,14 @@ else:
 # Preparing files
 ###################################################################################################
 
+text = common.get_makefile_content(
+   tool=options.tool, task=options.task, dev=None,
+   path=(common.get_script_path(__file__) + "/tcl")
+)
+
 # Preparing a temporary Makefile
 temp = tempfile.NamedTemporaryFile(mode='w')
-temp.write("#!/usr/bin/make\n")
-temp.write("TOOL=%s\n" % options.tool)
-temp.write("TASK=%s\n" % options.task)
-temp.write("TCLPATH=%s\n" % (common.get_script_path(__file__) + "/tcl"))
-temp.write("include $(TCLPATH)/Makefile")
+temp.write(text)
 temp.flush()
 
 ###################################################################################################

@@ -196,11 +196,9 @@ if not os.path.exists(options['tcl_path'] + "/programming.tcl"):
 
 # The Makefile ------------------------------------------------------------------------------------
 
-makefile  = "#!/usr/bin/make\n"
-makefile += "#Generated with fpga_wizard v%s\n\n" % database.__version__
-makefile += "TOOL    = %s\n" % (options['tool'])
-makefile += "TCLPATH = %s\n" % (options['tcl_path'])
-makefile += "include $(TCLPATH)/Makefile"
+makefile = common.get_makefile_content(
+   tool=options['tool'], task=None, dev=None, path=options['tcl_path']
+)
 
 # options.tcl -------------------------------------------------------------------------------------
 

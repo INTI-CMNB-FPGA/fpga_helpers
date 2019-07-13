@@ -27,7 +27,7 @@ def get_script_name(script):
 def get_script_path(script):
     return os.path.dirname(os.path.abspath(script))
 
-"""Here the command line arguments of all the helpers are parsed"""
+"""Here the command line arguments of all the helpers are parsed."""
 def get_options(script):
 
     program = get_script_name(script)
@@ -148,3 +148,16 @@ def get_options(script):
     options = parser.parse_args()
 
     return options
+
+"""Content of the project's Makefile."""
+def get_makefile_content(tool, task, dev, path):
+    text  = "#!/usr/bin/make\n"
+    text += "# Generated with FPGA Helpers v%s\n" % database.__version__
+    text += "TOOL=%s\n" % tool
+    if task is not None:
+       text += "TASK=%s\n" % task
+    if dev is not None:
+       text += "DEV=%s\n" % dev
+    text += "TCLPATH=%s\n" % path
+    text += "include $(TCLPATH)/Makefile"
+    return text
