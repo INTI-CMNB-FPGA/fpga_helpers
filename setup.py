@@ -19,9 +19,9 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'fpga_wizard = fpgahelpers.fpga_wizard.py:main',
-            'fpga_synt   = fpgahelpers.fpga_synt.py:main',
-            'fpga_prog   = fpgahelpers.fpga_prog.py:main',
+            'fpga_wizard = fpgahelpers.fpga_wizard:main',
+            'fpga_synt   = fpgahelpers.fpga_synt:main',
+            'fpga_prog   = fpgahelpers.fpga_prog:main'
         ],
     },
     classifiers=[
