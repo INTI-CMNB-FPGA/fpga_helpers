@@ -1,4 +1,8 @@
-v0.3.0:
+# Changelog
+
+## [Unreleased]
+
+## [v0.3.0] - 2017-08-18
 * Unified again Tcl scripts for synthesis.
 * Unified programming in a Tcl script. Added support for Vivado.
 * Improved Tcl scripts and its Makefile.
@@ -10,14 +14,14 @@ v0.3.0:
 * Added the User Guide (English and Spanish).
 * The tutorial was updated.
 
-v0.2.0:
+## [v0.2.0] - 2017-01-13 
 * Code of Tcl scripts and Makefile were improved.
 * Added a Tcl script for Libero-SoC.
 * Added support for Libero-SoC on fpga_synt.py and fpga_prog.py.
 * Added fpga_deps.py [WIP].
 * Added Board files: microsemi_m2s090ts-eval-kit.yaml and xilinx_ml605.yaml.
 
-v0.1.1:
+## [v0.1.1] - 2016-08-17
 * Tcl script splitted (one per each vendor) and improved.
 * Added fpga_setup.sh, fpga_synt.py and fpga_prog.py.
   * fpga_setup.sh: set the system to run vendor tools.
@@ -31,7 +35,7 @@ v0.1.1:
 * Added Board files: avnet_s6micro, digilent_atlys, gaisler_xc6s, terasic_de0nano and xilinx_sp601.
 * Added autotools use and debian package creation.
 
-v0.1.0:
+## [v0.1.0] - 2016-07-07 
 * Includes a Tcl script and Makefile to work with FPGA Tools in a Vendor Independent way.
 * It supports synthesis/implementation (not programming yet):
   * From Xilinx: ISE and Vivado.
