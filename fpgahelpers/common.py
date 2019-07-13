@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import argparse, os
+import argparse, os, tempfile
 import database
 
 def get_script_name(script):
@@ -29,17 +29,14 @@ def get_script_path(script):
 
 """Here the command line arguments of all the helpers are parsed."""
 def get_options(script):
-
     program = get_script_name(script)
     version = database.__version__
-
     description = {
         'fpga_wizard' : "A wizard to generate the project files options.tcl and Makefile.",
         'fpga_prog'   : "Transfers a BitStream to a device.",
         'fpga_synt'   : "Run synthesis based on a project file generated with a vendor tool.",
         'fpga_deps'   : "Collects the files of an HDL project."
     }
-
     epilogue = {
         'fpga_wizard' : "",
         'fpga_prog'   : "Supported boards: %s" % ', '.join(database.boards),
@@ -52,7 +49,6 @@ def get_options(script):
         description = description[program],
         epilog      = epilogue[program]
     )
-
     parser.add_argument(
         '-v', '--version',
         action      = 'version',
@@ -161,3 +157,16 @@ def get_makefile_content(tool, task, dev, path):
     text += "TCLPATH=%s\n" % path
     text += "include $(TCLPATH)/Makefile"
     return text
+
+"""Executes a temporary Makefile."""
+def execute_make(script, text):
+    program = get_script_name(script)
+    target = "prog" if program=="fpga_prog" else "run"
+    temp = tempfile.NamedTemporaryFile(mode='w')
+    temp.write(text)
+    temp.flush()
+    try:
+        os.system("make -f %s %s" % (temp.name, target))
+    except:
+        print("%s (ERROR): make failed" % program)
+    temp.close()

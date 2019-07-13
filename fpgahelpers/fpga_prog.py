@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os, sys, tempfile
+import os, sys
 import database, common
 
 options = common.get_options(__file__)
@@ -47,16 +47,6 @@ if options.board is not None and options.device not in ['detect','unlock']:
 # Preparing files
 ###################################################################################################
 
-text = common.get_makefile_content(
-   tool=options.tool, task=None, dev=options.device,
-   path=(common.get_script_path(__file__) + "/tcl")
-)
-
-# Preparing a temporary Makefile
-tempmake = tempfile.NamedTemporaryFile(mode='w')
-tempmake.write(text)
-tempmake.flush()
-
 tempopt = None;
 # Preparing a temporary options.tcl (if not exists)
 if not os.path.exists('options.tcl'):
@@ -75,22 +65,12 @@ if not os.path.exists('options.tcl'):
       tempopt.write("set xcf_width %s\n" % options.width)
    tempopt.flush()
 
-###################################################################################################
-# Running
-###################################################################################################
+text = common.get_makefile_content(
+   tool=options.tool, task=None, dev=options.device,
+   path=(common.get_script_path(__file__) + "/tcl")
+)
+common.execute_make(__file__, text)
 
-# Executing the Makefile
-try:
-   os.system("make -f %s prog" % tempmake.name)
-except:
-   print("fpga_prog (ERROR): failed when programming")
-
-###################################################################################################
-# Ending
-###################################################################################################
-
-# The temporary files are destroyed
-tempmake.close()
 if tempopt is not None:
    tempopt.close()
    os.remove('options.tcl')

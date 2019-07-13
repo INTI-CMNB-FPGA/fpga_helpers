@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import glob, sys, os, tempfile
+import glob, sys, os
 import database, common
 
 options = common.get_options(__file__)
@@ -65,25 +65,4 @@ text = common.get_makefile_content(
    tool=options.tool, task=options.task, dev=None,
    path=(common.get_script_path(__file__) + "/tcl")
 )
-
-# Preparing a temporary Makefile
-temp = tempfile.NamedTemporaryFile(mode='w')
-temp.write(text)
-temp.flush()
-
-###################################################################################################
-# Running
-###################################################################################################
-
-# Executing the Makefile
-try:
-   os.system("make -f %s run" % temp.name)
-except:
-   print("fpga_synt (ERROR): failed when run %s" % options.task)
-
-###################################################################################################
-# Ending
-###################################################################################################
-
-# The Makefile is destroyed
-temp.close()
+common.execute_make(__file__, text)
