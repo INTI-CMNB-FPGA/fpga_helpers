@@ -28,43 +28,10 @@
 # * Verilog:
 #   * A file could have one or more modules.
 
-import argparse, os, sys, re, mimetypes
+import os, sys, re, mimetypes
 import database, common
 
-## Parsing the command line ###################################################
-
-parser = argparse.ArgumentParser(
-   prog='fpga_deps',
-   description='Collects the files of an HDL project.'
-)
-
-parser.add_argument(
-   '-v', '--version',
-   action='version',
-   version=common.get_version(__file__)
-)
-
-parser.add_argument(
-   '--verbose',
-   action='count'
-)
-
-parser.add_argument(
-   'top',
-   metavar='TOPFILE',
-   nargs='?',
-   help='Top Level File'
-)
-
-parser.add_argument(
-   '-d', '--deep',
-   metavar='DEEP',
-   type=int,
-   default=4,
-   help='DEEP where to start to search [4]'
-)
-
-options = parser.parse_args()
+options = common.get_options(__file__)
 
 if (options.verbose):
    print ("\nOptions: " + str(options))

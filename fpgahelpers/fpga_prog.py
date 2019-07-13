@@ -18,83 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import argparse, os, sys, tempfile
+import os, sys, tempfile
 import database, common
 
-###################################################################################################
-# Parsing the command line
-###################################################################################################
-
-parser = argparse.ArgumentParser(
-   prog        = 'fpga_prog',
-   description = 'Transfers a BitStream to a device.',
-   epilog      = "Supported boards: " + ', '.join(database.boards)
-)
-
-parser.add_argument(
-   '-v', '--version',
-   action      = 'version',
-   version     = common.get_version(__file__)
-)
-
-parser.add_argument(
-   'bit',
-   default     = "",
-   nargs       = '?',
-   metavar     = 'BITSTREAM',
-   help        = 'bitstream to be transferred'
-)
-
-parser.add_argument(
-   '-t', '--tool',
-   metavar     = 'TOOL',
-   default     = 'vivado',
-   choices     = ['ise','quartus','libero','vivado'],
-   help        = 'name of the vendor tool to be used (ise|quartus|libero|vivado) [vivado]'
-)
-
-parser.add_argument(
-   '-d', '--device',
-   metavar     = 'DEVICE',
-   default     = 'fpga',
-   choices     = ['fpga', 'spi', 'bpi', 'xcf', 'detect', 'unlock'],
-   help        = 'type of the target device (fpga|spi|bpi|xcf|detect|unlock) [fpga]'
-)
-
-parser.add_argument(
-   '-b', '--board',
-   metavar     = 'BOARDNAME',
-   help        = 'name of a supported board (note: if you use the board option, -p, ' +
-                 '-m and -w will be overwritten) [None]'
-)
-
-parser.add_argument(
-   '-m', '--memname',
-   metavar     = 'MEMNAME',
-   default     = 'UNDEFINED',
-   help        = 'name of the memory target device [UNDEFINED]'
-)
-
-parser.add_argument(
-   '-p', '--position',
-   metavar     = 'POSITION',
-   type        = int,
-   default     = 1,
-   help        = 'positive number which represents the POSITION of the device in the ' +
-                 'JTAG chain [1]'
-)
-
-parser.add_argument(
-   '-w', '--width',
-   metavar     = 'WIDTH',
-   type        = int,
-   default     = 1,
-   choices     = [1, 2, 4, 8, 16, 32, 64],
-   help        = 'positive number which representes the WIDTH of bits of the target ' +
-                 'memory (1, 2, 4, 8, 16, 32, 64) [1]'
-)
-
-options = parser.parse_args()
+options = common.get_options(__file__)
 
 ###################################################################################################
 # Processing the options
@@ -120,14 +47,12 @@ if options.board is not None and options.device not in ['detect','unlock']:
 # Preparing files
 ###################################################################################################
 
-tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/tcl"
-
 # Preparing a temporary Makefile
 tempmake = tempfile.NamedTemporaryFile(mode='w')
 tempmake.write("#!/usr/bin/make\n")
 tempmake.write("TOOL=%s\n" % options.tool)
 tempmake.write("DEV=%s\n" % options.device)
-tempmake.write("TCLPATH=%s\n" % tcl_orig)
+tempmake.write("TCLPATH=%s\n" % (common.get_script_path(__file__) + "/tcl"))
 tempmake.write("include $(TCLPATH)/Makefile")
 tempmake.flush()
 

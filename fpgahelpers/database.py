@@ -22,6 +22,8 @@ __version__ = "0.4.0"
 
 tools = ['vivado','ise','quartus','libero']
 
+devices = ['fpga', 'spi', 'bpi', 'xcf', 'detect', 'unlock']
+
 boards = {
     'avnet_s6micro' : {
         'full_name' : 'Avnet Spartan-6 FPGA LX9 MicroBoard',

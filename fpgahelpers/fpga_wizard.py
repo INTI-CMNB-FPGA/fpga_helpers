@@ -21,6 +21,8 @@
 import sys, os, readline, re, glob, shutil
 import database, common
 
+options = common.get_options(__file__)
+
 # config autocomplete
 readline.set_completer_delims(' \t\n;')
 readline.parse_and_bind("tab: complete")
@@ -69,8 +71,6 @@ def complete(text, state):
 ###################################################################################################
 # Collect info
 ###################################################################################################
-
-print(common.get_version(__file__))
 
 print("") # TOOL ----------------------------------------------------------------------------------
 

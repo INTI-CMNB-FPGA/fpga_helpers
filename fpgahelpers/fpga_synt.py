@@ -18,40 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import argparse, glob, sys, os, tempfile
+import glob, sys, os, tempfile
 import database, common
 
-###################################################################################################
-# Parsing the command line
-###################################################################################################
-
-parser = argparse.ArgumentParser(
-   prog="fpga_synt",
-   description="Do synthesis based on the project file of the vendor's tool"
-)
-
-parser.add_argument(
-   '-v', '--version',
-   action  = 'version',
-   version = common.get_version(__file__)
-)
-
-parser.add_argument(
-   '-t', '--task',
-   metavar = 'TASK',
-   choices = ['syn','imp','bit'],
-   default = 'bit',
-   help    = 'TASK to be executed (syn|imp|bit) [bit]'
-)
-
-parser.add_argument(
-   'file',
-   nargs   = '?',
-   metavar = 'PROJECT_FILE',
-   help    = 'PROJECT_FILE to be used [auto detected]'
-)
-
-options = parser.parse_args()
+options = common.get_options(__file__)
 
 ###################################################################################################
 # Collecting information
@@ -91,14 +61,12 @@ else:
 # Preparing files
 ###################################################################################################
 
-tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/tcl"
-
 # Preparing a temporary Makefile
 temp = tempfile.NamedTemporaryFile(mode='w')
 temp.write("#!/usr/bin/make\n")
 temp.write("TOOL=%s\n" % options.tool)
 temp.write("TASK=%s\n" % options.task)
-temp.write("TCLPATH=%s\n" % tcl_orig)
+temp.write("TCLPATH=%s\n" % (common.get_script_path(__file__) + "/tcl"))
 temp.write("include $(TCLPATH)/Makefile")
 temp.flush()
 
