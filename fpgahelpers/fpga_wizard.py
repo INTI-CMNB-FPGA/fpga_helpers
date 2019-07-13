@@ -19,7 +19,7 @@
 #
 
 import sys, os, readline, re, glob, shutil
-import database
+import database, common
 
 # config autocomplete
 readline.set_completer_delims(' \t\n;')
@@ -70,7 +70,7 @@ def complete(text, state):
 # Collect info
 ###################################################################################################
 
-print(database.get_version(__file__))
+print(common.get_version(__file__))
 
 print("") # TOOL ----------------------------------------------------------------------------------
 

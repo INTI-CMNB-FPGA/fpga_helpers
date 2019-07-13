@@ -19,7 +19,7 @@
 #
 
 import argparse, glob, sys, os, tempfile
-import database
+import database, common
 
 ###################################################################################################
 # Parsing the command line
@@ -33,7 +33,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
    '-v', '--version',
    action  = 'version',
-   version = database.get_version(__file__)
+   version = common.get_version(__file__)
 )
 
 parser.add_argument(

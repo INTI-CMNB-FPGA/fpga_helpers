@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Shared data between FPGA Helpers
+# Data shared between FPGA Helpers
 # Copyright (C) 2017-2019 INTI
 # Copyright (C) 2017-2019 Rodrigo A. Melo
 #
@@ -17,12 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-import os
-
-def get_version(file):
-    program = os.path.basename(os.path.abspath(file)).split(".")[0]
-    return "%s is a member of FPGA Helpers v%s" % (program, __version__)
 
 __version__ = "0.4.0"
 
