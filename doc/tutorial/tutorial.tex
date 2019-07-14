@@ -70,9 +70,11 @@
 \newcommand{\makefile}       {\textit{Makefile}}
 
 \newcommand{\shellcmd}[1]{\\\indent\indent\texttt{\scriptsize #1}\\}
+
+\newcommand{\version}        {0.4.0}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title[FPGA Helpers]{Tutorial: FPGA Helpers v0.3.0}
+\title[FPGA Helpers]{Tutorial: FPGA Helpers v\version}
 
 \author{
   Rodrigo A. Melo\\
@@ -102,7 +104,7 @@
 
 \begin{frame}{Current components}
   \begin{itemize}
-    \item \textbf{\fpgasetup:} set the system to execute the vendor's tool.
+    \item \textbf{\fpgasetup:} set the system to execute the vendor's tool [Linux].
     \item \textbf{\fpgawizard:} generates options.tcl and Makefile (project files).
     \item \textbf{\fpgasynt:} run synthesis based on the project file of the vendor's tool.
     \item \textbf{\fpgaprog:} transfer a bitstream to a FPGA or memory.
@@ -118,7 +120,8 @@
   \begin{block}{}
     The \makefile\ which run the Tcl scripts for synthesis and programming assumes that the
     vendor's tool is well configured and available in the system path.
-    It could be done manually, automated in for example \textit{.bashrc} or using \fpgasetup.
+    In a GNU/Linux system, it could be done manually, automated in for example \textit{.bashrc} or
+    using \fpgasetup.
   \end{block}{}
   \scriptsize
   \verbatiminput{temp/fpgasetup1.txt}
