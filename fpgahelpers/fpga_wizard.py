@@ -21,30 +21,6 @@
 import sys, os, readline, re, glob, shutil
 import database, common
 
-options = common.get_options(__file__)
-
-# config autocomplete
-readline.set_completer_delims(' \t\n;')
-readline.parse_and_bind("tab: complete")
-
-###################################################################################################
-# Default Values
-###################################################################################################
-
-options              = {}
-options['tool']      = 'vivado'
-options['tcl_path']  = '../tcl'
-options['top_file']  = None
-options['files']     = []
-options['fpga_name'] = 'UNKNOWN'
-options['fpga_pos']  = '1'
-options['spi_width'] = '1'
-options['bpi_width'] = '8'
-
-###################################################################################################
-# Functions
-###################################################################################################
-
 def get_input():
     prompt = "EMPTY for default option. TAB for autocomplete. Your selection here > "
     try:    # Python2
@@ -68,180 +44,176 @@ def complete(text, state):
            else:
               state -= 1
 
-###################################################################################################
-# Collect info
-###################################################################################################
+def collect_data():
+    # Config autocomplete
+    readline.set_completer_delims(' \t\n;')
+    readline.parse_and_bind("tab: complete")
+    global alternatives
 
-print("") # TOOL ----------------------------------------------------------------------------------
+    # Default Values
+    options              = {}
+    options['tool']      = 'vivado'
+    options['tcl_path']  = '../tcl'
+    options['top_file']  = None
+    options['files']     = []
+    options['fpga_name'] = 'UNKNOWN'
+    options['fpga_pos']  = '1'
+    options['spi_width'] = '1'
+    options['bpi_width'] = '8'
 
-alternatives = database.tools # available tools
-readline.set_completer(complete)
-print("Select TOOL to use [%s]" % options['tool'])
-options['tool'] = get_input() or options['tool']
-if options['tool'] not in alternatives:
-   sys.exit("fpga_wizard (ERROR): unsupported tool")
+    print("") # TOOL
 
-print("") # TCL PATH ------------------------------------------------------------------------------
+    alternatives = database.tools # available tools
+    readline.set_completer(complete)
+    print("Select TOOL to use [%s]" % options['tool'])
+    options['tool'] = get_input() or options['tool']
+    if options['tool'] not in alternatives:
+       sys.exit("fpga_wizard (ERROR): unsupported tool")
 
-readline.set_completer() # browse filesystem
-print("Where to get (if exists) or put Tcl files? [%s]" % options['tcl_path'])
-options['tcl_path'] = get_input() or options['tcl_path']
+    print("") # TCL PATH
 
-print("") # TOP FILE ------------------------------------------------------------------------------
+    readline.set_completer() # browse filesystem
+    print("Where to get (if exists) or put Tcl files? [%s]" % options['tcl_path'])
+    options['tcl_path'] = get_input() or options['tcl_path']
 
-readline.set_completer() # browse filesystem
-try:
-   default = glob.glob('*.v*')[0] # vhdl, vhd, v (probably only one file)
-except:
-   default = options['top_file']
-print("Top Level file? [%s]" % default)
-options['top_file'] = get_input() or default
+    print("") # TOP FILE
 
-if options['top_file'] is None or not os.path.exists(options['top_file']):
-   sys.exit("fpga_wizard (ERROR): the specified top level does not exists")
+    readline.set_completer() # browse filesystem
+    try:
+       default = glob.glob('*.v*')[0] # vhdl, vhd, v (probably only one file)
+    except:
+       default = options['top_file']
+    print("Top Level file? [%s]" % default)
+    options['top_file'] = get_input() or default
 
-options['top_name'] = get_top(options['top_file'])
+    if options['top_file'] is None or not os.path.exists(options['top_file']):
+       sys.exit("fpga_wizard (ERROR): the specified top level does not exists")
 
-print("") # FILES ---------------------------------------------------------------------------------
+    options['top_name'] = get_top(options['top_file'])
 
-readline.set_completer() # browse filesystem
-print("Add files to the project (EMPTY to FINISH):")
+    print("") # FILES
 
-morefiles = 1;
-while (morefiles):
-   print("* Path to the file [FINISH]:")
-   file = get_input()
-   lib  = ""
-   if len(file):
-      print("* In library [None]:")
-      lib = get_input()
-   if len(file):
-      options['files'].append([file,lib])
-   else:
-      morefiles = 0
+    readline.set_completer() # browse filesystem
+    print("Add files to the project (EMPTY to FINISH):")
 
-print("") # BOARD ---------------------------------------------------------------------------------
+    morefiles = 1;
+    while (morefiles):
+       print("* Path to the file [FINISH]:")
+       file = get_input()
+       lib  = ""
+       if len(file):
+          print("* In library [None]:")
+          lib = get_input()
+       if len(file):
+          options['files'].append([file,lib])
+       else:
+          morefiles = 0
 
-alternatives = database.boards # available boards
-readline.set_completer(complete)
-print("Board to be used? [None]")
-options['board'] = get_input()
+    print("") # BOARD
 
-if options['board'] and options['board'] not in alternatives:
-   sys.exit("fpga_wizard (ERROR): unsupported board")
+    alternatives = database.boards # available boards
+    readline.set_completer(complete)
+    print("Board to be used? [None]")
+    options['board'] = get_input()
 
-print("") # DEVICES -------------------------------------------------------------------------------
+    if options['board'] and options['board'] not in alternatives:
+       sys.exit("fpga_wizard (ERROR): unsupported board")
 
-if options['board']:
-   options.update(database.boards[options['board']])
-else:
-   alternatives = [] # no options yet
-   readline.set_completer(complete)
+    print("") # DEVICES
 
-   print("Specify the used FPGA [%s]" % options['fpga_name'])
-   options['fpga_name'] = get_input() or options['fpga_name']
-   if len(options['fpga_name']):
-      print("")
-      print("Specify the FPGA position [%s]" % options['fpga_pos'])
-      options['fpga_pos'] = get_input() or options['fpga_pos']
-      if int(options['fpga_pos']) not in [1, 2, 3, 4]:
-         sys.exit("fpga_wizard (ERROR): FPGA position can be 1 to 4")
-
-   print("")
-
-   print("Specify an attached SPI [None]")
-   options['spi_name'] = get_input()
-   if len(options['spi_name']):
-      print("")
-      print("Specify the SPI bits width [%s]" % options['spi_width'])
-      options['spi_width'] = get_input() or options['spi_width']
-      if int(options['spi_width']) not in [1, 2, 4]:
-         sys.exit("fpga_wizard (ERROR): SPI data width can be 1 to 4")
-
-   print("")
-
-   print("Specify an attached BPI [None]")
-   options['bpi_name'] = get_input()
-   if len(options['bpi_name']):
-      print("")
-      print("Specify the BPI bits width [%s]" % options['bpi_width'])
-      options['bpi_width'] = get_input() or options['bpi_width']
-      if int(options['bpi_width']) not in [8, 16, 32, 64]:
-         sys.exit("fpga_wizard (ERROR): BPI data width can be 8, 16, 32 or 64")
-
-print("") #----------------------------------------------------------------------------------------
-
-#print (options)
-
-###################################################################################################
-# Generate the project
-###################################################################################################
-
-# Tcl files ---------------------------------------------------------------------------------------
-
-if not os.path.exists(options['tcl_path']):
-   os.mkdir(options['tcl_path'])
-   print("fpga_wizard (INFO): directory %s was created" % options['tcl_path'])
-
-tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/tcl"
-if not os.path.exists(options['tcl_path'] + "/Makefile"):
-   shutil.copy(tcl_orig + '/Makefile', options['tcl_path'])
-   print("fpga_wizard (INFO): Makefile was copy to %s" % options['tcl_path'])
-if not os.path.exists(options['tcl_path'] + "/synthesis.tcl"):
-   shutil.copy(tcl_orig + '/synthesis.tcl', options['tcl_path'])
-   print("fpga_wizard (INFO): synthesis.tcl was copy to %s" % options['tcl_path'])
-if not os.path.exists(options['tcl_path'] + "/programming.tcl"):
-   shutil.copy(tcl_orig + '/programming.tcl', options['tcl_path'])
-   print("fpga_wizard (INFO): programming.tcl was copy to %s" % options['tcl_path'])
-
-# The Makefile ------------------------------------------------------------------------------------
-
-makefile = common.get_makefile_content(
-   tool=options['tool'], task=None, dev=None, path=options['tcl_path']
-)
-
-# options.tcl -------------------------------------------------------------------------------------
-
-optfile = ""
-
-# Config devices
-
-if 'fpga_name' in options and len(options['fpga_name']):
-   optfile += "set fpga_name %s\n" % options['fpga_name']
-   optfile += "set fpga_pos  %s\n" % options['fpga_pos']
-if 'spi_name'  in options and len(options['spi_name']):
-   optfile += "set spi_name  %s\n" % options['spi_name']
-   optfile += "set spi_width %s\n" % options['spi_width']
-if 'bpi_name'  in options and len(options['bpi_name']):
-   optfile += "set bpi_name  %s\n" % options['bpi_name']
-   optfile += "set bpi_width %s\n" % options['bpi_width']
-
-optfile += "\n"
-
-# Set FPGA
-
-if 'fpga_name' in options and options['fpga_name'] is not None:
-   optfile += "fpga_device   $fpga_name\n"
-
-optfile += "\n"
-
-# Add files and specify the top level
-
-for file,lib in options['files']:
-    if len(lib):
-       optfile += "fpga_file     %-30s -lib %s\n" % (file,lib)
+    if options['board']:
+       options.update(database.boards[options['board']])
     else:
-       optfile += "fpga_file     %-30s\n"         % (file)
-if 'top_file' in options:
-   optfile += "fpga_file     %-30s -top %s\n"%(options['top_file'],options['top_name'])
+       alternatives = [] # no options yet
+       readline.set_completer(complete)
 
-# Gen files ---------------------------------------------------------------------------------------
+       print("Specify the used FPGA [%s]" % options['fpga_name'])
+       options['fpga_name'] = get_input() or options['fpga_name']
+       if len(options['fpga_name']):
+          print("")
+          print("Specify the FPGA position [%s]" % options['fpga_pos'])
+          options['fpga_pos'] = get_input() or options['fpga_pos']
+          if int(options['fpga_pos']) not in [1, 2, 3, 4]:
+             sys.exit("fpga_wizard (ERROR): FPGA position can be 1 to 4")
 
-open("Makefile", 'w').write(makefile)
-open("options.tcl", 'w').write(optfile)
+       print("")
 
-###################################################################################################
-# Ending
-###################################################################################################
+       print("Specify an attached SPI [None]")
+       options['spi_name'] = get_input()
+       if len(options['spi_name']):
+          print("")
+          print("Specify the SPI bits width [%s]" % options['spi_width'])
+          options['spi_width'] = get_input() or options['spi_width']
+          if int(options['spi_width']) not in [1, 2, 4]:
+             sys.exit("fpga_wizard (ERROR): SPI data width can be 1 to 4")
 
-print("fpga_wizard (INFO): Makefile and options.tcl were generated")
+       print("")
+
+       print("Specify an attached BPI [None]")
+       options['bpi_name'] = get_input()
+       if len(options['bpi_name']):
+          print("")
+          print("Specify the BPI bits width [%s]" % options['bpi_width'])
+          options['bpi_width'] = get_input() or options['bpi_width']
+          if int(options['bpi_width']) not in [8, 16, 32, 64]:
+             sys.exit("fpga_wizard (ERROR): BPI data width can be 8, 16, 32 or 64")
+
+    print("") # End
+    return options
+
+def main():
+    cli_opt = common.get_options(__file__)
+    options = collect_data()
+
+    # Copy Tcl files
+    if not os.path.exists(options['tcl_path']):
+       os.mkdir(options['tcl_path'])
+       print("fpga_wizard (INFO): directory %s was created" % options['tcl_path'])
+    tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/tcl"
+    if not os.path.exists(options['tcl_path'] + "/Makefile"):
+       shutil.copy(tcl_orig + '/Makefile', options['tcl_path'])
+       print("fpga_wizard (INFO): Makefile was copy to %s" % options['tcl_path'])
+    if not os.path.exists(options['tcl_path'] + "/synthesis.tcl"):
+       shutil.copy(tcl_orig + '/synthesis.tcl', options['tcl_path'])
+       print("fpga_wizard (INFO): synthesis.tcl was copy to %s" % options['tcl_path'])
+    if not os.path.exists(options['tcl_path'] + "/programming.tcl"):
+       shutil.copy(tcl_orig + '/programming.tcl', options['tcl_path'])
+       print("fpga_wizard (INFO): programming.tcl was copy to %s" % options['tcl_path'])
+
+    # Creating files
+    optfile = ""
+    # Config devices
+    if 'fpga_name' in options and len(options['fpga_name']):
+       optfile += "set fpga_name %s\n" % options['fpga_name']
+       optfile += "set fpga_pos  %s\n" % options['fpga_pos']
+    if 'spi_name'  in options and len(options['spi_name']):
+       optfile += "set spi_name  %s\n" % options['spi_name']
+       optfile += "set spi_width %s\n" % options['spi_width']
+    if 'bpi_name'  in options and len(options['bpi_name']):
+       optfile += "set bpi_name  %s\n" % options['bpi_name']
+       optfile += "set bpi_width %s\n" % options['bpi_width']
+    optfile += "\n"
+    # Set FPGA
+    if 'fpga_name' in options and options['fpga_name'] is not None:
+       optfile += "fpga_device   $fpga_name\n"
+    optfile += "\n"
+    # Add files and specify the top level
+    for file,lib in options['files']:
+        if len(lib):
+           optfile += "fpga_file     %-30s -lib %s\n" % (file,lib)
+        else:
+           optfile += "fpga_file     %-30s\n"         % (file)
+    if 'top_file' in options:
+       optfile += "fpga_file     %-30s -top %s\n"%(options['top_file'],options['top_name'])
+    # The Makefile
+    makefile = common.get_makefile_content(
+       tool=options['tool'], task=None, dev=None, path=options['tcl_path']
+    )
+
+    # Gen files and end
+    open("Makefile", 'w').write(makefile)
+    open("options.tcl", 'w').write(optfile)
+    print("fpga_wizard (INFO): Makefile and options.tcl were generated")
+
+if __name__ == "__main__":
+   main()
