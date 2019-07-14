@@ -21,52 +21,50 @@
 import os, sys
 import database, common
 
-options = common.get_options(__file__)
+def main():
+    options = common.get_options(__file__)
 
-###################################################################################################
-# Processing the options
-###################################################################################################
+    # Processing the options
+    if not os.path.exists(options.bit) and options.device not in ['detect','unlock'] and options.tool not in ['libero']:
+       sys.exit('fpga_prog (ERROR): bitstream needed but not found.')
+    if options.board and options.board not in database.boards:
+       sys.exit("fpga_prog (ERROR): unsupported board")
+    if options.board is not None and options.device not in ['detect','unlock']:
+       if options.device + '_name' not in database.boards[options.board]:
+          sys.exit(
+              "fpga_prog (ERROR): the device <%s> is not supported in the board <%s>." %
+              (options.device, options.board)
+          )
+       else:
+          options.position = database.boards[options.board]['fpga_pos']
+          if options.device != 'fpga':
+             options.memname = database.boards[options.board][options.device + '_name']
+             options.width   = database.boards[options.board][options.device + '_width']
 
-if not os.path.exists(options.bit) and options.device not in ['detect','unlock'] and options.tool not in ['libero']:
-   sys.exit('fpga_prog (ERROR): bitstream needed but not found.')
+    # Preparing files
+    temp = None;
+    if not os.path.exists('options.tcl'):
+       temp = open('options.tcl','w')
+       if 'memname' in options:
+          for dev in ['fpga', 'spi', 'bpi', 'xcf']:
+              temp.write("set %s_name %s\n" % (dev, options.memname))
+       if 'position' in options:
+          for dev in ['fpga', 'xcf']:
+              temp.write("set %s_pos %s\n" % (dev, options.position))
+       if 'width' in options:
+          for dev in ['spi', 'bpi', 'xcf']:
+              temp.write("set %s_width %s\n" % (dev, options.width))
+       temp.flush()
 
-if options.board and options.board not in database.boards:
-   sys.exit("fpga_prog (ERROR): unsupported board")
+    # Executing
+    text = common.get_makefile_content(
+       tool=options.tool, task=None, dev=options.device,
+       path=(common.get_script_path(__file__) + "/tcl")
+    )
+    common.execute_make(__file__, text)
+    if temp is not None:
+       temp.close()
+       os.remove('options.tcl')
 
-if options.board is not None and options.device not in ['detect','unlock']:
-   if options.device + '_name' not in database.boards[options.board]:
-      sys.exit('fpga_prog (ERROR): the device <' + options.device + '> is not ' +
-                          'supported in the board <' + options.board + '>.')
-   else:
-      options.position = database.boards[options.board]['fpga_pos']
-      if options.device != 'fpga':
-         options.memname = database.boards[options.board][options.device + '_name']
-         options.width   = database.boards[options.board][options.device + '_width']
-
-###################################################################################################
-# Preparing files
-###################################################################################################
-
-temp = None;
-if not os.path.exists('options.tcl'):
-   temp = open('options.tcl','w')
-   if 'memname' in options:
-      for dev in ['fpga', 'spi', 'bpi', 'xcf']:
-          temp.write("set %s_name %s\n" % (dev, options.memname))
-   if 'position' in options:
-      for dev in ['fpga', 'xcf']:
-          temp.write("set %s_pos %s\n" % (dev, options.position))
-   if 'width' in options:
-      for dev in ['spi', 'bpi', 'xcf']:
-          temp.write("set %s_width %s\n" % (dev, options.width))
-   temp.flush()
-
-text = common.get_makefile_content(
-   tool=options.tool, task=None, dev=options.device,
-   path=(common.get_script_path(__file__) + "/tcl")
-)
-common.execute_make(__file__, text)
-
-if temp is not None:
-   temp.close()
-   os.remove('options.tcl')
+if __name__ == "__main__":
+   main()
