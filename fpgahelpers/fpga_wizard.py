@@ -21,8 +21,8 @@
 import sys, os, readline, re, glob, shutil
 import database, common
 
-def get_input():
-    prompt = "EMPTY for default option. TAB for autocomplete. Your selection here > "
+def get_input(prompt):
+    prompt += " > "
     try:    # Python2
        return raw_input(prompt)
     except: # Python3
@@ -56,109 +56,78 @@ def collect_data():
     options['tcl_path']  = '../tcl'
     options['top_file']  = None
     options['files']     = []
-    options['fpga_name'] = 'UNKNOWN'
+    options['fpga_name'] = 'UNSPECIFIED'
     options['fpga_pos']  = '1'
     options['spi_width'] = '1'
     options['bpi_width'] = '8'
 
-    print("") # TOOL
+    print("INSTRUCTIONS: left EMPTY for default option and press TAB for autocomplete.")
 
     alternatives = database.tools # available tools
     readline.set_completer(complete)
-    print("Select TOOL to use [%s]" % options['tool'])
-    options['tool'] = get_input() or options['tool']
+    options['tool'] = get_input("* TOOL to be used? [%s]" % options['tool']) or options['tool']
     if options['tool'] not in alternatives:
        sys.exit("fpga_wizard (ERROR): unsupported tool")
 
-    print("") # TCL PATH
-
+    print("NOTE: if there are no Tcl files in the target path, they are created.")
     readline.set_completer() # browse filesystem
-    print("Where to get (if exists) or put Tcl files? [%s]" % options['tcl_path'])
-    options['tcl_path'] = get_input() or options['tcl_path']
-
-    print("") # TOP FILE
+    options['tcl_path'] = get_input("* Path to the Tcl files? [%s]" % options['tcl_path']) or options['tcl_path']
 
     readline.set_completer() # browse filesystem
     try:
        default = glob.glob('*.v*')[0] # vhdl, vhd, v (probably only one file)
     except:
        default = options['top_file']
-    print("Top Level file? [%s]" % default)
-    options['top_file'] = get_input() or default
-
+    options['top_file'] = get_input("* Top Level file? [%s]" % default) or default
     if options['top_file'] is None or not os.path.exists(options['top_file']):
        sys.exit("fpga_wizard (ERROR): the specified top level does not exists")
-
     options['top_name'] = get_top(options['top_file'])
 
-    print("") # FILES
-
     readline.set_completer() # browse filesystem
-    print("Add files to the project (EMPTY to FINISH):")
-
+    print("* Add files to the project (empty file to FINISH).")
     morefiles = 1;
     while (morefiles):
-       print("* Path to the file [FINISH]:")
-       file = get_input()
+       file = get_input("  * Path to the file [FINISH]")
        lib  = ""
        if len(file):
-          print("* In library [None]:")
-          lib = get_input()
+          lib = get_input("  * In library [None]")
        if len(file):
           options['files'].append([file,lib])
        else:
           morefiles = 0
 
-    print("") # BOARD
-
     alternatives = database.boards # available boards
     readline.set_completer(complete)
-    print("Board to be used? [None]")
-    options['board'] = get_input()
-
+    options['board'] = get_input("* Board to be used? [None]")
     if options['board'] and options['board'] not in alternatives:
        sys.exit("fpga_wizard (ERROR): unsupported board")
-
-    print("") # DEVICES
-
     if options['board']:
        options.update(database.boards[options['board']])
     else:
        alternatives = [] # no options yet
        readline.set_completer(complete)
-
-       print("Specify the used FPGA [%s]" % options['fpga_name'])
-       options['fpga_name'] = get_input() or options['fpga_name']
+       # FPGA
+       print("* Specify the FPGA")
+       options['fpga_name'] = get_input("  * Device [%s]" % options['fpga_name']) or options['fpga_name']
        if len(options['fpga_name']):
-          print("")
-          print("Specify the FPGA position [%s]" % options['fpga_pos'])
-          options['fpga_pos'] = get_input() or options['fpga_pos']
+          options['fpga_pos'] = get_input("  * Position [%s]" % options['fpga_pos']) or options['fpga_pos']
           if int(options['fpga_pos']) not in [1, 2, 3, 4]:
              sys.exit("fpga_wizard (ERROR): FPGA position can be 1 to 4")
-
-       print("")
-
-       print("Specify an attached SPI [None]")
-       options['spi_name'] = get_input()
+       # SPI
+       print("* Specify an attached SPI")
+       options['spi_name'] = get_input("  * Device [None]")
        if len(options['spi_name']):
-          print("")
-          print("Specify the SPI bits width [%s]" % options['spi_width'])
-          options['spi_width'] = get_input() or options['spi_width']
+          options['spi_width'] = get_input("  * Width in bits [%s]" % options['spi_width']) or options['spi_width']
           if int(options['spi_width']) not in [1, 2, 4]:
-             sys.exit("fpga_wizard (ERROR): SPI data width can be 1 to 4")
-
-       print("")
-
-       print("Specify an attached BPI [None]")
-       options['bpi_name'] = get_input()
+             sys.exit("fpga_wizard (ERROR): SPI data width can be 1, 2 and 4")
+       # BPI
+       print("* Specify an attached BPI")
+       options['bpi_name'] = get_input("  * Device [None]")
        if len(options['bpi_name']):
-          print("")
-          print("Specify the BPI bits width [%s]" % options['bpi_width'])
-          options['bpi_width'] = get_input() or options['bpi_width']
+          options['bpi_width'] = get_input("* Width in bits [%s]" % options['bpi_width']) or options['bpi_width']
           if int(options['bpi_width']) not in [8, 16, 32, 64]:
              sys.exit("fpga_wizard (ERROR): BPI data width can be 8, 16, 32 or 64")
 
-    print("") # End
     return options
 
 def main():
