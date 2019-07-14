@@ -27,29 +27,23 @@ options = common.get_options(__file__)
 # Collecting information
 ###################################################################################################
 
-# Detecting file project
+for tool in database.tools:
+    if options.file is None:
+        try:
+            options.file = glob.glob("*."+database.tools[tool]['prj'])[0]
+        except:
+            options.file = None
 
 if options.file is None:
-   options.file = \
-      glob.glob("*.xise") + \
-      glob.glob("*.xpr")  + \
-      glob.glob("*.qpf")  + \
-      glob.glob("*.prjx")
-   try:
-      options.file = options.file[0]
-   except:
-      sys.exit("fpga_synt (ERROR): the project file was not auto detected")
-
+   sys.exit("fpga_synt (ERROR): project file not found")
 if not os.path.exists(options.file):
    sys.exit("fpga_synt (ERROR): file %s do not exists" % options.file)
 
-# Setting vendor's tool
-
 options.tool = None
-if options.file.endswith('.xise'):
-   options.tool = 'ise'
-elif options.file.endswith('.xpr'):
+if options.file.endswith('.xpr'):
    options.tool = 'vivado'
+elif options.file.endswith('.xise'):
+   options.tool = 'ise'
 elif options.file.endswith('.qpf'):
    options.tool = 'quartus'
 elif options.file.endswith('.prjx'):

@@ -47,23 +47,19 @@ if options.board is not None and options.device not in ['detect','unlock']:
 # Preparing files
 ###################################################################################################
 
-tempopt = None;
-# Preparing a temporary options.tcl (if not exists)
+temp = None;
 if not os.path.exists('options.tcl'):
-   tempopt = open('options.tcl','w')
+   temp = open('options.tcl','w')
    if 'memname' in options:
-      tempopt.write("set fpga_name %s\n" % options.memname)
-      tempopt.write("set spi_name  %s\n" % options.memname)
-      tempopt.write("set bpi_name  %s\n" % options.memname)
-      tempopt.write("set xcf_name  %s\n" % options.memname)
+      for dev in ['fpga', 'spi', 'bpi', 'xcf']:
+          temp.write("set %s_name %s\n" % (dev, options.memname))
    if 'position' in options:
-      tempopt.write("set fpga_pos  %s\n" % options.position)
-      tempopt.write("set xcf_pos   %s\n" % options.position)
+      for dev in ['fpga', 'xcf']:
+          temp.write("set %s_pos %s\n" % (dev, options.position))
    if 'width' in options:
-      tempopt.write("set spi_width %s\n" % options.width)
-      tempopt.write("set bpi_width %s\n" % options.width)
-      tempopt.write("set xcf_width %s\n" % options.width)
-   tempopt.flush()
+      for dev in ['spi', 'bpi', 'xcf']:
+          temp.write("set %s_width %s\n" % (dev, options.width))
+   temp.flush()
 
 text = common.get_makefile_content(
    tool=options.tool, task=None, dev=options.device,
@@ -71,6 +67,6 @@ text = common.get_makefile_content(
 )
 common.execute_make(__file__, text)
 
-if tempopt is not None:
-   tempopt.close()
+if temp is not None:
+   temp.close()
    os.remove('options.tcl')

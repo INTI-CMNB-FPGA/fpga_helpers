@@ -20,7 +20,20 @@
 
 __version__ = "0.4.0"
 
-tools = ['vivado','ise','quartus','libero']
+tools = {
+    'vivado'  : {
+        'prj' : 'xpr'
+    },
+    'ise'     : {
+        'prj' : 'xise'
+    },
+    'quartus' : {
+        'prj' : 'qpf'
+    },
+    'libero'  : {
+        'prj' : 'prjx'
+    }
+}
 
 devices = ['fpga', 'spi', 'bpi', 'xcf', 'detect', 'unlock']
 
