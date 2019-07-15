@@ -29,7 +29,7 @@ def main():
     for tool in db._tools:
         if options.file is None:
             try:
-                options.file = glob.glob("*." + db._tools[tool]['prj'])[0]
+                options.file = glob.glob("*.%s" % db._tools[tool]['prj'])[0]
             except:
                 options.file = None
 
@@ -39,15 +39,10 @@ def main():
        sys.exit("fpga_synt (ERROR): file %s do not exists" % options.file)
 
     options.tool = None
-    if options.file.endswith('.xpr'):
-       options.tool = 'vivado'
-    elif options.file.endswith('.xise'):
-       options.tool = 'ise'
-    elif options.file.endswith('.qpf'):
-       options.tool = 'quartus'
-    elif options.file.endswith('.prjx'):
-       options.tool = 'libero'
-    else:
+    for tool in db._tools:
+        if options.file.endswith(".%s" % db._tools[tool]['prj']):
+           options.tool = tool
+    if options.tool is None:
        sys.exit("fpga_synt (ERROR): unsupported vendor's tool")
 
     # Executing
