@@ -1,14 +1,15 @@
 # Introduction
 
-FPGA Helpers are a set of **Tcl** (*Tool Command Language*) and **Python** scripts, which
-helps to use FPGA development tools from command line in a vendor independent way.
+FPGA Helpers are a set of **Tcl** (*Tool Command Language*) and **Python** CLI
+(*Command-line Interfaces*) scripts, which helps to use the FPGA development
+tools from the command line in a *vendor independent* way.
 
 Two **Tcl** scripts and one *Makefile* solves the support of multiple tools:
 * *synthesis.tcl:* solves Synthesis, Implementation and Bitstream Generation.
 * *programming.tcl:* solves programming of FPGAs and/or memories.
 * *Makefile:* run the needed script with the adequate interpreter.
-* *options.tcl [generated]:* project options file, indicates the used FPGA, files, data about
-memories and particular options of the tool.
+* *options.tcl [generated]:* project options file, where to indicate the used FPGA, files,
+memories parameters and particular options of the tool.
 
 > Implementation involve optimizations, technological mapping, *place & route* (P&R)
 > and *static timing analysis* (STA).
@@ -16,66 +17,32 @@ memories and particular options of the tool.
 > The *Makefile* assumes that the tool to be executed is well installed, has a valid
 > license configured and is included in the system path.
 
-**Python** scripts helps to use the **Tcl**, either by incorporating them into the project
+The **Python** CLIs helps to use the **Tcl**, either by incorporating them into the project
 (in which case they become part of it) or by executing them for specific tasks:
 * *fpga_setup (Linux only):* prepare the system to run the vendor tools.
-* *fpga_wizard:* generates the project files *options.tcl* and an auxiliar *Makefile*.
+* *fpga_wizard:* generates the project files (*options.tcl* and an auxiliar *Makefile*).
 * *fpga_synt*: run synthesis based on a project file generated with a vendor tool.
 * *fpga_prog:* transfer a bitstream to a FPGA or memory.
 * *fpga_deps [WIP]:* collects automatically HDL files which are part of a project.
 
-> The **Python** scripts never are part of the project files. For convenience and
-> ease of use is recommended to be installed (without the *.py* suffix), but can
-> be used standalone.
+> The **Python** scripts are never part of the project files. For convenience and
+> ease of use is recommended to be installed, but can be used standalone.
 
-> The **Tcl** part of FPGA Helpers can be used without the use of the **Python**
-> scripts, creating manually the files.
+> The **Tcl** files can be used without the use of the **Python** scripts,
+> creating manually the project files.
 
 # Installation
 
-Considerer that:
-* FPGA Helpers is developed under a Debian GNU/Linux system.
-* The **Tcl** scripts are supported by the interpreter of each development tool and they should be
-independent of the Operating System.
-* Should be supported in any Operating System which has the **make** utility and the **Python**
-interpreter.
-* Can be used standalone (without installation).
+> The development is under a Debian GNU/Linux system, but the **Tcl** scripts are
+> supported by the interpreter of each development tool (OS independent). Thus,
+> FPGA Helpers must work in any system with **make** and **Python** installed on.
 
-## GNU/Linux in general
+> Can be used standalone (without installation).
 
-From the repository, when has been cloned:
+Run in the root directory of FPGA Helpers (where is `setup.py`):
 ```
-$ ./bootstrap
-$ ./configure
-$ make
-# make install
+pip install .
 ```
-
-From a downloaded tarball, when has been decompressed:
-```
-$ ./configure
-$ make
-# make install
-```
-
-> Typical installation provided by **Autotools**, so it supports arguments
-> such as *--prefix* and *--bindir*.
-
-## Debian/Ubuntu and derivatives
-
-When the deb package has been downloaded:
-```
-# dpkg -i fpga-helpers_X.Y.Z-N_all.deb
-```
-
-## Windows
-
-* There is no a official Windows version but should be enough with a Linux Shell.
-* In *Windows 10 Anniversary Update* and later,
-[Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide)
-is available, which allows installing Linux packages (select Ubuntu compatibility).
-* In any Windows version, [Git For Windows](https://git-for-windows.github.io) should be useful.
-* Also is possible to try with a project such as [Cygwin](https://www.cygwin.com).
 
 # Tcl
 
@@ -87,12 +54,12 @@ Considerations:
   * Adding it in each directory where you want to do synthesis and programming. Only recommended
   when you will modify the files.
 * A *options.tcl* file is needed in each directory where you want to do synthesis and programming.
-* When the main *Makefile* is in another directory, an auxiliar *Makefile* is needed.
+* When the main *Makefile* is in another directory, other auxiliar *Makefile* is needed.
 
 ## synthesis.tcl
 
-* The **Tcl** interpreter is automatically detected.
-* Which task to run can be specified with `-task`. The available values are:
+* The **Tcl** interpreter is automatically detected, but can be specified.
+* The task to run can be specified with `-task`. The available values are:
   * `syn`: synthesis.
   * `imp`: implementation (optimizations, mapping, P&R, STA).
   * `bit`: [default] bitstream generation.
@@ -103,18 +70,18 @@ Considerations:
   * Argument `-opt` is used to select a predefined optimization. The available values are
   `none` (default, no optimization is used), `area`, `power` y `speed`.
 
-> The GUI of the vendor tool can be used to create the project file and after that,
-> run this script to do the synthesis process.
+> The GUI of the vendor tool can be used to create a project file and after that,
+> you can run this script to do the synthesis process.
 
 ## programming.tcl
 
-* The **Tcl** interpreter is automatically detected.
+* The **Tcl** interpreter is automatically detected, but can be specified.
 * Most tools do not support **Tcl** for programming. This script make support files when needed,
 prepares commands to be executed and do a system call.
 * The device to be programmed can be specified with `-dev`. The available values are `fpga`
 (default), `spi` y `bpi`.
-* The options of the devices, such as name, bits and **JTAG** chain position are obtained from
-*options.tcl*.
+* The options of the devices, such as name, width bits (when a memory) and the **JTAG** chain
+position, are obtained from *options.tcl*.
 * The *path/name* of the bitstream can be specified with `-bit`.
 
 > Libero SoC uses the project file to find the bitstream.
@@ -141,7 +108,7 @@ Available values are the same as `-dev` in *programming.tcl*.
 
 ## options.tcl
 
-Here is a complete, self-documented example:
+Here, a self-documented example is provided:
 
 ```
 # For Synthesis ###############################################################
@@ -233,34 +200,36 @@ In Linux systems, once the vendor's tools are installed, to execute them extra s
 > Having the console tools *PATHs* automated precharged may be counterproductive, sometimes
 > system libraries and others applications can crash with the vendors libraries.
 
-* It's a **Bash** *script*  with two main purposes:
-* *PATHs* and license servers configurations (creates an .fpga_helpers file on user home*).
-* Prepares a terminal to execute the selected tools.
+* It's a **Bash** *script* with two main purposes:
+  * *PATHs* and license servers configurations (creates a .fpga_helpers file on the user home).
+  * Prepares a terminal to execute the selected tools.
 
 When it's run without arguments, an interactive menu is provided. To see the available options,
-use *--help*.
+use `--help`.
 
 ## FPGA Wizard
 
 Creates *options.tcl* and an auxiliary *Makefile* when needed, based on answering a few questions:
-* No arguments needed, interactive menu interface.
-* Questions are well documented.
-* *TAB completion* supported (double **TAB** key hitting enables options or complete as written).
+* It provides an interactive menu interface.
+* Questions are self-documented.
+* *TAB completion* supported (double **TAB** key hitting enables options or autocomplete).
 * Finds and detects the *top level* file if in the same directory as executed.
 * Allows the selection of a board (preconfigured options) or charging the data and features of the device being programmed.
 
 ## FPGA Synt
-It can be used the manufacturer's GUI tool to make a project and then use *fpga_synt* to execute
-synthesis, implementation, and *bitstream* generation.
+
+The manufacturer's GUI tool can be used to make a project and then *fpga_synt* can be use to
+execute synthesis, implementation, and *bitstream* generation.
 The project file can be specified as an argument or is autodetected if in the same directory.
 Manufacturer's tool to be used is accordingly the project file found and must be ready to be executed.
 
 ## FPGA Prog
 
-If there exists a *bitsream*, *fpga_prog* can be used to transfer to the FPGA or memory without
-the need of project creation. There are options to choose the tool to use, the *bitstream*,
-the device to be program, the board to use, or device specific features (position, name, bits).
+If there is a generated *bitsream*, *fpga_prog* can be used to transfer to the FPGA or a memory
+without the need of project creation. There are options to choose the tool to use, the *bitstream*,
+the device to be programed, the board to use, or device specific features (position, name, bits).
 The manufacturer's tool must be ready to be executed.
+
 # Examples
 
 ## Example 1: FPGA Setup (Linux only)
@@ -300,37 +269,24 @@ submodule).
 
 ```
 $ fpga_wizard 
-fpga_wizard is a member of FPGA Helpers v0.3.0
-
-Select TOOL to use [vivado]
-EMPTY for default option. TAB for autocomplete. Your selection here > ise
-
-Where to get (if exists) or put Tcl files? [../tcl]
-EMPTY for default option. TAB for autocomplete. Your selection here > ../fpga_helpers/tcl/
-
-Top Level file? [top_file.vhdl]
-EMPTY for default option. TAB for autocomplete. Your selection here > 
-
-Add files to the project (EMPTY to FINISH):
-* Path to the file [FINISH]:
-EMPTY for default option. TAB for autocomplete. Your selection here > core_file.vhdl
-* In library [None]:
-EMPTY for default option. TAB for autocomplete. Your selection here > LIB_NAME
-* Path to the file [FINISH]:
-EMPTY for default option. TAB for autocomplete. Your selection here > package_file.vhdl
-* In library [None]:
-EMPTY for default option. TAB for autocomplete. Your selection here > LIB_NAME
-* Path to the file [FINISH]:
-EMPTY for default option. TAB for autocomplete. Your selection here > s6micro.ucf
-* In library [None]:
-EMPTY for default option. TAB for autocomplete. Your selection here > 
-* Path to the file [FINISH]:
-EMPTY for default option. TAB for autocomplete. Your selection here > 
-
-Board to be used? [None]
-EMPTY for default option. TAB for autocomplete. Your selection here > avnet_s6micro
-
-
+INSTRUCTIONS: left EMPTY for default option and press TAB for autocomplete.
+* TOOL to be used? [vivado] > ise
+NOTE: if there are no Tcl files in the target path, they are created.
+* Path to the Tcl files? [../tcl] > ../fpga_helpers/tcl/
+* Top Level file? [top.vhdl] > 
+* Add files to the project (empty file to FINISH).
+  * Path to the file [FINISH] > core_file.vhdl
+  * In library [None] > LIB_NAME
+  * Path to the file [FINISH] > package_file.vhdl
+  * In library [None] > LIB_NAME
+  * Path to the file [FINISH] > s6micro.ucf
+  * In library [None] > 
+  * Path to the file [FINISH] > 
+* Board to be used? [None] > avnet_s6micro
+fpga_wizard (INFO): directory ../fpgahelpers/tcl was created
+fpga_wizard (INFO): Makefile was copy to ../fpgahelpers/tcl
+fpga_wizard (INFO): synthesis.tcl was copy to ../fpgahelpers/tcl
+fpga_wizard (INFO): programming.tcl was copy to ../fpgahelpers/tcl
 fpga_wizard (INFO): Makefile and options.tcl were generated
 ```
 

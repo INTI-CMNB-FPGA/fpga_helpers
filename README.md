@@ -2,7 +2,7 @@
 
 A set of **Tcl** and **Python** scripts which helps to use FPGA development tools from the command line in a vendor independent way.
 
-User Guide [[EN](doc/userguide_en.md)] [[ES](doc/userguide_es.md)].
+[User Guide](doc/userguide_en.md).
 
 # Why from the command line?
 
