@@ -1,17 +1,16 @@
-# FPGA Helpers ![Version](https://img.shields.io/github/tag/INTI-CMNB-FPGA/fpga_helpers.svg) [![License](https://img.shields.io/github/license/INTI-CMNB-FPGA/fpga_helpers.svg)](LICENSE) ![Contributions](https://img.shields.io/badge/Contributions-Welcome-green.svg)
+# FPGA Helpers [![License](https://img.shields.io/github/license/INTI-CMNB-FPGA/fpga_helpers.svg)](LICENSE) ![Version](https://img.shields.io/github/tag/INTI-CMNB-FPGA/fpga_helpers.svg)
 
 A set of **Tcl** and **Python** scripts which helps to use FPGA development tools from the command line in a vendor independent way.
 
-[User Guide](doc/userguide_en.md).
+* [Documentation](doc).
 
 # Why from the command line?
 
 * To be friendly with version control systems.
-* To provide a vendor independent use mode.
 * To get reproducibility and repeatability.
 * To consume less system resources.
 
-# Why Tcl instead of a chain of programs?
+# Why Tcl?
 
 The tasks of the vendor's tools can be achieved using a chain of command line programs, where the output from one is the input of another. However, we prefer Tcl because:
 
@@ -20,6 +19,14 @@ The tasks of the vendor's tools can be achieved using a chain of command line pr
 * Each small program uses a particular project file, but with Tcl a unique file can be shared.
 
 This features seems better for a vendor independent implementation.
+
+# Vendor independent?
+
+> The development is done under a Debian GNU/Linux system, but the **Tcl** scripts
+> are supported by the interpreter of each development tool. Thus, FPGA Helpers must
+> work in any system with **make** and **Python** installed on (OS independent).
+
+One of the important aim of the project is to provide a vendor-independent experience.
 
 # Status
 

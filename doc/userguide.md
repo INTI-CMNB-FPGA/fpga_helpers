@@ -33,11 +33,7 @@ The **Python** CLIs helps to use the **Tcl**, either by incorporating them into 
 
 # Installation
 
-> The development is under a Debian GNU/Linux system, but the **Tcl** scripts are
-> supported by the interpreter of each development tool (OS independent). Thus,
-> FPGA Helpers must work in any system with **make** and **Python** installed on.
-
-> Can be used standalone (without installation).
+> FPGA Helpers can also be used standalone (without installation).
 
 Run in the root directory of FPGA Helpers (where is `setup.py`):
 ```

@@ -1,4 +1,4 @@
 # FPGA Helpers Documentation
 
-* [User Guide](userguide_en.md)].
-* Links to [resources](resources.md).
+* [User Guide](userguide.md)].
+* Links to Tcl [resources](resources.md).
