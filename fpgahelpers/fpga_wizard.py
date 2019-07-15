@@ -144,7 +144,7 @@ def main():
 
     # Copy Tcl files
     if not os.path.exists(options['tcl_path']):
-       os.mkdir(options['tcl_path'])
+       os.makedirs(options['tcl_path'])
        print("fpga_wizard (INFO): directory %s was created" % options['tcl_path'])
     tcl_orig = common.get_script_path(__file__) + "/tcl"
     if not os.path.exists(options['tcl_path'] + "/Makefile"):
