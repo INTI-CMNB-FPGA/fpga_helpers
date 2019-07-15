@@ -20,7 +20,7 @@
 
 __version__ = "0.4.0"
 
-tools = {
+_tools = {
     'vivado'  : {
         'prj' : 'xpr'
     },
@@ -35,9 +35,15 @@ tools = {
     }
 }
 
-devices = ['fpga', 'spi', 'bpi', 'xcf', 'detect', 'unlock']
+_devices = ['fpga', 'spi', 'bpi', 'xcf', 'detect', 'unlock']
 
-boards = {
+_fpga_pos  = range(1,10)
+
+_spi_width = [1, 2, 4]
+_bpi_width = [8, 16, 32, 64]
+_mem_width = _spi_width + _bpi_width
+
+_boards = {
     'avnet_s6micro' : {
         'full_name' : 'Avnet Spartan-6 FPGA LX9 MicroBoard',
         'fpga_name' : 'xc6slx9-2-csg324',

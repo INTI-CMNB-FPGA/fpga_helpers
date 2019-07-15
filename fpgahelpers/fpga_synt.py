@@ -19,16 +19,17 @@
 #
 
 import glob, sys, os
-import database, common
+import database as db
+import common
 
 def main():
     options = common.get_options(__file__)
 
     # Collecting information
-    for tool in database.tools:
+    for tool in db._tools:
         if options.file is None:
             try:
-                options.file = glob.glob("*." + database.tools[tool]['prj'])[0]
+                options.file = glob.glob("*." + db._tools[tool]['prj'])[0]
             except:
                 options.file = None
 

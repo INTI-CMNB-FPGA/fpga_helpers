@@ -19,7 +19,7 @@
 #
 
 import argparse, os, tempfile
-import database
+import database as db
 
 def get_script_name(script):
     return os.path.basename(os.path.abspath(script)).split(".")[0]
@@ -30,7 +30,7 @@ def get_script_path(script):
 """Here the command line arguments of all the helpers are parsed."""
 def get_options(script):
     program = get_script_name(script)
-    version = database.__version__
+    version = db.__version__
     description = {
         'fpga_wizard' : "A wizard to generate the project files options.tcl and Makefile.",
         'fpga_prog'   : "Transfers a BitStream to a device.",
@@ -39,7 +39,7 @@ def get_options(script):
     }
     epilogue = {
         'fpga_wizard' : "",
-        'fpga_prog'   : "Supported boards: %s" % ', '.join(database.boards),
+        'fpga_prog'   : "Supported boards: %s" % ', '.join(db._boards),
         'fpga_synt'   : "",
         'fpga_deps'   : ""
     }
@@ -67,15 +67,15 @@ def get_options(script):
             '-t', '--tool',
             metavar     = 'TOOL',
             default     = 'vivado',
-            choices     = database.tools,
-            help        = "name of the vendor tool to be used (%s) [vivado]" % "|".join(database.tools)
+            choices     = db._tools,
+            help        = "name of the vendor tool to be used (%s) [vivado]" % "|".join(db._tools)
         )
         parser.add_argument(
            '-d', '--device',
            metavar     = 'DEVICE',
            default     = 'fpga',
-           choices     = database.devices,
-           help        = "type of the target device (%s) [fpga]" % "|".join(database.devices)
+           choices     = db._devices,
+           help        = "type of the target device (%s) [fpga]" % "|".join(db._devices)
         )
         parser.add_argument(
            '-b', '--board',
@@ -94,17 +94,18 @@ def get_options(script):
             metavar     = 'POSITION',
             type        = int,
             default     = 1,
+            choices     = db._fpga_pos,
             help        = 'positive number which represents the POSITION of the device in the ' +
-                          'JTAG chain [1]'
+                          'JTAG chain (%d to %d) [1]' % (db._fpga_pos[0],db._fpga_pos[-1])
         )
         parser.add_argument(
             '-w', '--width',
             metavar     = 'WIDTH',
             type        = int,
             default     = 1,
-            choices     = [1, 2, 4, 8, 16, 32, 64],
+            choices     = db._mem_width,
             help        = 'positive number which representes the WIDTH of bits of the target ' +
-                          'memory (1|2|4|8|16|32|64) [1]'
+                          'memory (%s) [1]' % "|".join(str(n) for n in db._mem_width)
         )
 
     if program in ['fpga_synt']:
@@ -148,7 +149,7 @@ def get_options(script):
 """Content of the project's Makefile."""
 def get_makefile_content(tool, task, dev, path):
     text  = "#!/usr/bin/make\n"
-    text += "# Generated with FPGA Helpers v%s\n" % database.__version__
+    text += "# Generated with FPGA Helpers v%s\n" % db.__version__
     text += "TOOL=%s\n" % tool
     if task is not None:
        text += "TASK=%s\n" % task

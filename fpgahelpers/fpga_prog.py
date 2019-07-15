@@ -19,7 +19,8 @@
 #
 
 import os, sys
-import database, common
+import database as db
+import common
 
 def main():
     options = common.get_options(__file__)
@@ -27,19 +28,19 @@ def main():
     # Processing the options
     if not os.path.exists(options.bit) and options.device not in ['detect','unlock'] and options.tool not in ['libero']:
        sys.exit('fpga_prog (ERROR): bitstream needed but not found.')
-    if options.board and options.board not in database.boards:
+    if options.board and options.board not in db._boards:
        sys.exit("fpga_prog (ERROR): unsupported board")
     if options.board is not None and options.device not in ['detect','unlock']:
-       if options.device + '_name' not in database.boards[options.board]:
+       if options.device + '_name' not in db._boards[options.board]:
           sys.exit(
               "fpga_prog (ERROR): the device <%s> is not supported in the board <%s>." %
               (options.device, options.board)
           )
        else:
-          options.position = database.boards[options.board]['fpga_pos']
+          options.position = db._boards[options.board]['fpga_pos']
           if options.device != 'fpga':
-             options.memname = database.boards[options.board][options.device + '_name']
-             options.width   = database.boards[options.board][options.device + '_width']
+             options.memname = db._boards[options.board][options.device + '_name']
+             options.width   = db._boards[options.board][options.device + '_width']
 
     # Preparing files
     temp = None;

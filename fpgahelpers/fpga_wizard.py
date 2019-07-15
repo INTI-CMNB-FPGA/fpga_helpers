@@ -19,7 +19,8 @@
 #
 
 import sys, os, readline, re, glob, shutil
-import database, common
+import database as db
+import common
 
 def get_input(prompt):
     prompt += " > "
@@ -44,6 +45,11 @@ def complete(text, state):
            else:
               state -= 1
 
+def set_alternatives(aux):
+    global alternatives
+    alternatives = aux
+    readline.set_completer(complete)
+
 def collect_data():
     # Config autocomplete
     readline.set_completer_delims(' \t\n;')
@@ -63,8 +69,7 @@ def collect_data():
 
     print("INSTRUCTIONS: left EMPTY for default option and press TAB for autocomplete.")
 
-    alternatives = database.tools # available tools
-    readline.set_completer(complete)
+    set_alternatives(db._tools) # available tools
     options['tool'] = get_input("* TOOL to be used? [%s]" % options['tool']) or options['tool']
     if options['tool'] not in alternatives:
        sys.exit("fpga_wizard (ERROR): unsupported tool")
@@ -96,37 +101,40 @@ def collect_data():
        else:
           morefiles = 0
 
-    alternatives = database.boards # available boards
-    readline.set_completer(complete)
+    set_alternatives(db._boards)
     options['board'] = get_input("* Board to be used? [None]")
     if options['board'] and options['board'] not in alternatives:
        sys.exit("fpga_wizard (ERROR): unsupported board")
     if options['board']:
-       options.update(database.boards[options['board']])
+       options.update(db._boards[options['board']])
     else:
-       alternatives = [] # no options yet
-       readline.set_completer(complete)
        # FPGA
+       set_alternatives([])
        print("* Specify the FPGA")
        options['fpga_name'] = get_input("  * Device [%s]" % options['fpga_name']) or options['fpga_name']
        if len(options['fpga_name']):
+          set_alternatives([str(i) for i in db._fpga_pos])
           options['fpga_pos'] = get_input("  * Position [%s]" % options['fpga_pos']) or options['fpga_pos']
-          if int(options['fpga_pos']) not in [1, 2, 3, 4]:
-             sys.exit("fpga_wizard (ERROR): FPGA position can be 1 to 4")
+          if int(options['fpga_pos']) not in db._fpga_pos:
+             sys.exit("fpga_wizard (ERROR): unsupported FPGA position (%d to %d)" % (db._fpga_pos[0], db._fpga_pos[-1]))
        # SPI
+       set_alternatives([])
        print("* Specify an attached SPI")
        options['spi_name'] = get_input("  * Device [None]")
        if len(options['spi_name']):
+          set_alternatives([str(i) for i in db._spi_width])
           options['spi_width'] = get_input("  * Width in bits [%s]" % options['spi_width']) or options['spi_width']
-          if int(options['spi_width']) not in [1, 2, 4]:
-             sys.exit("fpga_wizard (ERROR): SPI data width can be 1, 2 and 4")
+          if int(options['spi_width']) not in db._spi_width:
+             sys.exit("fpga_wizard (ERROR): unsupported SPI data width (%s)" % "|".join(str(n) for n in db._spi_width))
        # BPI
+       set_alternatives([])
        print("* Specify an attached BPI")
        options['bpi_name'] = get_input("  * Device [None]")
        if len(options['bpi_name']):
+          set_alternatives([str(i) for i in db._bpi_width])
           options['bpi_width'] = get_input("* Width in bits [%s]" % options['bpi_width']) or options['bpi_width']
-          if int(options['bpi_width']) not in [8, 16, 32, 64]:
-             sys.exit("fpga_wizard (ERROR): BPI data width can be 8, 16, 32 or 64")
+          if int(options['bpi_width']) not in db._bpi_width:
+             sys.exit("fpga_wizard (ERROR): unsupported BPI data width (%s)" % "|".join(str(n) for n in db._bpi_width))
 
     return options
 
@@ -138,7 +146,7 @@ def main():
     if not os.path.exists(options['tcl_path']):
        os.mkdir(options['tcl_path'])
        print("fpga_wizard (INFO): directory %s was created" % options['tcl_path'])
-    tcl_orig = os.path.dirname(os.path.abspath(__file__)) + "/tcl"
+    tcl_orig = common.get_script_path(__file__) + "/tcl"
     if not os.path.exists(options['tcl_path'] + "/Makefile"):
        shutil.copy(tcl_orig + '/Makefile', options['tcl_path'])
        print("fpga_wizard (INFO): Makefile was copy to %s" % options['tcl_path'])
