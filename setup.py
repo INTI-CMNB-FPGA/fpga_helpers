@@ -27,6 +27,8 @@ setup(
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.5",
         "Topic :: Utilities",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Topic :: Software Development :: Build Tools",
