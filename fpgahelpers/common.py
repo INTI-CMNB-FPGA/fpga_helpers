@@ -54,6 +54,18 @@ def get_options(script):
         action      = 'version',
         version     = "%s is a member of FPGA Helpers v%s" % (program, version)
     )
+    parser.add_argument(
+        '--debug',
+        action      = 'store_true',
+        help        = 'for test purposes'
+    )
+
+    if program in ['fpga_wizard']:
+       parser.add_argument(
+           '--default',
+           action      = 'store_true',
+           help        = 'to apply default selections'
+       )
 
     if program in ['fpga_prog']:
         parser.add_argument(

@@ -45,12 +45,15 @@ def main():
     if options.tool is None:
        sys.exit("fpga_synt (ERROR): unsupported vendor's tool")
 
-    # Executing
-    text = common.get_makefile_content(
-       tool=options.tool, task=options.task, dev=None,
-       path=(common.get_script_path(__file__) + "/tcl")
-    )
-    common.execute_make(__file__, text)
+    if not options.debug:
+       # Executing
+       text = common.get_makefile_content(
+          tool=options.tool, task=options.task, dev=None,
+          path=(common.get_script_path(__file__) + "/tcl")
+       )
+       common.execute_make(__file__, text)
+    else:
+       print(options)
 
 if __name__ == "__main__":
    main()

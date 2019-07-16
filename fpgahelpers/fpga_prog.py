@@ -42,30 +42,32 @@ def main():
              options.memname = db._boards[options.board][options.device + '_name']
              options.width   = db._boards[options.board][options.device + '_width']
 
-    # Preparing files
-    temp = None;
-    if not os.path.exists('options.tcl'):
-       temp = open('options.tcl','w')
-       if 'memname' in options:
-          for dev in ['fpga', 'spi', 'bpi', 'xcf']:
-              temp.write("set %s_name %s\n" % (dev, options.memname))
-       if 'position' in options:
-          for dev in ['fpga', 'xcf']:
-              temp.write("set %s_pos %s\n" % (dev, options.position))
-       if 'width' in options:
-          for dev in ['spi', 'bpi', 'xcf']:
-              temp.write("set %s_width %s\n" % (dev, options.width))
-       temp.flush()
-
-    # Executing
-    text = common.get_makefile_content(
-       tool=options.tool, task=None, dev=options.device,
-       path=(common.get_script_path(__file__) + "/tcl")
-    )
-    common.execute_make(__file__, text)
-    if temp is not None:
-       temp.close()
-       os.remove('options.tcl')
+    if not options.debug:
+       # Preparing files
+       temp = None;
+       if not os.path.exists('options.tcl'):
+          temp = open('options.tcl','w')
+          if 'memname' in options:
+             for dev in ['fpga', 'spi', 'bpi', 'xcf']:
+                 temp.write("set %s_name %s\n" % (dev, options.memname))
+          if 'position' in options:
+             for dev in ['fpga', 'xcf']:
+                 temp.write("set %s_pos %s\n" % (dev, options.position))
+          if 'width' in options:
+             for dev in ['spi', 'bpi', 'xcf']:
+                 temp.write("set %s_width %s\n" % (dev, options.width))
+          temp.flush()
+       # Executing
+       text = common.get_makefile_content(
+          tool=options.tool, task=None, dev=options.device,
+          path=(common.get_script_path(__file__) + "/tcl")
+       )
+       common.execute_make(__file__, text)
+       if temp is not None:
+          temp.close()
+          os.remove('options.tcl')
+    else:
+       print(options)
 
 if __name__ == "__main__":
    main()

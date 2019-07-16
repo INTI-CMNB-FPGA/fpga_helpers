@@ -23,7 +23,11 @@ import database as db
 import common
 
 def get_input(prompt):
+    global default
     prompt += " > "
+    if default:
+       print(prompt)
+       return ""
     try:    # Python2
        return raw_input(prompt)
     except: # Python3
@@ -139,7 +143,10 @@ def collect_data():
     return options
 
 def main():
+    global default
     cli_opt = common.get_options(__file__)
+    default = cli_opt.default
+
     options = collect_data()
 
     # Copy Tcl files
