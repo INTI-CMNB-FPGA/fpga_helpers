@@ -28,8 +28,12 @@
 # * Verilog:
 #   * A file could have one or more modules.
 
-import os, sys, re, mimetypes
-import database, common
+import os
+import mimetypes
+import re
+import sys
+
+import common
 
 options = common.get_options(__file__)
 

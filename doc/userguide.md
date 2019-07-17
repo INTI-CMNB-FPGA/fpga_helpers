@@ -33,12 +33,13 @@ The **Python** CLIs helps to use the **Tcl**, either by incorporating them into 
 
 # Installation
 
-> FPGA Helpers can also be used standalone (without installation).
-
 Run in the root directory of FPGA Helpers (where is `setup.py`):
-```
-pip install .
-```
+* Python3: `pip3 install .`
+* Python2: `pip install .`
+
+> If `pip3` is not installed, you need `python3-pip` (or `python-pip` for `pip`).
+
+> FPGA Helpers can also be used standalone (without installation).
 
 # Tcl
 

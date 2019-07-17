@@ -18,7 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import sys, os, readline, re, glob, shutil
+import glob
+import os
+import re
+import readline
+import shutil
+import sys
+
 import database as db
 import common
 
