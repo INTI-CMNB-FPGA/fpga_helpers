@@ -1,6 +1,12 @@
 # Changelog
 
-## [Unreleased]
+## [v0.4.0] - unreleased
+* Moved from Autotools and a Debian package to Python pip.
+* The source code of mainly fpga_prog, fpga_synth and fpga_wizard, was improved/simplified.
+* The files structure of the repository was modified and simplified.
+* The documentation was reordered, simplified and slightly improved.
+* A Dockerfile with scripts to build and run an image/container were added to the repository.
+  * It mainly contains Free Software tools for HDL simulation (GHDL, iVerilog, Cocotb and GtkWave).
 
 ## [v0.3.0] - 2017-08-18
 * Unified again Tcl scripts for synthesis.
