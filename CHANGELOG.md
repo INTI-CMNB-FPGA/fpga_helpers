@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.4.0] - unreleased
+## [v0.4.0] - 2019-07-18
 * Moved from Autotools and a Debian package to Python pip.
 * The source code of mainly fpga_prog, fpga_synth and fpga_wizard, was improved/simplified.
 * The files structure of the repository was modified and simplified.
