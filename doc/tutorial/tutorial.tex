@@ -71,7 +71,8 @@
 
 \newcommand{\shellcmd}[1]{\\\indent\indent\texttt{\scriptsize #1}\\}
 
-\newcommand{\version}        {0.4.0}
+\newcommand{\version}{\input{temp/version}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title[FPGA Helpers]{Tutorial: FPGA Helpers v\version}
@@ -124,13 +125,13 @@
     using \fpgasetup.
   \end{block}{}
   \scriptsize
-  \verbatiminput{temp/fpgasetup1.txt}
+  \verbatiminput{temp/setup_help}
 \end{frame}
 
 \begin{frame}[fragile]{FPGA Setup (II)}
   It also can be run interactively:
   \scriptsize
-  \verbatiminput{temp/fpgasetup2.txt}
+  \verbatiminput{temp/setup_run}
   \normalsize
   About configurations:
   \begin{itemize}
@@ -150,61 +151,13 @@
     Generates options.tcl and Makefile (project files).
   \end{block}{}
   \tiny
-  \begin{verbatim}
-$ fpga_wizard.py 
-fpga_wizard is a member of FPGA Helpers v0.3.0
-
-Select TOOL to use [vivado]
-EMPTY for default option. TAB for autocomplete. Your selection here > 
-
-Where to get (if exists) or put Tcl files? [../tcl]
-EMPTY for default option. TAB for autocomplete. Your selection here > project
-
-Top Level file? [None]
-EMPTY for default option. TAB for autocomplete. Your selection here > top_file.vhdl
-
-Add files to the project (EMPTY to FINISH):
-* Path to the file [FINISH]:
-EMPTY for default option. TAB for autocomplete. Your selection here > core_file.vhdl
-* In library [None]:
-EMPTY for default option. TAB for autocomplete. Your selection here > LIB_NAME
-* Path to the file [FINISH]:
-EMPTY for default option. TAB for autocomplete. Your selection here > package_file.vhdl
-* In library [None]:
-EMPTY for default option. TAB for autocomplete. Your selection here > LIB_NAME
-* Path to the file [FINISH]:
-EMPTY for default option. TAB for autocomplete. Your selection here > 
-
-Board to be used? [None]
-EMPTY for default option. TAB for autocomplete. Your selection here > 
-  \end{verbatim}
+  \verbatiminput{temp/wizard}
 \end{frame}
 
 \begin{frame}[fragile]{FPGA Wizard (II)}
-  \tiny
+  \scriptsize
+  options.tcl
   \begin{verbatim}
-Specify the used FPGA [UNKNOWN]
-EMPTY for default option. TAB for autocomplete. Your selection here > XC6SLX9-2-CSG324
-
-Specify the FPGA position [1]
-EMPTY for default option. TAB for autocomplete. Your selection here > 
-
-Specify an attached SPI [None]
-EMPTY for default option. TAB for autocomplete. Your selection here > 
-
-Specify an attached BPI [None]
-EMPTY for default option. TAB for autocomplete. Your selection here > 
-
-fpga_wizard (INFO): directory project was created
-fpga_wizard (INFO): Makefile was copy to project
-fpga_wizard (INFO): synthesis.tcl was copy to project
-fpga_wizard (INFO): programming.tcl was copy to project
-fpga_wizard (INFO): Makefile and options.tcl were generated
-  \end{verbatim}
-  \begin{columns}
-    \column{0.5\textwidth}
-      options.tcl
-      \begin{verbatim}
 set fpga_name XC6SLX9-2-CSG324
 set fpga_pos  1
 
@@ -213,18 +166,15 @@ fpga_device   $fpga_name
 fpga_file     core_file.vhdl    -lib LIB_NAME
 fpga_file     package_file.vhdl -lib LIB_NAME
 fpga_file     top_file.vhdl     -top TOP_NAME
-      \end{verbatim}
-    \column{0.5\textwidth}
-      Makefile
-      \begin{verbatim}
+  \end{verbatim}
+  Makefile
+  \begin{verbatim}
 #!/usr/bin/make
-#Generated with fpga_wizard v0.3.0
 
 TOOL    = vivado
 TCLPATH = project
 include $(TCLPATH)/Makefile
-      \end{verbatim}
-  \end{columns}
+  \end{verbatim}
 \end{frame}
 
 %% FPGA Synt %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -237,24 +187,8 @@ include $(TCLPATH)/Makefile
     synthesis, implementation and bitstream generation.
   \end{block}{}
   \scriptsize
-  \verbatiminput{temp/fpgasynt.txt}
+  \verbatiminput{temp/synt}
 \end{frame}
-
-%\begin{frame}[fragile]{FPGA Synt (II) - Examples}
-%  \small
-%  \verbatiminput{temp/fpgasynt_ex1.txt}
-%  \verbatiminput{temp/fpgasynt_ex2.txt}
-%\end{frame}
-
-%\begin{frame}[fragile]{FPGA Synt (III) - Makefile}
-%  \tiny
-%  \verbatiminput{temp/makefile.txt}
-%  \begin{alertblock}{}
-%    \small
-%    The \makefile\ uses vendors tools, so you could run \fpgasetup\ when open
-%    a new \console.
-%  \end{alertblock}
-%\end{frame}
 
 %\begin{frame}[fragile]{FPGA Synt (V) - vendors TCL files}
 %  %\tiny
@@ -280,47 +214,13 @@ include $(TCLPATH)/Makefile
   \begin{block}{}
     If you have a bistream, FPGA Prog can be used to transfer it to a FPGA or memory.
   \end{block}{}
-  \scriptsize
-  \begin{verbatim}
-$ fpga_prog --help
-usage: fpga_prog [-h] [-v] [-t TOOL] [-d DEVICE] [-b BOARDNAME] [-m MEMNAME]
-                 [-p POSITION] [-w WIDTH]
-                 [BITSTREAM]
-
-Transfers a BitStream to a device.
-
-positional arguments:
-  BITSTREAM             bitstream to be transferred
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -v, --version         show program's version number and exit
-  -t TOOL, --tool TOOL  name of the vendor tool to be used
-                        (ise|quartus|libero|vivado) [vivado]
-  \end{verbatim}
+  \tiny
+  \verbatiminput{temp/prog1}
 \end{frame}
 
 \begin{frame}[fragile]{FPGA Prog (II)}
-  \scriptsize
-  \begin{verbatim}
-  -d DEVICE, --device DEVICE
-                        type of the target device
-                        (fpga|spi|bpi|xcf|detect|unlock) [fpga]
-  -b BOARDNAME, --board BOARDNAME
-                        name of a supported board (note: if you use the board
-                        option, -p, -m and -w will be overwritten) [None]
-  -m MEMNAME, --memname MEMNAME
-                        name of the memory target device [UNDEFINED]
-  -p POSITION, --position POSITION
-                        positive number which represents the POSITION of the
-                        device in the JTAG chain [1]
-  -w WIDTH, --width WIDTH
-                        positive number which representes the WIDTH of bits of
-                        the target memory (1, 2, 4, 8, 16, 32, 64) [1]
-
-Supported boards: xilinx_ml605, microsemi_m2s090ts, gaisler_xc6s,
-xilinx_sp601, avnet_s6micro, digilent_atlys, terasic_de0nano
-  \end{verbatim}
+  \tiny
+  \verbatiminput{temp/prog2}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

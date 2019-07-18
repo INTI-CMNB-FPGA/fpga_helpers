@@ -1,30 +1,57 @@
-doc_DATA          = tutorial.pdf
-CLEANFILES        = *.aux *.log *.nav *.snm *.out *.toc *.pdf *.vrb
-EXTRA_DIST        = tutorial.tex
+#!/usr/bin/make
 
-clean-local:
-	-rm -rf temp
+VERSION = $(shell sed -ne 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/p' ../../fpgahelpers/database.py)
 
-temp/fpgasetup1.txt:
-	mkdir -p temp
-	echo '$$ fpga_setup --help'                                       > temp/fpgasetup1.txt
-	bash ../../fpgahelpers/fpga_setup.sh --help                      >> temp/fpgasetup1.txt
+SRCDIR  = ../../fpgahelpers
 
-temp/fpgasetup2.txt:
-	mkdir -p temp
-	echo '$$ fpga_setup'                                              > temp/fpgasetup2.txt
-	bash ../../fpgahelpers/fpga_setup.sh --quit                      >> temp/fpgasetup2.txt
+vpath %      temp
 
-temp/fpgasynt.txt:
-	mkdir -p temp
-	echo '$$ fpga_synt --help'                                        > temp/fpgasynt.txt
-	python ../../fpgahelpers/fpga_synt.py --help                     >> temp/fpgasynt.txt
-
-temp/makefile.txt:
-	echo '$$ make help'                                               > temp/makefile.txt
-	make --no-print-directory -f ../../fpgahelpers/tcl/Makefile help >> temp/makefile.txt
-
-tutorial.pdf: tutorial.tex temp/fpgasetup1.txt temp/fpgasetup2.txt temp/fpgasynt.txt temp/makefile.txt
+tutorial.pdf: tutorial.tex version setup_help setup_run prog synt wizard makefile
 	pdflatex $<
 	pdflatex $<
 	@rm -fr *.aux *.log *.nav *.snm *.out *.toc *.vrb
+
+temp/version:
+	mkdir -p temp
+	@echo $(VERSION)                                          > $@
+
+temp/setup_help:
+	mkdir -p temp
+	echo '$$ fpga_setup --help'                               > $@
+	bash $(SRCDIR)/fpga_setup.sh --help                      >> $@
+
+temp/setup_run:
+	mkdir -p temp
+	echo '$$ fpga_setup'                                      > $@
+	bash $(SRCDIR)/fpga_setup.sh --quit                      >> $@
+
+temp/prog:
+	mkdir -p temp
+	echo '$$ fpga_prog --help'                                > $@
+	python $(SRCDIR)/fpga_prog.py --help                     >> $@
+	cp $@ temp/prog1
+	sed -i '1,14!d' temp/prog1
+	cp $@ temp/prog2
+	sed -i '1,14d' temp/prog2
+
+temp/synt:
+	mkdir -p temp
+	echo '$$ fpga_synt --help'                                > $@
+	python $(SRCDIR)/fpga_synt.py --help                     >> $@
+
+temp/wizard:
+	mkdir -p temp
+	cp ../../test/fpga_deps/top.vhdl temp
+	cd temp; python ../$(SRCDIR)/fpga_wizard.py --default     > wizard
+	rm -fr tcl
+
+temp/makefile:
+	echo '$$ make help'                                       > $@
+	make --no-print-directory -f $(SRCDIR)/tcl/Makefile help >> $@
+
+clean:
+	-rm -rf temp
+
+clean-all: clean
+	-rm -rf tutorial.pdf
+
