@@ -1,4 +1,4 @@
 #!/usr/bin/make
 
-TCLPATH=../../tcl
+TCLPATH=../../fpgahelpers/tcl
 include $(TCLPATH)/Makefile
