@@ -16,6 +16,18 @@
 
 ## Microsemi
 
-* Libero-SoC
+* Libero-SoC:
   * Batch Flow Scripting for SmartFusion2 and IGLOO2 - Tcl User Guide
   * Libero SoC Tcl Commands - Reference Guide
+
+## Lattice
+
+* Diamond:
+  * Lattice Diamond User Guide
+    * Chapter: Tcl Scripting
+* iCEcube2>
+  * iCEcube2 User Guide
+    * Chapter: iCEcube2 Command Line Interface
+* Radiant:
+  * Lattice Radiant Software User Guide
+    * Chapter: Tcl Command Reference Guide
