@@ -1,19 +1,19 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 
-entity CORE_NAME is
+entity Blinking is
    generic (
-      FREQUENCY : positive:=25e6;
-      SECONDS   : positive:=1
+      FREQ  : positive:=25e6;
+      SECS  : positive:=1
    );
    port (
       clk_i :  in std_logic;
       led_o : out std_logic
    );
-end entity CORE_NAME;
+end entity Blinking;
 
-architecture RTL of CORE_NAME is
-   constant DIV : positive:=FREQUENCY*SECONDS-1;
+architecture RTL of Blinking is
+   constant DIV : positive:=FREQ*SECS-1;
    signal   led : std_logic;
 begin
    blink:
