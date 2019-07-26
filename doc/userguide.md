@@ -302,7 +302,7 @@ fpga_file     s6micro.ucf
 fpga_file     top_file.vhdl                  -top TOP_NAME
 ```
 
-El final auxiliary *Makefile* is:
+The final auxiliary *Makefile* is:
 ```
 #!/usr/bin/make
 #Generated with fpga_wizard v0.3.0
