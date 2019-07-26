@@ -44,6 +44,11 @@ _bpi_width = [8, 16, 32, 64]
 _mem_width = _spi_width + _bpi_width
 
 _boards = {
+    'altera_max10eval' : {
+        'full_name' : 'Altera MAX 10 FPGA Evaluation Kit',
+        'fpga_name' : '10M08SAE144C8G',
+        'fpga_pos'  : '1'
+    },
     'avnet_s6micro' : {
         'full_name' : 'Avnet Spartan-6 FPGA LX9 MicroBoard',
         'fpga_name' : 'xc6slx9-2-csg324',
@@ -59,6 +64,11 @@ _boards = {
         'spi_name'  : 'N25Q128',
         'spi_width' : '4',
         'spi_size'  : '128Mb'
+    },
+    'digilent_zybo' : {
+        'full_name' : 'Digilent Zybo (ZYnq BOard)',
+        'fpga_name' : 'xc7z010-1-clg400',
+        'fpga_pos'  : '1'
     },
     'gaisler_xc6s' : {
         'full_name' : 'Gaisler Research GR-XC6S',
