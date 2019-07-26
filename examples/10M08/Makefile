@@ -1,5 +1,5 @@
 #!/usr/bin/make
 
-TOOL=vivado
+TOOL=quartus
 TCLPATH=../../fpgahelpers/tcl
 include $(TCLPATH)/Makefile
