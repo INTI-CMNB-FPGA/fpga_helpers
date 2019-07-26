@@ -11,7 +11,7 @@ entity Top is
 end entity Top;
 
 architecture Structural of Top is
-   constant FREQ : positive := 50e6;
+   constant FREQ : positive := 125e6;
 begin
 
    dut: Blinking
