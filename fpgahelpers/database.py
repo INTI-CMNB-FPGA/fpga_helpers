@@ -83,6 +83,11 @@ _boards = {
         'fpga_name' : 'm2s090ts-1-fg484',
         'fpga_pos'  : '1'
     },
+    'microsemi_mpf300eval' : {
+        'full_name' : 'Microsemi PolarFire FPGA Evaluation Kit',
+        'fpga_name' : 'mpf300ts-1-fcg1152',
+        'fpga_pos'  : '1'
+    },
     'terasic_de0nano' : {
         'full_name' : 'Terasic DE0-Nano development and education board',
         'fpga_name' : 'EP4CE22F17C6',
