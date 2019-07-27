@@ -91,6 +91,14 @@ _boards = {
         'spi_width' : '1',
         'spi_size'  : '4Mb'
     },
+    'terasic_de10nano' : {
+        'full_name' : 'Terasic DE10-Nano Development kit',
+        'fpga_name' : '5CSEBA6U23I7',
+        'fpga_pos'  : '1',
+        'spi_name'  : 'EPCS64',
+        'spi_width' : '4',
+        'spi_size'  : '4Mb'
+    },
     'xilinx_ml605' : {
         'full_name' : 'Xilinx Virtex 6 ML605',
         'fpga_name' : 'xc6vlx240t-1-ff1156',
