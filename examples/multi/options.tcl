@@ -8,39 +8,29 @@
 # Function: fpga_file     <FILE> [-top <TOPNAME>]   Return: none
 #   Use -top to specify as top level and the component name.
 # Constant: $FPGA_TOOL                              Name of the running tool
-#   Useful when comparing synthesis results between vendors.
+#   Useful to specify options for a particular vendor tool.
 
 fpga_device "XC6SLX9-2-CSG324"  -tool "ise"
 fpga_device "xc7a100t-3-csg324" -tool "vivado"
 fpga_device "5CGXFC7C7F23C8"    -tool "quartus"
 fpga_device "M2S090TS-1-fg484"  -tool "libero"
 
-fpga_file "core_file.vhdl"      -lib "LIB_NAME"
-fpga_file "package_file.vhdl"   -lib "LIB_NAME"
-fpga_file "top_file.vhdl"       -top "TOP_NAME"
+fpga_file "../hdl/blinking.vhdl"     -lib "examples"
+fpga_file "../hdl/examples_pkg.vhdl" -lib "examples"
 
 if {$FPGA_TOOL == "ise"} {
-   fpga_file "s6micro.ucf"
+   fpga_file "../s6micro/s6micro.vhdl"       -top "Top"
+   fpga_file "../s6micro/s6micro.ucf"
 } elseif {$FPGA_TOOL == "vivado"} {
+   fpga_file "../zybo/zybo.vhdl"             -top "Top"
+   fpga_file "../zybo/zybo.xdc"
 } elseif {$FPGA_TOOL == "quartus"} {
+   fpga_file "../max10eval/max10eval.vhdl"   -top "Top"
+   fpga_file "../max10eval/max10eval.tcl"
 } elseif {$FPGA_TOOL == "libero"} {
+   fpga_file "../mpf300eval/mpf300eval.vhdl" -top "Top"
+   fpga_file "../mpf300eval/mpf300eval.pdc"
 }
-
-# This part could be useful when comparing synthesis results between vendors.
-# Add here needed particular options for each vendor tool
-
-#if {$FPGA_TOOL == "ise"} {
-#   # Customize with commands supported by ISE. Example:
-#   project set "FSM Encoding Algorithm" "Sequential" -process "Synthesize - XST"
-#} elseif {$FPGA_TOOL == "vivado"} {
-#   # Customize with commands supported by Vivado. Example:
-#   set_property "steps.synth_design.args.fsm_extraction" "sequential" [get_runs synth_1]
-#} elseif {$FPGA_TOOL == "quartus"} {
-#   # Customize with commands supported by Quartus. Example:
-#   set_global_assignment -name STATE_MACHINE_PROCESSING SEQUENTIAL
-#} elseif {$FPGA_TOOL == "libero"} {
-#   # Customize with commands supported by Libero-SoC.
-#}
 
 # For Programming #############################################################
 
