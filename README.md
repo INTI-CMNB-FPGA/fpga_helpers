@@ -38,22 +38,22 @@ One of the important aim of the project is to provide a vendor-independent exper
 ![Vivado tool](https://img.shields.io/badge/Tool-Vivado-blue.svg)
 ![Vivado version](https://img.shields.io/badge/Version-2016.4-yellow.svg)
 ![Vivado devices](https://img.shields.io/badge/Devices-fpga-yellow.svg)
-![Vivado cable](https://img.shields.io/badge/Cable-auto&nbsp;detected&nbsp;by&nbsp;HW&nbsp;manager-green.svg)
+![Vivado cable](https://img.shields.io/badge/Cable&nbsp;detected&nbsp;by&nbsp;HW&nbsp;manager-green.svg)
 
 ![ISE tool](https://img.shields.io/badge/Tool-ISE-blue.svg)
 ![ISE version](https://img.shields.io/badge/Version-14.7-green.svg)
 ![ISE devices](https://img.shields.io/badge/Devices-fpga,spi,bpi-green.svg)
-![ISE cable](https://img.shields.io/badge/Cable-auto&nbsp;detected&nbsp;by&nbsp;Impact-green.svg)
+![ISE cable](https://img.shields.io/badge/Cable&nbsp;detected&nbsp;by&nbsp;Impact-green.svg)
 
 ![Quartus tool](https://img.shields.io/badge/Tool-Quartus-blue.svg)
 ![Quartus version](https://img.shields.io/badge/Version-15.0-orange.svg)
 ![Quartus devices](https://img.shields.io/badge/Devices-fpga-yellow.svg)
-![Quartus cable](https://img.shields.io/badge/Cable-Usb&nbsp;Blaster-green.svg)
+![Quartus cable](https://img.shields.io/badge/Cable&nbsp;detected&nbsp;by&nbsp;programming.tcl-green.svg)
 
 ![LiberoSoC tool](https://img.shields.io/badge/Tool-Libero&nbsp;SoC-blue.svg)
 ![LiberoSoC version](https://img.shields.io/badge/Version-11.7-yellow.svg)
 ![LiberoSoC devices](https://img.shields.io/badge/Devices-fpga-green.svg)
-![LiberoSoC cable](https://img.shields.io/badge/Cable-FlashPro5&nbsp;in&nbsp;spi_slave&nbsp;mode-yellow.svg)
+![LiberoSoC cable](https://img.shields.io/badge/Cable&nbsp;FlashPro5&nbsp;in&nbsp;spi_slave&nbsp;mode-yellow.svg)
 
 ![LiberoIDE tool](https://img.shields.io/badge/Tool-Libero&nbsp;IDE-blue.svg)
 ![LiberoIDE version](https://img.shields.io/badge/Version-Unsupported-red.svg)
