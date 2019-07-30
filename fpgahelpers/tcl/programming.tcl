@@ -225,11 +225,13 @@ if {[catch {
          }
       }
       "quartus" { # Quartus Quartus Quartus Quartus Quartus Quartus Quartus
-         exec jtagconfig
-         if {$options(dev)=="detect"} {
-            exec quartus_pgm --auto
-         } else {
-            exec quartus_pgm -c USB-blaster --mode jtag -o "p;$bitstream@$fpga_pos"
+         set devices [exec jtagconfig]
+         puts $devices
+         if {$options(dev)!="detect"} {
+            # autodetection of the first found cable
+            regexp -nocase {1\) (.*) \[} $devices -> cable
+            # Programming
+            exec quartus_pgm -c $cable --mode jtag -o "p;$bitstream@$fpga_pos"
          }
       }
       "libero" { # Libero Libero Libero Libero Libero Libero Libero Libero
