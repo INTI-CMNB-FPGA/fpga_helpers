@@ -1,8 +1,8 @@
 #
 # Programming
 #
-# Copyright (C) 2016-2017 INTI
-# Copyright (C) 2016-2017 Rodrigo A. Melo <rmelo@inti.gob.ar>
+# Copyright (C) 2016-2019 INTI
+# Copyright (C) 2016-2019 Rodrigo A. Melo <rmelo@inti.gob.ar>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -216,13 +216,21 @@ if {[catch {
          open_hw
          connect_hw_server
          open_hw_target
-         set obj [lindex [get_hw_devices [current_hw_device]] 0]
-         set_property PROGRAM.FILE $bitstream $obj
-         program_hw_devices $obj
+         if {$options(dev)=="detect"} {
+            puts [get_hw_devices]
+         } else {
+            set obj [lindex [get_hw_devices [current_hw_device]] 0]
+            set_property PROGRAM.FILE $bitstream $obj
+            program_hw_devices $obj
+         }
       }
       "quartus" { # Quartus Quartus Quartus Quartus Quartus Quartus Quartus
          exec jtagconfig
-         exec quartus_pgm -c USB-blaster --mode jtag -o "p;$bitstream@$fpga_pos"
+         if {$options(dev)=="detect"} {
+            exec quartus_pgm --auto
+         } else {
+            exec quartus_pgm -c USB-blaster --mode jtag -o "p;$bitstream@$fpga_pos"
+         }
       }
       "libero" { # Libero Libero Libero Libero Libero Libero Libero Libero
          writeFile $TEMPDIR/fpga.tcl     "$flashpro_fpga"
