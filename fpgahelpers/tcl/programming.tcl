@@ -191,9 +191,11 @@ set flashpro_programmer "configure_flashpro5_prg -vpump {ON} \
 # Programming
 ###############################################################################
 
-puts "Starting Programming.
-This operation may take several minutes, please be patient.
-Final result will be displayed when process ended."
+if {$options(dev)=="detect"} {
+   puts "### Detecting the Jtag chain ###"
+} else {
+   puts "### Starting Programming. This operation may take several minutes, please be patient. ###"
+}
 
 if {[catch {
    file mkdir $TEMPDIR

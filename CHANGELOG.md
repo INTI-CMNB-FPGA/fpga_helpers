@@ -1,5 +1,9 @@
 # Changelog
 
+## [WIP]
+* Added support to auto-detect the Jtag chain for Vivado and Quartus.
+* Added cable auto-detect for Quartus.
+
 ## [v0.4.0] - 2019-07-18
 * Moved from Autotools and a Debian package to Python pip.
 * The source code of mainly fpga_prog, fpga_synth and fpga_wizard, was improved/simplified.
