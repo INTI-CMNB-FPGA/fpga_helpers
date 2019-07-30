@@ -178,7 +178,7 @@ needed.
 # want to change the predefined values. Do it before the include.
 TOOL=ise
 
-TCLPATH=../../fpga_helpers/tcl
+TCLPATH=../../fpgahelpers/tcl
 include $(TCLPATH)/Makefile
 
 # You can add here extra targets if you need.
@@ -261,15 +261,14 @@ If we have a bitstream:
   * *top_file.vhdl* (*top level* with entity TOP_NAME).
   * *s6micro.ucf* (*constraints* IO of the board *Avnet Spartan 6 MicroBoard*).
 * Tool to use: ISE.
-* Path to **Tcl** files: they are in ../fpga_helpers/tcl (FPGA Helpers was added as **git**
-submodule).
+* Path to **Tcl** files: they are in `<FPGA_HELPERS_ROOT>/fpgahelpers/tcl`.
 
 ```
 $ fpga_wizard 
 INSTRUCTIONS: left EMPTY for default option and press TAB for autocomplete.
 * TOOL to be used? [vivado] > ise
 NOTE: if there are no Tcl files in the target path, they are created.
-* Path to the Tcl files? [../tcl] > ../fpga_helpers/tcl/
+* Path to the Tcl files? [../tcl] > ../fpgahelpers/tcl/
 * Top Level file? [top.vhdl] > 
 * Add files to the project (empty file to FINISH).
   * Path to the file [FINISH] > core_file.vhdl
@@ -308,7 +307,7 @@ The final auxiliary *Makefile* is:
 #Generated with fpga_wizard v0.3.0
 
 TOOL    = ise
-TCLPATH = ../../../fpga_helpers/tcl/
+TCLPATH = ../../../fpgahelpers/tcl/
 include $(TCLPATH)/Makefile
 ```
 
