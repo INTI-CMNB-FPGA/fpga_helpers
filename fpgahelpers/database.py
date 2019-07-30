@@ -99,7 +99,7 @@ _boards = {
     'terasic_de10nano' : {
         'full_name' : 'Terasic DE10-Nano Development kit',
         'fpga_name' : '5CSEBA6U23I7',
-        'fpga_pos'  : '1',
+        'fpga_pos'  : '2',
         'spi_name'  : 'EPCS64',
         'spi_width' : '4',
         'spi_size'  : '4Mb'
