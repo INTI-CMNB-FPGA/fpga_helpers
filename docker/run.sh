@@ -2,7 +2,7 @@
 
 APP=${@:-/bin/bash}
 
-IMAGE=fpga_lib
+IMAGE=fpga_helpers
 
 DOCKER_BASHRC=/tmp/.docker_${USER}_bashrc
 
