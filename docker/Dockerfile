@@ -11,7 +11,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     apt-get autoremove -y && apt-get clean
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-    ghdl-gcc gnat iverilog gtkwave && \
+    ghdl-gcc gnat iverilog verilator gtkwave && \
     apt-get autoremove -y && apt-get clean
 
 RUN pip install cocotb
