@@ -2,6 +2,12 @@
 
 A set of **Tcl** and **Python** scripts which helps to use FPGA development tools from the command line in a vendor independent way.
 
+> WARNING! WARNING! WARNING! WARNING! WARNING! 
+>
+> This project has been discontinued and superseded by [PyFPGA](https://gitlab.com/rodrigomelo9/pyfpga)
+>
+> The aim is similar but in this new project, the workflow is solved by Python scripts using the provided API.
+
 * [Documentation](doc).
 
 # Why from the command line?
