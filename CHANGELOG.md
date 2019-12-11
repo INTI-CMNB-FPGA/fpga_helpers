@@ -1,5 +1,8 @@
 # Changelog
 
+## 2019-12-11
+* This project has been discontinued and superseded by [PyFPGA](https://gitlab.com/rodrigomelo9/pyfpga)
+
 ## [WIP]
 * Added support to auto-detect the Jtag chain for Vivado and Quartus.
 * Added cable auto-detect for Quartus.
